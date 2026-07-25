@@ -1,0 +1,30 @@
+{
+  "name": "phasegate",
+  "version": "0.3.0",
+  "description": "Phase-step agentic delivery with Behavior delta intent gates — portable workflow for AI-assisted development",
+  "bin": {
+    "phasegate": "./bin/phasegate.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "constitution",
+    "templates"
+  ],
+  "scripts": {
+    "phasegate": "node ./bin/phasegate.js"
+  },
+  "keywords": [
+    "agentic",
+    "workflow",
+    "cursor",
+    "phase",
+    "behavior-delta",
+    "intent-gate"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "type": "commonjs"
+}
