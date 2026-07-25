@@ -6,6 +6,35 @@ Phasestep progress tracker. Update during builds; `/complete-phase` marks phases
 
 ---
 
+## Setup
+
+Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
+
+- [ ] Product (`product.md`) accepted
+- [ ] User flow (`USER_FLOW.md`) accepted (or skipped)
+- [ ] Product + flow dual-locked
+- [ ] Stack identity confirmed
+- [ ] Stack enrichment (catalog) accepted / skipped
+- [ ] Architecture accepted
+- [ ] Decisions reviewed
+- [ ] Design system (optional) — library pick-one + guidelines
+- [ ] Build plan accepted
+- [ ] `buildCommand` confirmed
+
+### Stack enrichment log
+
+| Date | Lane (official/community) | Stack / id | Action | Provenance (URL) |
+|------|---------------------------|------------|--------|------------------|
+| | | | | |
+
+### Design enrichment log
+
+| Date | Lane (library/guideline/owner) | Id | Action | Provenance (URL) |
+|------|--------------------------------|-----|--------|------------------|
+| | | | | |
+
+---
+
 ## Build progress
 
 Status: `[ ]` not started · `[~]` in progress · `[x]` done

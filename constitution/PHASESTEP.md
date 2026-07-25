@@ -52,12 +52,15 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 |----------|--------------|----------|
 | **Constitution** | `docs/PHASESTEP.md` | This document (or linked copy) |
 | **Product source of truth** | `docs/product.md` | Behavior of the product. Wins over agent assumptions. |
+| **User flow (interaction map)** | `docs/USER_FLOW.md` | End-to-end screens/states/paths. Overview surface during `/setup`; refinements must sync back to the product spec. |
+| **Stack enrichment catalog** | `.phasestep/stack-catalog.json` | Curated official starting points (URLs + install recipes). Used after dual lock; Owner-gated; never invent rule bodies. |
+| **Design enrichment catalog** | `.phasestep/design-catalog.json` | Component libraries (**pick one**) + guidelines (cite any); agent MCP/skills/llms resources with `why`. |
 | **Architecture / conventions** | `docs/architecture.md` | How code is structured. |
 | **Open decisions** | `docs/decisions.md` | Unresolved choices; blockers stop build. |
 | **Master build plan** | `docs/BUILD_PLAN.md` | Ordered phases and scope boundaries. |
 | **Phase execution plan** | `docs/phase-plans/phase-N.md` | Steps, done-when, verify checklist, Behavior delta. |
-| **Progress + session log** | `docs/PROGRESS.md` | Status + history. |
-| **Tooling adapter** | `.cursor/commands/` | Commands implementing §5. |
+| **Progress + session log** | `docs/PROGRESS.md` | Status + history (includes Setup checklist). |
+| **Tooling adapters** | `.cursor/commands/`, `.claude/commands/`, `AGENTS.md` | Commands / guidance implementing §5 (Cursor, Claude Code, Codex). |
 | **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds-phase`. Leave unused for non-UI projects. |
 | **Config** | `phasestep.json` | Paths + `buildCommand` for this project. |
 
@@ -113,6 +116,7 @@ Paths are overridable in `phasestep.json`.
 
 | Command | Args | Actor | Must |
 |---------|------|-------|------|
+| **setup** | optional stage | Agent + Owner | Progressive stub fill. Product → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design (pick-one library)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
 | **plan-phase** | `N` | Agent | Write phase plan only. No application code. |
 | **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta; stop for intent gate. |
 | **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist anchored to delta. No code changes. |
@@ -123,6 +127,8 @@ Paths are overridable in `phasestep.json`.
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes. |
 
 **Shorthand:** `build-phase N` with no step = next unfinished step only.
+
+**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official** and **community** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (Accept sync / Reject / Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
 
 ---
 
@@ -190,9 +196,12 @@ npx phasestep init
 # or: npm i -g phasestep && phasestep init
 
 npx phasestep check
+npx phasestep upgrade   # later: refresh commands/catalogs without wiping Owner docs
 ```
 
-Then fill product/architecture/build plan stubs and run `/plan-phase 1`.
+Then run **`/setup`** (guided product → user flow → stack enrichment → architecture → decisions → design → build plan), or fill stubs manually, then `/plan-phase 1`.
+
+**Mid-project:** `/setup` detects existing code, documents current behavior, and plans **remaining** work — it does not reinvent the app.
 
 ---
 
@@ -206,7 +215,7 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 Required post-build behavior contract; Owner intent gate before verify. Portable constitution seed.
 
-### v0.3.0 — Phasestep product — *current*
+### v0.3.0 — Phasestep product
 
 **Date:** 2026-07-25  
 
@@ -217,12 +226,26 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - Single `init` — full command set including `audit-ds-phase` and design-system doc  
 - `session-log` retained as optional mid-phase / post-complete logging  
 
+### v0.4.0 — Setup, enrichment, multi-adapter, upgrade — *current*
+
+**Date:** 2026-07-25  
+
+- **`/setup`** — progressive Owner-gated stub fill (greenfield **or** mid-project: document current + plan remaining)  
+- **`docs/USER_FLOW.md`** — interaction map; bidirectional **Product sync delta**; dual-lock before architecture  
+- **Stack / design enrichment catalogs** under `.phasestep/` (`stacks`+`community`; libraries pick-one + guidelines)  
+- Architecture → product/flow impact gate; Decisions resolve→sync / TBD stays Open  
+- Setup order: … → decisions → design → build plan → `buildCommand`  
+- **`phasestep upgrade`** — refresh commands/catalogs/constitution; merge config keys; Owner docs safe unless `--force-docs`  
+- **Multi-adapter:** Cursor (`.cursor/commands/`), Claude Code (`.claude/commands/`), Codex (`AGENTS.md` managed block); `--adapters=`  
+- Setup contract smoke (`npm run smoke`) beyond init/check  
+
 ### Planned
 
-- Multi-adapter (Claude Code, etc.)  
 - Optional `/pr-step` + GitHub adapters  
-- `upgrade` command for template refreshes  
+- ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
+- ~~`upgrade` command for template refreshes~~ → v0.4.0  
 - ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → see `MAINTAINING.md` / `.github/workflows/`  
+- ~~`/setup` + user flow + stack catalog + design catalog~~ → v0.4.0  
 
 ---
 
@@ -233,8 +256,13 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 | **Phasestep** | This workflow product / constitution |
 | **Phase** | Milestone slice of the master build plan |
 | **Step** | Independently verifiable unit inside a phase |
+| **User flow** | Interaction map (entry → paths → exits); setup overview surface |
+| **Stack catalog** | Curated official agentic resource pointers per framework |
+| **Design catalog** | Component libraries (pick one) + guidelines; agent MCP/skills/llms |
 | **Behavior delta** | ADDED/CHANGED/REMOVED SHALL statements |
 | **Intent gate** | Owner accept/reject of the Behavior delta |
+| **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
+| **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Adapter** | IDE-specific command implementation |
 
 ---

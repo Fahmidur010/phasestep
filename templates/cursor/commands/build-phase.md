@@ -26,10 +26,11 @@ If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first.
 2. Confirm prior steps are **verified** (or Owner allows skip). If previous is `built`/unverified, **stop** and tell Owner to **`/verify-phase PHASE <prev>`**
 3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — Phase PHASE (reference)
 4. Read [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}})
-5. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — stop on blockers
-6. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — prior phases
-7. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}})
-8. For UI steps: if [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) exists, follow it
+5. Read [`{{USER_FLOW}}`](../../{{USER_FLOW}}) if present
+6. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — stop on blockers
+7. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — prior phases
+8. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}})
+9. For UI steps: if [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) exists, follow it
 
 ## Implementation rules
 

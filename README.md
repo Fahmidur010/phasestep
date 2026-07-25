@@ -7,11 +7,15 @@ Framework-agnostic workflow for AI-assisted development. Review **intent** (a sh
 ## Quick start
 
 ```bash
-# scaffold into the current project
+# scaffold into the current project (Cursor + Claude Code + Codex adapters)
 npx phasestep init
 
-# or a specific directory
+# or a specific directory / subset of adapters
 npx phasestep init ./my-app
+npx phasestep init --adapters=cursor,claude
+
+# refresh package templates later (keeps Owner docs)
+npx phasestep upgrade
 
 # validate required artifacts
 npx phasestep check
@@ -23,22 +27,28 @@ Optional global install:
 npm install -g phasestep
 phasestep init
 phasestep check
+phasestep upgrade
 ```
 
-Then fill `docs/product.md` + `docs/BUILD_PLAN.md`, open in Cursor, run `/plan-phase 1`.
+Then run `/setup` (or fill `docs/product.md` + `docs/BUILD_PLAN.md`), open in your agent, run `/plan-phase 1`. Mid-project: `/setup` documents what exists and plans remaining work.
 
 ## What you get
 
 | Path | Purpose |
 |------|---------|
 | `docs/PHASESTEP.md` | Constitution |
-| `phasestep.json` | Paths + build command |
-| `.cursor/commands/*` | Cursor adapter (plan/build/verify/…) |
-| `docs/*.md` stubs | Product, architecture, decisions, build plan, progress, design system |
+| `phasestep.json` | Paths + build command + adapters |
+| `.cursor/commands/*` | Cursor adapter |
+| `.claude/commands/*` | Claude Code adapter |
+| `AGENTS.md` | Codex / AGENTS adapter (managed Phasestep block) |
+| `docs/*.md` stubs | Product, user flow, architecture, decisions, build plan, progress, design system |
+| `.phasestep/stack-catalog.json` | Official stack enrichment starting points |
+| `.phasestep/design-catalog.json` | Design libraries (pick one) + guidelines |
 
 ## Core loop
 
 ```text
+/setup (once) → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
 plan-phase → build-phase → Behavior delta (intent) → verify-phase
            → refine as needed → audit → complete-phase
 ```
@@ -49,12 +59,14 @@ Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (desi
 
 ```bash
 node ./bin/phasestep.js init /path/to/project
+node ./bin/phasestep.js upgrade /path/to/project
 node ./bin/phasestep.js check /path/to/project
+npm run smoke
 ```
 
 ## Version
 
-**0.3.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.4.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 
@@ -74,7 +86,7 @@ npm package: **`phasestep`**
 
 ## Dogfood
 
-First consumer: Headache Center (light consumer via `phasestep.json`; keeps its own `project_guidelines/` paths).
+First consumer: Headache Center (light consumer via `phasestep.json`; keeps its own `project_guidelines/` paths). Prefer `npx phasestep upgrade` over `init --force`.
 
 ## License
 

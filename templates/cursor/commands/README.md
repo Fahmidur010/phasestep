@@ -1,56 +1,19 @@
 # Phasestep — Cursor adapter
 
-Phase-by-phase, step-by-step: **build → Behavior delta (intent) → owner verify → next step**. Audits after all steps pass.
-
-**Constitution:** [`{{CONSTITUTION}}`](../../{{CONSTITUTION}})  
-**Config:** [`phasestep.json`](../../phasestep.json)  
-**Master plan:** [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}})  
-**Phase plans:** [`{{PHASE_PLANS_DIR}}/`](../../{{PHASE_PLANS_DIR}}/)  
-**Progress:** [`{{PROGRESS}}`](../../{{PROGRESS}})
-
----
-
-## Workflow
+Slash commands for Cursor. The same command bodies are also installed for Claude Code (`.claude/commands/`) when that adapter is enabled. Codex gets a managed block in `AGENTS.md`.
 
 ```text
-/plan-phase N
-/build-phase N S           → Behavior delta
-  └─ accept intent → /verify-phase N S
-  └─ reject intent → /refine-phase N S
-…all steps verified…
-/audit-ds-phase N          → UI projects
-/audit-phase N
-/refine-phase N            → if needed
-/complete-phase N
+/setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
+/plan-phase <n>            → write phase-N.md
+/build-phase <n> [step]    → implement step(s); emit Behavior delta; intent gate
+/verify-phase <n> [step]   → Owner UAT + automated checks
+/refine-phase <n> [step]   → fix after verify
+/audit-phase <n>           → phase acceptance
+/complete-phase <n>        → mark done + progress
+/session-log …             → optional mid-phase notes
+/audit-ds-phase            → design-system audit (UI projects)
 ```
 
-`/build-phase N` with no step = next unfinished step only.
+After `npx phasestep init`, run **`/setup`** before `/plan-phase 1` (or fill stubs manually). Mid-project: document current + plan remaining.
 
-`/session-log` = optional mid-phase or post-complete notes (`/complete-phase` writes the phase-complete log).
-
----
-
-## Commands
-
-| Command | Args | Who | Purpose |
-|---------|------|-----|---------|
-| plan-phase | `N` | Agent | Write phase plan |
-| build-phase | `N` or `N S` | Agent | One step + Behavior delta |
-| verify-phase | `N` or `N S` | Owner | Manual verification checklist |
-| refine-phase | `N` or `N S` | Agent | Fix intent / UAT / audit issues |
-| audit-phase | `N` | Agent | Code/architecture audit |
-| audit-ds-phase | `N` or `all` | Agent | Design-system audit (UI projects) |
-| complete-phase | `N` | Agent | Mark complete + session log |
-| session-log | label, `N` | Agent | Optional mid-phase log |
-
----
-
-## Rules
-
-- Plan before build
-- One step at a time
-- Review Behavior delta before verify
-- Verify each step before the next
-- Audit only after all steps verified
-- Do not commit unless Owner asks
-- After build/refine: run `{{BUILD_COMMAND}}`
+Refresh later with `npx phasestep upgrade` (does not overwrite Owner docs).

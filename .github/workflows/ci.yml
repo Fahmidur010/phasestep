@@ -20,13 +20,4 @@ jobs:
           node-version: "20"
 
       - name: Smoke test CLI
-        run: |
-          set -euo pipefail
-          node ./bin/phasestep.js version
-          SMOKE_DIR="$(mktemp -d)"
-          node ./bin/phasestep.js init "$SMOKE_DIR"
-          node ./bin/phasestep.js check "$SMOKE_DIR"
-          test -f "$SMOKE_DIR/phasestep.json"
-          test -f "$SMOKE_DIR/docs/PHASESTEP.md"
-          test -f "$SMOKE_DIR/.cursor/commands/build-phase.md"
-          echo "Smoke test passed: $SMOKE_DIR"
+        run: npm run smoke

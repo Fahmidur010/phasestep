@@ -13,12 +13,13 @@ Use a filesystem-safe filename (e.g. `phase-6a.md`).
 
 1. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — Phase $ARGUMENTS section only
 2. Read [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}}) — matching product behavior
-3. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — list **decision gates** for this phase
-4. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — confirm prior phases complete unless Owner overrides
-5. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}}) — project conventions
-6. Scan the codebase for patterns relevant to this phase
-7. Read [`.cursor/commands/README.md`](./README.md) — step workflow
-8. Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if unclear on gates
+3. Read [`{{USER_FLOW}}`](../../{{USER_FLOW}}) — interaction map (if present / accepted)
+4. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — list **decision gates** for this phase
+5. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — confirm prior phases complete unless Owner overrides
+6. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}}) — project conventions
+7. Scan the codebase for patterns relevant to this phase
+8. Read [`.cursor/commands/README.md`](./README.md) — step workflow
+9. Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if unclear on gates
 
 ## Guardrails
 

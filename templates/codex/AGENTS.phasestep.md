@@ -1,0 +1,43 @@
+## Phasestep workflow
+
+This project uses **Phasestep** (phase-step agentic delivery with Behavior delta intent gates).
+
+### Commands (invoke by name)
+
+When the Owner asks to run a Phasestep stage, follow the matching command file under `.cursor/commands/` or `.claude/commands/` if present. Prefer those files as the source of truth for procedure.
+
+| Invoke | Purpose |
+|--------|---------|
+| `/setup` or "run phasestep setup" | Progressive Owner-gated stub fill |
+| `/plan-phase N` | Write `{{PHASE_PLANS_DIR}}/phase-N.md` |
+| `/build-phase N [step]` | Implement; emit Behavior delta; intent gate |
+| `/verify-phase N [step]` | Owner UAT + checks |
+| `/refine-phase N [step]` | Fix after verify |
+| `/audit-phase N` | Phase acceptance |
+| `/complete-phase N` | Mark done + progress |
+| `/session-log` | Optional mid-phase notes |
+| `/audit-ds-phase` | Design-system audit (UI) |
+
+### Artifacts
+
+- Constitution: `{{CONSTITUTION}}`
+- Product: `{{PRODUCT_SPEC}}`
+- User flow: `{{USER_FLOW}}`
+- Architecture: `{{ARCHITECTURE}}`
+- Decisions: `{{DECISIONS}}`
+- Build plan: `{{BUILD_PLAN}}`
+- Progress: `{{PROGRESS}}`
+- Design system: `{{DESIGN_SYSTEM}}`
+- Stack catalog: `{{STACK_CATALOG}}`
+- Design catalog: `{{DESIGN_CATALOG}}`
+- Config: `phasestep.json` (`buildCommand`: `{{BUILD_COMMAND}}`)
+
+### Hard rules
+
+1. Owner owns product decisions; agent drafts and stops at gates.
+2. Docs/config only during `/setup` (no app code unless Owner-approved tooling install).
+3. After build: Behavior delta → Owner intent gate → then verify.
+4. Design component libraries are pick-one; never mix kits.
+5. Mid-project setup: document what exists, plan remaining — do not reinvent the app.
+
+If command markdown files are missing, run `npx phasestep upgrade` or `npx phasestep init`.

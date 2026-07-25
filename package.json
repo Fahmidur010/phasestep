@@ -1,6 +1,6 @@
 {
   "name": "phasestep",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Phase-step agentic delivery with Behavior delta intent gates — portable workflow for AI-assisted development",
   "bin": {
     "phasestep": "bin/phasestep.js"
@@ -14,7 +14,7 @@
   "scripts": {
     "phasestep": "node ./bin/phasestep.js",
     "prepublishOnly": "node ./bin/phasestep.js version",
-    "smoke": "node ./bin/phasestep.js version && node ./bin/phasestep.js init ./tmp-smoke && node ./bin/phasestep.js check ./tmp-smoke",
+    "smoke": "node ./scripts/smoke.js",
     "release:patch": "npm version patch -m \"release: %s\"",
     "release:minor": "npm version minor -m \"release: %s\"",
     "release:major": "npm version major -m \"release: %s\""
@@ -23,6 +23,8 @@
     "agentic",
     "workflow",
     "cursor",
+    "claude-code",
+    "codex",
     "phase",
     "step",
     "behavior-delta",

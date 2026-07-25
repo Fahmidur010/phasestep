@@ -2,7 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { DEFAULTS } = require('./init');
+const {
+  DEFAULTS,
+  normalizeAdapters,
+  commandPathsForAdapters,
+  CODEX_MARKER_START,
+} = require('./scaffold');
 
 function exists(p) {
   return fs.existsSync(p);
@@ -25,26 +30,32 @@ async function check({ targetDir }) {
     console.log('\nnote: found legacy phasegate.json — prefer renaming to phasestep.json\n');
   }
 
+  config.adapters = normalizeAdapters(config.adapters);
+
   const required = [
     config.constitutionPath || DEFAULTS.constitutionPath,
     config.productSpec,
+    config.userFlow || DEFAULTS.userFlow,
     config.architecture,
     config.decisions,
     config.buildPlan,
     config.progress,
     path.join(config.phasePlansDir, 'README.md'),
-    path.join('.cursor', 'commands', 'plan-phase.md'),
-    path.join('.cursor', 'commands', 'build-phase.md'),
-    path.join('.cursor', 'commands', 'verify-phase.md'),
-    path.join('.cursor', 'commands', 'refine-phase.md'),
-    path.join('.cursor', 'commands', 'audit-phase.md'),
-    path.join('.cursor', 'commands', 'complete-phase.md'),
-    path.join('.cursor', 'commands', 'session-log.md'),
-    path.join('.cursor', 'commands', 'audit-ds-phase.md'),
+    config.stackCatalog || DEFAULTS.stackCatalog,
+    config.designCatalog || DEFAULTS.designCatalog,
     config.designSystem,
   ];
 
+  const { paths: commandPaths } = commandPathsForAdapters(config.adapters, config);
+  required.push(...commandPaths);
+
+  if (config.adapters.includes('codex')) {
+    required.push('AGENTS.md');
+  }
+
   console.log(`\nphasestep check → ${targetDir}\n`);
+  console.log(`  adapters: ${config.adapters.join(', ')}\n`);
+
   let missing = 0;
   for (const rel of required) {
     const full = path.join(targetDir, rel);
@@ -53,8 +64,28 @@ async function check({ targetDir }) {
     if (!ok) missing += 1;
   }
 
+  if (config.adapters.includes('codex') && exists(path.join(targetDir, 'AGENTS.md'))) {
+    const agents = fs.readFileSync(path.join(targetDir, 'AGENTS.md'), 'utf8');
+    const hasBlock = agents.includes(CODEX_MARKER_START);
+    console.log(`  ${hasBlock ? 'ok  ' : 'MISS'}  AGENTS.md phasestep block`);
+    if (!hasBlock) missing += 1;
+  }
+
+  // Soft note: legacy catalog dir without failing check if config points elsewhere
+  const legacyStack = path.join(targetDir, '.cursor', 'phasestep', 'stack-catalog.json');
+  if (
+    exists(legacyStack) &&
+    (config.stackCatalog || DEFAULTS.stackCatalog) !==
+      '.cursor/phasestep/stack-catalog.json'
+  ) {
+    console.log(
+      '\nnote: legacy .cursor/phasestep/stack-catalog.json present; config prefers ' +
+        (config.stackCatalog || DEFAULTS.stackCatalog)
+    );
+  }
+
   if (missing) {
-    console.log(`\n${missing} missing artifact(s). Run: npx phasestep init`);
+    console.log(`\n${missing} missing artifact(s). Run: npx phasestep init  (or upgrade)`);
     process.exitCode = 1;
   } else {
     console.log('\nAll required Phasestep artifacts present.');
