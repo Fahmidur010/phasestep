@@ -13,7 +13,7 @@ const DEFAULTS = {
   designSystem: 'docs/DESIGN_SYSTEM.md',
   uiPrimitivesDir: 'components/ui',
   buildCommand: 'npm run build',
-  constitutionPath: 'docs/PHASEGATE.md',
+  constitutionPath: 'docs/PHASESTEP.md',
 };
 
 function ensureDir(dir) {
@@ -45,7 +45,7 @@ function applyVars(template, vars) {
 }
 
 async function init({ packageRoot, targetDir, force }) {
-  console.log(`\nphasegate init → ${targetDir}\n`);
+  console.log(`\nphasestep init → ${targetDir}\n`);
 
   const config = { ...DEFAULTS };
   const vars = {
@@ -61,22 +61,19 @@ async function init({ packageRoot, targetDir, force }) {
     CONSTITUTION: config.constitutionPath,
   };
 
-  // Constitution
-  const constitutionSrc = path.join(packageRoot, 'constitution', 'PHASEGATE.md');
+  const constitutionSrc = path.join(packageRoot, 'constitution', 'PHASESTEP.md');
   writeFile(
     path.join(targetDir, config.constitutionPath),
     fs.readFileSync(constitutionSrc, 'utf8'),
     { force }
   );
 
-  // Config
   writeFile(
-    path.join(targetDir, 'phasegate.json'),
+    path.join(targetDir, 'phasestep.json'),
     `${JSON.stringify(config, null, 2)}\n`,
     { force }
   );
 
-  // Cursor commands
   const commandFiles = [
     'README.md',
     'plan-phase.md',
@@ -98,7 +95,6 @@ async function init({ packageRoot, targetDir, force }) {
     );
   }
 
-  // Doc stubs
   const stubs = [
     ['project/product.md', config.productSpec],
     ['project/architecture.md', config.architecture],
@@ -123,7 +119,7 @@ Next:
   3. Run /plan-phase 1
 
 Constitution: ${config.constitutionPath}
-Config:       phasegate.json
+Config:       phasestep.json
 `);
 }
 

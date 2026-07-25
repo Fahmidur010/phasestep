@@ -9,10 +9,21 @@ function exists(p) {
 }
 
 async function check({ targetDir }) {
-  const configPath = path.join(targetDir, 'phasegate.json');
-  const config = exists(configPath)
-    ? { ...DEFAULTS, ...JSON.parse(fs.readFileSync(configPath, 'utf8')) }
+  const configPath = path.join(targetDir, 'phasestep.json');
+  const legacyPath = path.join(targetDir, 'phasegate.json');
+  const resolvedConfig = exists(configPath)
+    ? configPath
+    : exists(legacyPath)
+      ? legacyPath
+      : null;
+
+  const config = resolvedConfig
+    ? { ...DEFAULTS, ...JSON.parse(fs.readFileSync(resolvedConfig, 'utf8')) }
     : { ...DEFAULTS };
+
+  if (resolvedConfig === legacyPath) {
+    console.log('\nnote: found legacy phasegate.json — prefer renaming to phasestep.json\n');
+  }
 
   const required = [
     config.constitutionPath || DEFAULTS.constitutionPath,
@@ -33,7 +44,7 @@ async function check({ targetDir }) {
     config.designSystem,
   ];
 
-  console.log(`\nphasegate check → ${targetDir}\n`);
+  console.log(`\nphasestep check → ${targetDir}\n`);
   let missing = 0;
   for (const rel of required) {
     const full = path.join(targetDir, rel);
@@ -43,10 +54,10 @@ async function check({ targetDir }) {
   }
 
   if (missing) {
-    console.log(`\n${missing} missing artifact(s). Run: phasegate init`);
+    console.log(`\n${missing} missing artifact(s). Run: npx phasestep init`);
     process.exitCode = 1;
   } else {
-    console.log('\nAll required Phasegate artifacts present.');
+    console.log('\nAll required Phasestep artifacts present.');
   }
 }
 

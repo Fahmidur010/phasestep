@@ -1,6 +1,6 @@
 # Progress & session log
 
-Phasegate progress tracker. Update during builds; `/complete-phase` marks phases done and appends a session log entry. Optional `/session-log` for mid-phase notes.
+Phasestep progress tracker. Update during builds; `/complete-phase` marks phases done and appends a session log entry. Optional `/session-log` for mid-phase notes.
 
 **Last updated:** [date]
 

@@ -1,13 +1,13 @@
-# Phasegate — Constitution
+# Phasestep — Constitution
 
 **Version:** 0.3.0  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-07-25  
-**Product:** Phasegate  
+**Product:** Phasestep  
 
-Phasegate is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
+Phasestep is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
 
-> Install / scaffold: `npx @fahmidur010/phasegate init` (or `npm i -g @fahmidur010/phasegate` then `phasegate init`). Adapters (Cursor commands) implement the command contracts below.
+> Install / scaffold: `npx phasestep init` (or `npm i -g phasestep` then `phasestep init`). Adapters (Cursor commands) implement the command contracts below.
 
 ---
 
@@ -30,7 +30,7 @@ You steer with **written product intent**. An AI agent implements in **small ver
 
 ### Relationship to SDD / OpenSpec philosophy
 
-Phasegate **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step; proof today is primarily **owner verification** plus compile/build checks and phase audits.
+Phasestep **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step; proof today is primarily **owner verification** plus compile/build checks and phase audits.
 
 ---
 
@@ -46,11 +46,11 @@ Phasegate **inherits the intent-review philosophy** of spec-driven agentic work 
 
 ## 3. Artifact contracts
 
-Every adopting project MUST provide (names may vary; **contracts** must hold). Defaults from `phasegate init`:
+Every adopting project MUST provide (names may vary; **contracts** must hold). Defaults from `phasestep init`:
 
 | Artifact | Default path | Contract |
 |----------|--------------|----------|
-| **Constitution** | `docs/PHASEGATE.md` | This document (or linked copy) |
+| **Constitution** | `docs/PHASESTEP.md` | This document (or linked copy) |
 | **Product source of truth** | `docs/product.md` | Behavior of the product. Wins over agent assumptions. |
 | **Architecture / conventions** | `docs/architecture.md` | How code is structured. |
 | **Open decisions** | `docs/decisions.md` | Unresolved choices; blockers stop build. |
@@ -59,9 +59,9 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history. |
 | **Tooling adapter** | `.cursor/commands/` | Commands implementing §5. |
 | **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds-phase`. Leave unused for non-UI projects. |
-| **Config** | `phasegate.json` | Paths + `buildCommand` for this project. |
+| **Config** | `phasestep.json` | Paths + `buildCommand` for this project. |
 
-Paths are overridable in `phasegate.json`.
+Paths are overridable in `phasestep.json`.
 
 ---
 
@@ -158,13 +158,13 @@ Rules: 3–12 bullets; product behavior language; not proof of correct code; per
 7. Owner owns product decisions  
 8. No commit unless asked  
 9. Minimize scope  
-10. Run project build check after implement/refine (`buildCommand` in `phasegate.json`)
+10. Run project build check after implement/refine (`buildCommand` in `phasestep.json`)
 
 ---
 
 ## 8. Verification & proof (v0.3 stance)
 
-| Concern | How Phasegate handles it |
+| Concern | How Phasestep handles it |
 |---------|--------------------------|
 | Right thing? | Behavior delta (intent gate) |
 | Actually works? | Owner manual verification (+ build check) |
@@ -183,13 +183,13 @@ Automated tests from specs remain optional / future — not required for complia
 
 ---
 
-## 10. Adopting Phasegate
+## 10. Adopting Phasestep
 
 ```bash
-npx @fahmidur010/phasegate init
-# or: npm i -g @fahmidur010/phasegate && phasegate init
+npx phasestep init
+# or: npm i -g phasestep && phasestep init
 
-npx @fahmidur010/phasegate check
+npx phasestep check
 ```
 
 Then fill product/architecture/build plan stubs and run `/plan-phase 1`.
@@ -206,23 +206,23 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 Required post-build behavior contract; Owner intent gate before verify. Portable constitution seed.
 
-### v0.3.0 — Phasegate product — *current*
+### v0.3.0 — Phasestep product — *current*
 
 **Date:** 2026-07-25  
 
-- Named product: **Phasegate**  
+- Product brand / npm package: **`phasestep`** (working name was briefly “Phasegate”; unscoped `phasegate` was taken on npm)
 - Generic Cursor command templates (stack-agnostic paths)  
 - Minimal CLI: `init`, `check`  
-- Default doc layout under `docs/` + `phasegate.json`  
+- Default doc layout under `docs/` + `phasestep.json`  
 - Single `init` — full command set including `audit-ds-phase` and design-system doc  
 - `session-log` retained as optional mid-phase / post-complete logging  
 
 ### Planned
 
-- npm publish as **`@fahmidur010/phasegate`** (unscoped `phasegate` taken)  
 - Multi-adapter (Claude Code, etc.)  
 - Optional `/pr-step` + GitHub adapters  
 - `upgrade` command for template refreshes  
+- Optional GitHub repo rename from `phasegate` → `phasestep` for consistency  
 
 ---
 
@@ -230,7 +230,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 | Term | Meaning |
 |------|---------|
-| **Phasegate** | This workflow product / constitution |
+| **Phasestep** | This workflow product / constitution |
 | **Phase** | Milestone slice of the master build plan |
 | **Step** | Independently verifiable unit inside a phase |
 | **Behavior delta** | ADDED/CHANGED/REMOVED SHALL statements |
@@ -239,4 +239,4 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 ---
 
-*End of constitution — Phasegate v0.3.0*
+*End of constitution — Phasestep v0.3.0*

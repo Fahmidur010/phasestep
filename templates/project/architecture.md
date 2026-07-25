@@ -1,6 +1,6 @@
 # Architecture & conventions
 
-How this codebase is structured. Agents must follow these rules when implementing Phasegate steps.
+How this codebase is structured. Agents must follow these rules when implementing Phasestep steps.
 
 ## Stack
 

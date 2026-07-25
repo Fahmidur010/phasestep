@@ -1,6 +1,6 @@
 # Design system
 
-UI rules for this project. Used by optional `/audit-ds-phase` when Phasegate was initialized with `--with-design-system`.
+UI rules for this project. Used by optional `/audit-ds-phase` when Phasestep was initialized with `--with-design-system`.
 
 ## Principles
 

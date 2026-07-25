@@ -1,30 +1,28 @@
-# Phasegate
+# Phasestep
 
 **Phase-step agentic delivery with Behavior delta intent gates.**
 
 Framework-agnostic workflow for AI-assisted development. Review **intent** (a short SHALL-based behavior diff) before deep code reading or manual verification — then prove it with Owner UAT and phase audits.
 
-> npm package: **`@fahmidur010/phasegate`** (the unscoped name `phasegate` is already taken on npm by another project). The CLI binary is still `phasegate`.
-
 ## Quick start
 
 ```bash
 # scaffold into the current project
-npx @fahmidur010/phasegate init
+npx phasestep init
 
 # or a specific directory
-npx @fahmidur010/phasegate init ./my-app
+npx phasestep init ./my-app
 
 # validate required artifacts
-npx @fahmidur010/phasegate check
+npx phasestep check
 ```
 
 Optional global install:
 
 ```bash
-npm install -g @fahmidur010/phasegate
-phasegate init
-phasegate check
+npm install -g phasestep
+phasestep init
+phasestep check
 ```
 
 Then fill `docs/product.md` + `docs/BUILD_PLAN.md`, open in Cursor, run `/plan-phase 1`.
@@ -33,8 +31,8 @@ Then fill `docs/product.md` + `docs/BUILD_PLAN.md`, open in Cursor, run `/plan-p
 
 | Path | Purpose |
 |------|---------|
-| `docs/PHASEGATE.md` | Constitution |
-| `phasegate.json` | Paths + build command |
+| `docs/PHASESTEP.md` | Constitution |
+| `phasestep.json` | Paths + build command |
 | `.cursor/commands/*` | Cursor adapter (plan/build/verify/…) |
 | `docs/*.md` stubs | Product, architecture, decisions, build plan, progress, design system |
 
@@ -50,17 +48,22 @@ Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (desi
 ## Local development
 
 ```bash
-node ./bin/phasegate.js init /path/to/project
-node ./bin/phasegate.js check /path/to/project
+node ./bin/phasestep.js init /path/to/project
+node ./bin/phasestep.js check /path/to/project
 ```
 
 ## Version
 
-**0.3.0** — see [constitution/PHASEGATE.md](./constitution/PHASEGATE.md) evolution log.
+**0.3.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+
+## Repo
+
+Source: [github.com/Fahmidur010/phasegate](https://github.com/Fahmidur010/phasegate)  
+npm package name: **`phasestep`** (product brand). Local folder/GitHub may still say `phasegate` until renamed.
 
 ## Dogfood
 
-First consumer: [headache-center](https://github.com/Fahmidur010) (light consumer via `phasegate.json`; keeps its own `project_guidelines/` paths).
+First consumer: Headache Center (light consumer via `phasestep.json`; keeps its own `project_guidelines/` paths).
 
 ## License
 

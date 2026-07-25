@@ -1,9 +1,9 @@
-# Phasegate — Cursor adapter
+# Phasestep — Cursor adapter
 
 Phase-by-phase, step-by-step: **build → Behavior delta (intent) → owner verify → next step**. Audits after all steps pass.
 
 **Constitution:** [`{{CONSTITUTION}}`](../../{{CONSTITUTION}})  
-**Config:** [`phasegate.json`](../../phasegate.json)  
+**Config:** [`phasestep.json`](../../phasestep.json)  
 **Master plan:** [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}})  
 **Phase plans:** [`{{PHASE_PLANS_DIR}}/`](../../{{PHASE_PLANS_DIR}}/)  
 **Progress:** [`{{PROGRESS}}`](../../{{PROGRESS}})

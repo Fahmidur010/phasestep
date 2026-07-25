@@ -3,7 +3,7 @@ description: Implement one step (or next unfinished step) of a build phase
 argument-hint: [phase] [step?]
 ---
 
-Implement **one step** of **Build Phase** for this project (Phasegate).
+Implement **one step** of **Build Phase** for this project (Phasestep).
 
 ## Parse arguments
 

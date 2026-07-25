@@ -16,7 +16,7 @@ async function run(args) {
 
   if (cmd === 'version' || cmd === '--version' || cmd === '-V') {
     const pkg = require('../package.json');
-    console.log(`phasegate v${pkg.version}`);
+    console.log(`phasestep v${pkg.version}`);
     return;
   }
 
@@ -40,17 +40,17 @@ async function run(args) {
 
 function printHelp() {
   console.log(`
-phasegate — phase-step agentic workflow with Behavior delta intent gates
+phasestep — phase-step agentic workflow with Behavior delta intent gates
 
 Usage:
-  npx @fahmidur010/phasegate init [dir] [--force]
-  npx @fahmidur010/phasegate check [dir]
-  phasegate version
-  phasegate help
+  npx phasestep init [dir] [--force]
+  npx phasestep check [dir]
+  phasestep version
+  phasestep help
 
 Commands:
-  init    Scaffold constitution, Cursor commands, docs stubs, phasegate.json
-  check   Verify required Phasegate artifacts exist in a project
+  init    Scaffold constitution, Cursor commands, docs stubs, phasestep.json
+  check   Verify required Phasestep artifacts exist in a project
 `);
 }
 
