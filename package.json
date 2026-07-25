@@ -29,12 +29,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fahmidur010/phasegate.git"
+    "url": "git+https://github.com/Fahmidur010/phasestep.git"
   },
   "bugs": {
-    "url": "https://github.com/Fahmidur010/phasegate/issues"
+    "url": "https://github.com/Fahmidur010/phasestep/issues"
   },
-  "homepage": "https://github.com/Fahmidur010/phasegate#readme",
+  "homepage": "https://github.com/Fahmidur010/phasestep#readme",
   "engines": {
     "node": ">=18"
   },

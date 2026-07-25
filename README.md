@@ -58,8 +58,8 @@ node ./bin/phasestep.js check /path/to/project
 
 ## Repo
 
-Source: [github.com/Fahmidur010/phasegate](https://github.com/Fahmidur010/phasegate)  
-npm package name: **`phasestep`** (product brand). Local folder/GitHub may still say `phasegate` until renamed.
+Source: [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)  
+npm package: **`phasestep`**
 
 ## Dogfood
 
