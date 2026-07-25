@@ -56,6 +56,17 @@ node ./bin/phasestep.js check /path/to/project
 
 **0.3.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
+## Maintaining / releasing
+
+See **[MAINTAINING.md](./MAINTAINING.md)** — branch model, semver, tag-triggered npm publish via GitHub Actions (Trusted Publishing / OIDC).
+
+Quick release (after merging to `main`):
+
+```bash
+npm run release:patch   # or release:minor / release:major
+git push origin main --follow-tags
+```
+
 ## Repo
 
 Source: [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)  

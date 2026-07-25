@@ -1,0 +1,49 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: npm publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: Use npm with Trusted Publishing support
+        run: npm install -g npm@latest
+
+      - name: Verify tag matches package.json
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          EXPECTED="v$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$EXPECTED" ]; then
+            echo "Tag $TAG does not match package.json version ($EXPECTED)"
+            echo "Run: npm version <patch|minor|major> && git push --follow-tags"
+            exit 1
+          fi
+          echo "Tag $TAG matches package.json"
+
+      - name: Smoke test before publish
+        run: |
+          set -euo pipefail
+          node ./bin/phasestep.js version
+          SMOKE_DIR="$(mktemp -d)"
+          node ./bin/phasestep.js init "$SMOKE_DIR"
+          node ./bin/phasestep.js check "$SMOKE_DIR"
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public

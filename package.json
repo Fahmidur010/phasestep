@@ -13,7 +13,11 @@
   ],
   "scripts": {
     "phasestep": "node ./bin/phasestep.js",
-    "prepublishOnly": "node ./bin/phasestep.js version"
+    "prepublishOnly": "node ./bin/phasestep.js version",
+    "smoke": "node ./bin/phasestep.js version && node ./bin/phasestep.js init ./tmp-smoke && node ./bin/phasestep.js check ./tmp-smoke",
+    "release:patch": "npm version patch -m \"release: %s\"",
+    "release:minor": "npm version minor -m \"release: %s\"",
+    "release:major": "npm version major -m \"release: %s\""
   },
   "keywords": [
     "agentic",
@@ -35,6 +39,10 @@
     "url": "https://github.com/Fahmidur010/phasestep/issues"
   },
   "homepage": "https://github.com/Fahmidur010/phasestep#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "engines": {
     "node": ">=18"
   },

@@ -222,6 +222,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - Multi-adapter (Claude Code, etc.)  
 - Optional `/pr-step` + GitHub adapters  
 - `upgrade` command for template refreshes  
+- ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → see `MAINTAINING.md` / `.github/workflows/`  
 
 ---
 

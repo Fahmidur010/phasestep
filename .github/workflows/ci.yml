@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: init + check smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Smoke test CLI
+        run: |
+          set -euo pipefail
+          node ./bin/phasestep.js version
+          SMOKE_DIR="$(mktemp -d)"
+          node ./bin/phasestep.js init "$SMOKE_DIR"
+          node ./bin/phasestep.js check "$SMOKE_DIR"
+          test -f "$SMOKE_DIR/phasestep.json"
+          test -f "$SMOKE_DIR/docs/PHASESTEP.md"
+          test -f "$SMOKE_DIR/.cursor/commands/build-phase.md"
+          echo "Smoke test passed: $SMOKE_DIR"
