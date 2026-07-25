@@ -48,7 +48,9 @@ function main() {
   assert(/phasestep v\d+\.\d+\.\d+/.test(versionOut.trim()), 'version prints');
 
   rmrf(TMP);
-  run(['init', TMP]);
+  // Non-TTY / --yes → all adapters (no interactive hang in CI)
+  const initAllOut = run(['init', TMP, '--yes']);
+  assert(initAllOut.includes('all adapters') || initAllOut.includes('Adapters:'), 'init --yes runs');
 
   assert(fs.existsSync(path.join(TMP, 'phasestep.json')), 'phasestep.json written');
   assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', 'setup.md')), 'cursor /setup');
@@ -123,8 +125,28 @@ function main() {
   assert(!fs.existsSync(path.join(TMP2, 'AGENTS.md')), 'no AGENTS when cursor-only');
   run(['check', TMP2]);
 
+  // Non-TTY init without flags still installs all (no hang)
+  const TMP3 = path.join(ROOT, 'tmp-smoke-nontty');
+  rmrf(TMP3);
+  const nonttyOut = run(['init', TMP3]);
+  assert(
+    nonttyOut.includes('Non-interactive') || nonttyOut.includes('Adapters: cursor, claude, codex'),
+    'non-TTY init defaults to all adapters'
+  );
+  assert(fs.existsSync(path.join(TMP3, '.cursor', 'commands', 'setup.md')), 'non-TTY wrote cursor');
+  assert(fs.existsSync(path.join(TMP3, 'AGENTS.md')), 'non-TTY wrote codex');
+
+  // prompt choice helper (unit-ish)
+  const { findChoice } = require('../src/prompt');
+  assert(findChoice('1').adapters.join(',') === 'cursor', 'menu 1 → cursor');
+  assert(findChoice('2').adapters.join(',') === 'claude', 'menu 2 → claude');
+  assert(findChoice('3').adapters.join(',') === 'codex', 'menu 3 → codex');
+  assert(findChoice('').adapters.length === 3, 'menu default → all');
+  assert(findChoice('claude-code').adapters.join(',') === 'claude', 'alias claude-code');
+
   rmrf(TMP);
   rmrf(TMP2);
+  rmrf(TMP3);
   console.log('\nAll smoke + setup contract checks passed.\n');
 }
 

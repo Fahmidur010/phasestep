@@ -1,5 +1,6 @@
 tmp-smoke/
 tmp-smoke-cursor/
+tmp-smoke-nontty/
 node_modules/
 .DS_Store
 *.log

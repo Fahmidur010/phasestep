@@ -31,13 +31,18 @@ async function init({ packageRoot, targetDir, force, adapters }) {
   installCatalogs(packageRoot, targetDir, config, { force });
 
   const adapterNote = config.adapters.join(', ');
+  const openHint = [];
+  if (config.adapters.includes('cursor')) openHint.push('Cursor');
+  if (config.adapters.includes('claude')) openHint.push('Claude Code');
+  if (config.adapters.includes('codex')) openHint.push('Codex');
+
   console.log(`
 Done.
 
 Adapters: ${adapterNote}
 
 Next:
-  1. Open the project in your agent (Cursor, Claude Code, or Codex)
+  1. Open the project in ${openHint.join(' / ')}
   2. Run /setup  (product → user flow → stack → architecture → decisions → design → build plan)
      Or fill ${config.productSpec}, ${config.userFlow}, ${config.buildPlan}, ${config.architecture} manually
   3. Then run /plan-phase 1

@@ -7,12 +7,13 @@ Framework-agnostic workflow for AI-assisted development. Review **intent** (a sh
 ## Quick start
 
 ```bash
-# scaffold into the current project (Cursor + Claude Code + Codex adapters)
+# scaffold into the current project — prompts for Cursor / Claude Code / Codex / All
 npx phasestep init
 
-# or a specific directory / subset of adapters
+# or a specific directory / non-interactive choice
 npx phasestep init ./my-app
-npx phasestep init --adapters=cursor,claude
+npx phasestep init --adapters=cursor
+npx phasestep init --yes   # all adapters, no prompt
 
 # refresh package templates later (keeps Owner docs)
 npx phasestep upgrade

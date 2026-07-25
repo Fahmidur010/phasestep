@@ -236,7 +236,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - Architecture → product/flow impact gate; Decisions resolve→sync / TBD stays Open  
 - Setup order: … → decisions → design → build plan → `buildCommand`  
 - **`phasestep upgrade`** — refresh commands/catalogs/constitution; merge config keys; Owner docs safe unless `--force-docs`  
-- **Multi-adapter:** Cursor (`.cursor/commands/`), Claude Code (`.claude/commands/`), Codex (`AGENTS.md` managed block); `--adapters=`  
+- **Multi-adapter:** Cursor (`.cursor/commands/`), Claude Code (`.claude/commands/`), Codex (`AGENTS.md` managed block); interactive `init` menu (1–4) or `--adapters=` / `--yes`  
 - Setup contract smoke (`npm run smoke`) beyond init/check  
 
 ### Planned
