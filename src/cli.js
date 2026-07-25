@@ -43,8 +43,8 @@ function printHelp() {
 phasegate — phase-step agentic workflow with Behavior delta intent gates
 
 Usage:
-  phasegate init [dir] [--force]
-  phasegate check [dir]
+  npx @fahmidur010/phasegate init [dir] [--force]
+  npx @fahmidur010/phasegate check [dir]
   phasegate version
   phasegate help
 

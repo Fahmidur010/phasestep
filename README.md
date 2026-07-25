@@ -4,21 +4,30 @@
 
 Framework-agnostic workflow for AI-assisted development. Review **intent** (a short SHALL-based behavior diff) before deep code reading or manual verification — then prove it with Owner UAT and phase audits.
 
+> npm package: **`@fahmidur010/phasegate`** (the unscoped name `phasegate` is already taken on npm by another project). The CLI binary is still `phasegate`.
+
 ## Quick start
 
 ```bash
-# from this repo (local)
-node ./bin/phasegate.js init /path/to/your-project
+# scaffold into the current project
+npx @fahmidur010/phasegate init
 
-# later, after npm publish:
-# npx phasegate init
+# or a specific directory
+npx @fahmidur010/phasegate init ./my-app
+
+# validate required artifacts
+npx @fahmidur010/phasegate check
+```
+
+Optional global install:
+
+```bash
+npm install -g @fahmidur010/phasegate
+phasegate init
+phasegate check
 ```
 
 Then fill `docs/product.md` + `docs/BUILD_PLAN.md`, open in Cursor, run `/plan-phase 1`.
-
-```bash
-node ./bin/phasegate.js check /path/to/your-project
-```
 
 ## What you get
 
@@ -36,7 +45,14 @@ plan-phase → build-phase → Behavior delta (intent) → verify-phase
            → refine as needed → audit → complete-phase
 ```
 
-Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (design-system audit — use it when the project has UI).
+Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (design-system audit — use when the project has UI).
+
+## Local development
+
+```bash
+node ./bin/phasegate.js init /path/to/project
+node ./bin/phasegate.js check /path/to/project
+```
 
 ## Version
 
@@ -44,7 +60,7 @@ Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (desi
 
 ## Dogfood
 
-First consumer target: [headache-center](../headache-center) (keeps its own paths today; migration = step 4).
+First consumer: [headache-center](https://github.com/Fahmidur010) (light consumer via `phasegate.json`; keeps its own `project_guidelines/` paths).
 
 ## License
 

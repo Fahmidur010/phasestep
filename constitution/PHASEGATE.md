@@ -7,7 +7,7 @@
 
 Phasegate is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
 
-> Install / scaffold: `npx phasegate init` (or `node path/to/phasegate/bin/phasegate.js init`). Adapters (Cursor commands) implement the command contracts below.
+> Install / scaffold: `npx @fahmidur010/phasegate init` (or `npm i -g @fahmidur010/phasegate` then `phasegate init`). Adapters (Cursor commands) implement the command contracts below.
 
 ---
 
@@ -186,11 +186,10 @@ Automated tests from specs remain optional / future — not required for complia
 ## 10. Adopting Phasegate
 
 ```bash
-# from this repo (local dogfood) or after publish:
-node /path/to/phasegate/bin/phasegate.js init
-# or: npx phasegate init
+npx @fahmidur010/phasegate init
+# or: npm i -g @fahmidur010/phasegate && phasegate init
 
-phasegate check
+npx @fahmidur010/phasegate check
 ```
 
 Then fill product/architecture/build plan stubs and run `/plan-phase 1`.
@@ -220,10 +219,10 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 ### Planned
 
-- `upgrade` command for template refreshes  
+- npm publish as **`@fahmidur010/phasegate`** (unscoped `phasegate` taken)  
 - Multi-adapter (Claude Code, etc.)  
 - Optional `/pr-step` + GitHub adapters  
-- npm publish when cold `init` needs no walkthrough  
+- `upgrade` command for template refreshes  
 
 ---
 

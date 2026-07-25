@@ -1,5 +1,5 @@
 {
-  "name": "phasegate",
+  "name": "@fahmidur010/phasegate",
   "version": "0.3.0",
   "description": "Phase-step agentic delivery with Behavior delta intent gates — portable workflow for AI-assisted development",
   "bin": {
@@ -12,7 +12,8 @@
     "templates"
   ],
   "scripts": {
-    "phasegate": "node ./bin/phasegate.js"
+    "phasegate": "node ./bin/phasegate.js",
+    "prepublishOnly": "node ./bin/phasegate.js version"
   },
   "keywords": [
     "agentic",
@@ -20,11 +21,24 @@
     "cursor",
     "phase",
     "behavior-delta",
-    "intent-gate"
+    "intent-gate",
+    "phasegate"
   ],
+  "author": "Fahmidur010",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fahmidur010/phasegate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Fahmidur010/phasegate/issues"
+  },
+  "homepage": "https://github.com/Fahmidur010/phasegate#readme",
   "engines": {
     "node": ">=18"
   },
-  "type": "commonjs"
+  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  }
 }
