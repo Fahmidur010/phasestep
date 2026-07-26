@@ -17,6 +17,9 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/complete-phase N` | Mark done + progress |
 | `/session-log` | Optional mid-phase notes |
 | `/audit-ds-phase` | Design-system audit (UI) |
+| `/audit-project` | Draft `{{AUDIT_PLAN}}` (Owner-gated audit phases) |
+| `/refine-audit N` | Fix only Owner-approved audit findings |
+| `/complete-audit` | Audit summary; optional promotion to build plan |
 
 ### Artifacts
 
@@ -26,6 +29,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 - Architecture: `{{ARCHITECTURE}}`
 - Decisions: `{{DECISIONS}}`
 - Build plan: `{{BUILD_PLAN}}`
+- Audit plan: `{{AUDIT_PLAN}}` (reports in `{{AUDIT_REPORTS_DIR}}/`)
 - Progress: `{{PROGRESS}}`
 - Design system: `{{DESIGN_SYSTEM}}`
 - Stack catalog: `{{STACK_CATALOG}}`

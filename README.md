@@ -42,7 +42,7 @@ Then run `/setup` (or fill `docs/product.md` + `docs/BUILD_PLAN.md`), open in yo
 | `.cursor/commands/*` | Cursor adapter |
 | `.claude/commands/*` | Claude Code adapter |
 | `AGENTS.md` | Codex / AGENTS adapter (managed Phasestep block) |
-| `docs/*.md` stubs | Product, user flow, architecture, decisions, build plan, progress, design system |
+| `docs/*.md` stubs | Product, user flow, architecture, decisions, build plan, audit plan, progress, design system |
 | `.phasestep/stack-catalog.json` | Official stack enrichment starting points |
 | `.phasestep/design-catalog.json` | Design libraries (pick one) + guidelines |
 
@@ -56,6 +56,18 @@ plan-phase → build-phase → Behavior delta (intent) → verify-phase
 
 Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (design-system audit — use when the project has UI).
 
+## Project audit (audit-only or health check)
+
+```text
+/setup (product → flow → architecture → DS if UI)
+  → /audit-project      draft AUDIT_PLAN (feature-listed phases) → Owner accept
+  → /audit-phase 1…N    read-only report per phase → Owner decides fixes
+  → /refine-audit N     fix only approved findings → /audit-phase N reaudit
+  → /complete-audit     AUDIT_SUMMARY; optionally promote findings to build plan
+```
+
+Reports live in `docs/audit-reports/` as plain Markdown with stable finding IDs, each citing its ground (spec / universal checklist / stack rules + tool evidence).
+
 ## Local development
 
 ```bash
@@ -67,7 +79,7 @@ npm run smoke
 
 ## Version
 
-**0.4.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.4.3** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

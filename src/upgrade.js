@@ -100,7 +100,8 @@ async function upgrade({
     console.log('  --force-docs: rewriting Owner stubs…');
     installOwnerStubs(packageRoot, targetDir, merged, { force: true });
   } else {
-    console.log('  Owner docs left untouched (use --force-docs to reset stubs)');
+    console.log('  Adding missing Owner stubs (existing docs untouched)…');
+    installOwnerStubs(packageRoot, targetDir, merged, { force: false });
   }
 
   if (existing.path.endsWith('phasegate.json')) {

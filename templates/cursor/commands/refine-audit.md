@@ -1,0 +1,42 @@
+---
+description: Fix Owner-approved findings from an audit-phase report (never unapproved ones)
+argument-hint: [audit-phase-id]
+---
+
+Fix findings for **Audit Phase $ARGUMENTS** that the Owner marked **Approved for refinement** in [`{{AUDIT_REPORTS_DIR}}/audit-phase-$ARGUMENTS.md`](../../{{AUDIT_REPORTS_DIR}}/).
+
+## Preconditions
+
+1. The report exists and has at least one finding with status `Approved for refinement`.
+2. If none are approved → **STOP**: tell the Owner to approve findings first (option 1 or 2 on the report), or acknowledge the report. Never fix `Open` / `Deferred` findings.
+
+## Before coding — STOP gate
+
+1. Read the report; list the approved finding IDs.
+2. For each: propose the fix approach in one or two lines, and note any **behavior impact** (if a fix changes product behavior, flag it — it may need a Behavior delta and product sync, not a silent change).
+3. **STOP.** Show the fix plan and wait:
+
+```text
+Refine plan for Audit Phase $ARGUMENTS → Approve | Edit (notes) | Cancel
+```
+
+## Fixing
+
+1. Fix **one finding at a time**, smallest change that closes the finding.
+2. Stay within the audit phase's scope — do not refactor unrelated code "while you're there".
+3. Run the phase's **Evidence** commands (linter/analyzer/tests) and `{{BUILD_COMMAND}}` after fixes.
+4. If a fix requires a product decision → **stop**, add to [`{{DECISIONS}}`](../../{{DECISIONS}}), ask the Owner.
+5. Do not commit unless asked.
+
+## After fixes
+
+1. Update each finding in the report: `Fixed` | `Partially fixed` (why) | `Blocked` (what blocks it). Never delete findings.
+2. Update the report snapshot counts and `{{PROGRESS}}`.
+3. Behavior changed? Present a short **Behavior delta** for Owner intent review before claiming done.
+4. Direct the Owner to verify independently:
+
+```text
+/audit-phase $ARGUMENTS reaudit
+```
+
+Re-audit confirms findings closed (or reopens them). Fixes are not "done" until re-audit passes and the Owner acknowledges.

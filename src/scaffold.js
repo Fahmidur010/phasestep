@@ -9,6 +9,8 @@ const DEFAULTS = {
   architecture: 'docs/architecture.md',
   decisions: 'docs/decisions.md',
   buildPlan: 'docs/BUILD_PLAN.md',
+  auditPlan: 'docs/AUDIT_PLAN.md',
+  auditReportsDir: 'docs/audit-reports',
   progress: 'docs/PROGRESS.md',
   phasePlansDir: 'docs/phase-plans',
   designSystem: 'docs/DESIGN_SYSTEM.md',
@@ -31,6 +33,9 @@ const COMMAND_FILES = [
   'complete-phase.md',
   'session-log.md',
   'audit-ds-phase.md',
+  'audit-project.md',
+  'refine-audit.md',
+  'complete-audit.md',
 ];
 
 const OWNER_STUBS = [
@@ -39,8 +44,10 @@ const OWNER_STUBS = [
   ['project/architecture.md', 'architecture'],
   ['project/decisions.md', 'decisions'],
   ['project/BUILD_PLAN.md', 'buildPlan'],
+  ['project/AUDIT_PLAN.md', 'auditPlan'],
   ['project/PROGRESS.md', 'progress'],
-  ['project/phase-plans-README.md', null], // special: phasePlansDir/README.md
+  ['project/phase-plans-README.md', { dirKey: 'phasePlansDir' }],
+  ['project/audit-reports-README.md', { dirKey: 'auditReportsDir' }],
   ['project/DESIGN_SYSTEM.md', 'designSystem'],
 ];
 
@@ -109,6 +116,8 @@ function varsFromConfig(config) {
     ARCHITECTURE: config.architecture,
     DECISIONS: config.decisions,
     BUILD_PLAN: config.buildPlan,
+    AUDIT_PLAN: config.auditPlan,
+    AUDIT_REPORTS_DIR: config.auditReportsDir,
     PROGRESS: config.progress,
     PHASE_PLANS_DIR: config.phasePlansDir,
     DESIGN_SYSTEM: config.designSystem,
@@ -264,8 +273,8 @@ function installOwnerStubs(packageRoot, targetDir, config, { force }) {
   const vars = varsFromConfig(config);
   for (const [stubRel, key] of OWNER_STUBS) {
     const destRel =
-      key === null
-        ? path.join(config.phasePlansDir, 'README.md')
+      typeof key === 'object' && key !== null
+        ? path.join(config[key.dirKey], 'README.md')
         : config[key];
     const raw = readTemplate(packageRoot, stubRel);
     writeFile(path.join(targetDir, destRel), applyVars(raw, vars), { force });

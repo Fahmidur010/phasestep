@@ -1,8 +1,8 @@
 # Phasestep — Constitution
 
-**Version:** 0.3.0  
+**Version:** 0.4.3  
 **Status:** Living constitution (portable framework)  
-**Last updated:** 2026-07-25  
+**Last updated:** 2026-07-26  
 **Product:** Phasestep  
 
 Phasestep is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
@@ -58,6 +58,8 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Architecture / conventions** | `docs/architecture.md` | How code is structured. |
 | **Open decisions** | `docs/decisions.md` | Unresolved choices; blockers stop build. |
 | **Master build plan** | `docs/BUILD_PLAN.md` | Ordered phases and scope boundaries. |
+| **Audit plan** | `docs/AUDIT_PLAN.md` | Feature-listed audit phases + dimensions; drafted by `/audit-project`; Owner-gated. |
+| **Audit reports** | `docs/audit-reports/` | One report per audit phase + `AUDIT_SUMMARY.md`; stable finding IDs; read-only evidence. |
 | **Phase execution plan** | `docs/phase-plans/phase-N.md` | Steps, done-when, verify checklist, Behavior delta. |
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history (includes Setup checklist). |
 | **Tooling adapters** | `.cursor/commands/`, `.claude/commands/`, `AGENTS.md` | Commands / guidance implementing §5 (Cursor, Claude Code, Codex). |
@@ -121,12 +123,17 @@ Paths are overridable in `phasestep.json`.
 | **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta; stop for intent gate. |
 | **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist anchored to delta. No code changes. |
 | **refine-phase** | `N` `[S]` | Agent | Minimal fixes; update delta if behavior changed. |
-| **audit-phase** | `N` | Agent | Read-only code/architecture audit after all steps verified. |
+| **audit-phase** | `N` `[reaudit]` | Agent | Read-only audit. Build mode: phase acceptance after steps verified. Campaign mode: audit-plan phase → report in `docs/audit-reports/`. |
 | **audit-ds-phase** | `N` \| `all` | Agent | Design-system audit (skip for non-UI projects). |
 | **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log. |
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes. |
+| **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); Owner accept gate; docs only. |
+| **refine-audit** | `N` | Agent | Fix **only Owner-approved** findings from an audit report; STOP-gated plan; re-audit verifies. |
+| **complete-audit** | — | Agent + Owner | All phases reported → `AUDIT_SUMMARY.md`; optionally promote findings into the build plan. |
 
 **Shorthand:** `build-phase N` with no step = next unfinished step only.
+
+**Audit campaign gates:** `/audit-project` requires accepted product + user flow + architecture (+ design system if UI) — otherwise back to `/setup`. Reports are **read-only**; after each report the Owner picks: approve all for refinement / select findings / record only / continue to next phase. Fixes happen exclusively in `/refine-audit` on approved findings, then `/audit-phase N reaudit` verifies. Findings never silently become build work — promotion into `BUILD_PLAN` is an explicit Owner choice at `/complete-audit`.
 
 **Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official** and **community** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (Accept sync / Reject / Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
 
@@ -226,7 +233,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - Single `init` — full command set including `audit-ds-phase` and design-system doc  
 - `session-log` retained as optional mid-phase / post-complete logging  
 
-### v0.4.0 — Setup, enrichment, multi-adapter, upgrade — *current*
+### v0.4.0 — Setup, enrichment, multi-adapter, upgrade
 
 **Date:** 2026-07-25  
 
@@ -239,6 +246,23 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **Multi-adapter:** Cursor (`.cursor/commands/`), Claude Code (`.claude/commands/`), Codex (`AGENTS.md` managed block); interactive `init` menu (1–4) or `--adapters=` / `--yes`  
 - Setup contract smoke (`npm run smoke`) beyond init/check  
 
+### v0.4.1 — Docs cleanup
+
+**Date:** 2026-07-26  
+
+- Remove external-project references from README / MAINTAINING  
+
+### v0.4.3 — Project audit campaign — *current*
+
+**Date:** 2026-07-26  
+
+- **`/audit-project`** — audit-only entry: requires accepted product/flow/architecture (+DS if UI); drafts `docs/AUDIT_PLAN.md` (feature-listed audit phases, fixed dimension checklist); Owner accept gate  
+- **`/audit-phase N`** campaign mode — read-only per-phase audit against three grounds (spec / universal dimensions / stack rules + tool evidence); preview-first report in `docs/audit-reports/audit-phase-N.md` with stable finding IDs; 4-option Owner gate; `reaudit` verifies fixes  
+- **`/refine-audit N`** — fixes only Owner-approved findings; STOP-gated fix plan; statuses Fixed / Partially fixed / Blocked; requires re-audit  
+- **`/complete-audit`** — `AUDIT_SUMMARY.md` + optional promotion of findings into `BUILD_PLAN`  
+- `phasestep.json` keys `auditPlan`, `auditReportsDir`; new stubs installed by init/upgrade  
+- `upgrade` adds missing Owner stubs without overwriting existing docs  
+
 ### Planned
 
 - Optional `/pr-step` + GitHub adapters  
@@ -246,6 +270,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - ~~`upgrade` command for template refreshes~~ → v0.4.0  
 - ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → see `MAINTAINING.md` / `.github/workflows/`  
 - ~~`/setup` + user flow + stack catalog + design catalog~~ → v0.4.0  
+- ~~Project audit campaign~~ → v0.4.3  
 
 ---
 

@@ -35,6 +35,17 @@ Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
 
 ---
 
+## Audit campaign (optional — via `/audit-project`)
+
+Status: `[ ]` not started · `[~]` in progress · `[x]` done
+
+- [ ] Audit plan (`AUDIT_PLAN.md`) accepted
+- [ ] Audit Phase 1 — reported / refined / re-audited
+- [ ] Audit Phase 2 — …
+- [ ] Audit summary (`AUDIT_SUMMARY.md`) written
+
+---
+
 ## Build progress
 
 Status: `[ ]` not started · `[~]` in progress · `[x]` done

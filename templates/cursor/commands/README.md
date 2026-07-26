@@ -12,7 +12,14 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 /complete-phase <n>        → mark done + progress
 /session-log …             → optional mid-phase notes
 /audit-ds-phase            → design-system audit (UI projects)
+
+/audit-project             → draft AUDIT_PLAN (feature-listed audit phases) → Owner accept
+/audit-phase <n> [reaudit] → campaign mode: read-only report per audit phase
+/refine-audit <n>          → fix only Owner-approved findings
+/complete-audit            → AUDIT_SUMMARY; optionally promote findings to build plan
 ```
+
+Audit-only projects: run `/setup` at least through product, user flow, architecture (+ design system if UI), then `/audit-project`.
 
 After `npx phasestep init`, run **`/setup`** before `/plan-phase 1` (or fill stubs manually). Mid-project: document current + plan remaining.
 

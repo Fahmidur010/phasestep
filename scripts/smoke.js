@@ -98,15 +98,46 @@ function main() {
   const cfg = JSON.parse(read('phasestep.json'));
   assert(Array.isArray(cfg.adapters) && cfg.adapters.includes('cursor'), 'adapters include cursor');
   assert(cfg.userFlow && cfg.stackCatalog && cfg.designCatalog, 'config enrichment keys');
+  assert(cfg.auditPlan && cfg.auditReportsDir, 'config audit keys');
+
+  // audit campaign artifacts
+  assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'AUDIT_PLAN stub');
+  assert(
+    fs.existsSync(path.join(TMP, cfg.auditReportsDir, 'README.md')),
+    'audit-reports README'
+  );
+  for (const cmd of ['audit-project.md', 'refine-audit.md', 'complete-audit.md']) {
+    assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', cmd)), `cursor ${cmd}`);
+    assert(fs.existsSync(path.join(TMP, '.claude', 'commands', cmd)), `claude ${cmd}`);
+  }
+  const auditProject = read(path.join('.cursor', 'commands', 'audit-project.md'));
+  assert(auditProject.includes('Prerequisites (hard gate)'), 'audit-project prereq gate');
+  const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
+  for (const needle of [
+    'Mode A — Build audit',
+    'Mode B — Campaign audit',
+    'Approve all findings for refinement',
+    'Record findings; no fixes',
+    'reaudit',
+  ]) {
+    assert(auditPhaseCmd.includes(needle), `audit-phase contains: ${needle}`);
+  }
+  const refineAudit = read(path.join('.cursor', 'commands', 'refine-audit.md'));
+  assert(refineAudit.includes('Approved for refinement'), 'refine-audit approval-only rule');
+  const auditPlanStub = read(cfg.auditPlan);
+  assert(auditPlanStub.includes('Audit dimensions'), 'audit plan dimensions table');
 
   // check passes
   run(['check', TMP]);
 
-  // upgrade refreshes commands without wiping product stub content we edit
+  // upgrade refreshes commands without wiping product stub content we edit,
+  // and re-creates missing Owner stubs (new-in-version artifacts)
   const productPath = path.join(TMP, cfg.productSpec);
   fs.writeFileSync(productPath, '# Owner product\nKEEP_ME\n', 'utf8');
+  fs.rmSync(path.join(TMP, cfg.auditPlan));
   run(['upgrade', TMP]);
   assert(read(cfg.productSpec).includes('KEEP_ME'), 'upgrade preserves Owner docs');
+  assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'upgrade restores missing stubs');
   assert(
     read(path.join('.cursor', 'commands', 'setup.md')).includes('Greenfield vs existing'),
     'upgrade refreshed setup command'
