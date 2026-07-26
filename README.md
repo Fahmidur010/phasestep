@@ -85,10 +85,6 @@ git push origin main --follow-tags
 Source: [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)  
 npm package: **`phasestep`**
 
-## Dogfood
-
-First consumer: Headache Center (light consumer via `phasestep.json`; keeps its own `project_guidelines/` paths). Prefer `npx phasestep upgrade` over `init --force`.
-
 ## License
 
 MIT
