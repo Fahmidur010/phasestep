@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.4.3  
+**Version:** 0.4.4  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-07-26  
 **Product:** Phasestep  
@@ -252,7 +252,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 - Remove external-project references from README / MAINTAINING  
 
-### v0.4.3 — Project audit campaign — *current*
+### v0.4.3 — Project audit campaign
 
 **Date:** 2026-07-26  
 
@@ -262,6 +262,14 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **`/complete-audit`** — `AUDIT_SUMMARY.md` + optional promotion of findings into `BUILD_PLAN`  
 - `phasestep.json` keys `auditPlan`, `auditReportsDir`; new stubs installed by init/upgrade  
 - `upgrade` adds missing Owner stubs without overwriting existing docs  
+
+### v0.4.4 — Audit campaign consistency + AGENT_DOC — *current*
+
+**Date:** 2026-07-26  
+
+- **`/audit-ds-phase`** — Build / Campaign / all modes; campaign findings fold into the audit phase report (not a separate file); fix path is `/refine-audit` in campaign mode  
+- **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
+- **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
 ### Planned
 

@@ -79,11 +79,13 @@ npm run smoke
 
 ## Version
 
-**0.4.3** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.4.4** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 
 See **[MAINTAINING.md](./MAINTAINING.md)** — branch model, semver, tag-triggered npm publish via GitHub Actions (Trusted Publishing / OIDC).
+
+Contributing to the package itself? Start with **[AGENT_DOC.md](./AGENT_DOC.md)** — module map, design rationale, invariants, and the running engineering log.
 
 Quick release (after merging to `main`):
 

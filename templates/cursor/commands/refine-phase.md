@@ -5,6 +5,8 @@ argument-hint: [phase] [step?]
 
 Fix issues for **Build Phase** from **intent rejection**, **verification**, **audit**, and/or **design-system audit**.
 
+**Not for project-audit findings.** If the issues come from an `/audit-project` campaign report (`{{AUDIT_REPORTS_DIR}}/audit-phase-N.md`), stop and use `/refine-audit N` instead — it enforces the Owner-approval gate. If it is unclear which the Owner means, ask once.
+
 ## Parse arguments
 
 `$ARGUMENTS` is `PHASE` optionally followed by `STEP`.

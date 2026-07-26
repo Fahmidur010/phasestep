@@ -5,14 +5,20 @@ argument-hint: [phase-id or "all"]
 
 Perform a **read-only** design-system audit for **Phase $ARGUMENTS** (or **all** UI if `all`). **Do not modify files.**
 
-**When (phase-scoped):** after all steps Owner-verified.
+## Mode
+
+| Mode | When | Scope | Fixes go through |
+|------|------|-------|------------------|
+| **Build** | Delivery loop — after all steps of build phase N are Owner-verified | Phase plan **Files checklist** paths (+ shared UI they touch) | `/refine-phase N` |
+| **Campaign** | Called from `/audit-phase N` in project-audit mode | That audit phase's **In scope** UI from [`{{AUDIT_PLAN}}`](../../{{AUDIT_PLAN}}) | `/refine-audit N` |
+| **all** | Owner asks for a full UI sweep | Every UI surface | Owner's choice |
+
+In **Campaign** mode, fold findings into the phase report at `{{AUDIT_REPORTS_DIR}}/audit-phase-N.md` using the same stable IDs and severity rubric — do not write a separate report file.
 
 ## Required reading
 
 - [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}})
 - Inventory: [`{{UI_PRIMITIVES_DIR}}/`](../../{{UI_PRIMITIVES_DIR}}/) if it exists
-
-Phase-scoped: limit to phase plan **Files checklist** paths (+ shared UI they touch).
 
 ## Checks
 
@@ -33,4 +39,7 @@ Follow **{{DESIGN_SYSTEM}}** as source of truth. Typical checks:
 
 severity — `file:line` — issue — suggested fix (name DS rule or primitive)
 
-End with counts; C/M → `/refine-phase` then re-run this audit; clean → still need `/audit-phase` + Owner verify history.
+End with counts.
+
+- **Build mode:** C/M → `/refine-phase N` then re-run this audit; clean → still need `/audit-phase N` + Owner verify history
+- **Campaign mode:** findings join the audit phase report; fixes only after Owner approval via `/refine-audit N`, then `/audit-phase N reaudit`
