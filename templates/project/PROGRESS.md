@@ -23,7 +23,7 @@ Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
 
 ### Stack enrichment log
 
-| Date | Lane (official/community) | Stack / id | Action | Provenance (URL) |
+| Date | Lane (official/community/verification) | Stack / id | Action | Provenance (URL) |
 |------|---------------------------|------------|--------|------------------|
 | | | | | |
 

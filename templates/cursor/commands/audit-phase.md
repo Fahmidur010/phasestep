@@ -49,13 +49,23 @@ Only this phase's **In scope** flows and areas from `{{AUDIT_PLAN}}` (+ shared c
 
 1. **Spec** — `{{PRODUCT_SPEC}}` / `{{USER_FLOW}}` / `{{ARCHITECTURE}}` / `{{DESIGN_SYSTEM}}` (conformance to accepted truth)
 2. **Universal** — the plan's Audit dimensions checklist (security, correctness, architecture, performance)
-3. **Stack** — official stack rules/skills installed for this project, or **tool evidence** (run the phase's Evidence commands: linter / analyzer / tests). Findings without tool or rule backing must be labeled **heuristic**
+3. **Stack** — official stack rules/skills installed for this project, or **tool evidence** (run the phase's Evidence commands: linter / analyzer / tests / **Playwright CLI or MCP** for web UI). Findings without tool or rule backing must be labeled **heuristic**
 
 Cannot confirm something (no tool, no rule)? Report **"needs manual review"** — never inflate to C/M on a guess.
 
 ### Coverage
 
 Evaluate **every dimension** in the plan's table. Mark N/A with a reason. Never skip silently.
+
+### Browser evidence (web UI phases)
+
+When the phase's In scope includes browser UI:
+
+1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` + `detectInstalled` / `{{PROGRESS}}` enrichment log.
+2. If Playwright CLI is available → exercise critical in-scope flows; attach CLI outcomes under Evidence (prefer CLI over MCP).
+3. If only MCP is available → use it; note higher token cost.
+4. If neither is installed → do **not** install mid-audit. Record "Playwright not configured" under Out of scope / not checked; optionally STOP once to offer catalog recipes for Owner Accept after this phase.
+5. Playwright evidence supports findings; it is **not** a fourth ground by itself — cite Spec / Universal / Stack(+tool) as usual.
 
 ### Write the report
 

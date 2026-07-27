@@ -57,7 +57,7 @@ Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if gates or roles are unclear.
 4. **User flow = interaction map** (screens/states/paths). Not visual design, mockups, or design-system polish.
 5. **Bidirectional sync (stage 2):** every Owner change to the user flow **must** update `{{PRODUCT_SPEC}}` in the same turn, then show a **Product sync delta**.
 6. If flow and product disagree → **stop** and ask which wins (during setup, prefer the flow, then rewrite product to match).
-7. **Stack catalog:** `stacks` = official only; `community` = non-official. Present separately. Prefer official. Never invent rule/skill bodies. Never label community as official.
+7. **Stack catalog:** `stacks` = official only; `community` = non-official; `verification` = official cross-cutting verify tools (e.g. Playwright). Present separately. Prefer official. Never invent rule/skill bodies. Never label community as official.
 8. **Verify when possible:** if web tools work, confirm catalog URLs resolve. If 404 or unverifiable → say so; fall back to Owner paste/path or skip.
 9. **Architecture does not silently rewrite product/flow.** If an architecture edit implies behavior or interaction-map change → **Architecture → product/flow impact** gate (Stage 5). Never edit locked product/flow as a side effect.
 10. **Design libraries are pick-one.** Never install or document two component libraries for the same UI. Guidelines may be additive. Commercial / preview-access resources need explicit Owner accept.
@@ -139,9 +139,10 @@ When Owner is satisfied:
 
 **Prerequisite:** product + user flow dual-locked (or flow explicitly skipped).
 
-**Catalog:** [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) — two lanes:
+**Catalog:** [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) — three lanes:
 - **`stacks`** = official framework sources only
 - **`community`** = non-official curated recipes (`appliesTo` stack ids)
+- **`verification`** = official cross-cutting verify/audit tools (e.g. Playwright) when the product has a **web UI**
 
 ### 4a — Detect and confirm stack (required gate)
 
@@ -161,7 +162,9 @@ Confirm | Correct (tell me the stack) | Unsure (help me decide)
 
 1. Look up matching **official** entries in `stacks` for the confirmed stack(s). Multiple matches are OK when additive (e.g. React + TanStack).
 2. Look up matching **community** entries where `appliesTo` intersects confirmed stack ids.
-3. Present to Owner in **two clearly labeled sections** (never mix them):
+3. Look up matching **verification** entries where `appliesTo` intersects confirmed stack ids **and** the product has (or will have) a browser-rendered UI. If the product is CLI-only / no UI → skip verification proposals (or ask once).
+4. If `detectInstalled` already matches (e.g. `@playwright/cli` in package.json) → say so; still offer skills/MCP wiring if missing; do not re-install blindly.
+5. Present to Owner in **three clearly labeled sections** (never mix them):
 
 #### A — Official (recommended default)
 
@@ -182,22 +185,35 @@ For each matched community item:
 - What accepting means (install command / target)
 - Explicit caveat: **not official**; may overlap or conflict with official guidance — prefer official first
 
-4. **Verification:**
+#### C — Verification (web UI — official, optional)
+
+For each matched `verification` entry (typically Playwright CLI primary, MCP alternate):
+- Label, kind, URL, publisher
+- **`why`** and `appliesWhen`
+- Prefer **playwright-cli** for routine `/verify-phase` and audit evidence; offer **playwright-mcp** only if Owner wants exploratory/persistent browser sessions
+- What accepting means (devDependency, `install --skills`, and/or `.cursor/mcp.json`)
+
+**Recommended companions:** look up `community` items whose `recommendedWith` intersects the verification ids being accepted (e.g. `playwright-best-practices`). Present them as **recommended with Playwright** (still labeled **community / not official**). Default suggestion: install companions together with playwright-cli unless the Owner declines.
+
+Do **not** copy skill/rule bodies into the repo from training memory or from the phasestep package — only run the catalog install recipes into **this** project so the agent discovers skills locally.
+
+6. **Verification of URLs:**
    - If web is available → fetch URLs; confirm they resolve. Report failures.
    - If offline / no web / empty → still propose catalog links; ask Owner to paste a URL or path, or **skip**.
-5. **Never** write AI rules / skill bodies from training memory. Never present community items as official.
-6. **STOP** and wait:
+7. **Never** write AI rules / skill bodies from training memory. Never present community items as official. Never vendor Playwright (or skill bodies) into the phasestep package — only install into **this** project on Accept.
+8. **STOP** and wait:
 
 ```text
 Stack enrichment
   Official → Accept selected | Skip
   Community → Accept selected (optional) | Skip all community
+  Verification (web UI) → Accept playwright-cli (+ recommended companions) | Accept MCP too | Skip verification
   Or Provide URL/path (Owner's own rules/skills files)
 ```
 
-7. On Accept: apply only Owner-selected recipes. Record in `{{PROGRESS}}` Stack enrichment log with provenance (`official` | `community`, id, URL, date).
-8. On Skip: record skip/reason; continue.
-9. Proceed to Stage 5 — Architecture (cite accepted official sources in conventions; note community extras if any).
+9. On Accept: apply only Owner-selected recipes (including any accepted verification companions). Record in `{{PROGRESS}}` Stack enrichment log with provenance (`official` | `community` | `verification`, id, URL, date).
+10. On Skip: record skip/reason; continue.
+11. Proceed to Stage 5 — Architecture (cite accepted official sources in conventions; note community / verification extras if any).
 
 
 ---

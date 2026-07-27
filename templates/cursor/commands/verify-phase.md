@@ -33,6 +33,20 @@ Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED.
 
 - Phase plan step (verification + delta + seed/test notes)
 - [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}})
+- [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` lane — only if this step has a **browser UI** surface
+
+## Playwright evidence (optional — strengthens UAT; does not replace Owner)
+
+When the step’s Behavior delta / verification touches a **web UI**, and Playwright was accepted in setup (or is already installed — see catalog `detectInstalled`):
+
+1. Prefer **`playwright-cli`** (token-efficient). Use MCP only if the Owner installed it and prefers exploratory sessions.
+2. Add an **Automated evidence** subsection under the checklist:
+   - Commands the agent (or Owner) can run, e.g. open app URL → exercise the ADDED/CHANGED behavior → snapshot / screenshot on fail
+   - Map each critical checklist item to a concrete CLI action when possible
+3. Report outcomes as **Evidence: pass | fail | not run** next to those items. Owner still marks Pass/Fail for UAT judgment.
+4. If Playwright is **not** installed → do **not** install silently. Note “Playwright not configured — Owner UAT only” and optionally point to `/setup` Stage 4 verification lane or catalog recipes.
+5. If Playwright **is** available and a companion skill such as **playwright-best-practices** was installed into the project → follow that skill’s guidance when designing evidence steps (stable locators, waits, isolation). Do not invent a parallel best-practices doc from memory.
+6. Playwright **adds proof**; it never auto-accepts intent or skips the Owner gate.
 
 ## Output format
 
@@ -40,14 +54,19 @@ Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED.
 - How to run the app / target environment
 - Test accounts / fixtures from the phase plan
 - Entry points for **this step only**
+- Playwright available? yes (cli / mcp) | no
 
 ### Intent reminder
 - …
 
 ### Checklist (numbered)
-Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in)
+Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in) → Evidence (manual | playwright-cli | mcp | none)
 
 Keep short; call out regression risks to earlier verified steps only when relevant.
+
+### Automated evidence (if Playwright available)
+- Commands run
+- Results (pass/fail) tied to checklist item numbers
 
 ## End message
 

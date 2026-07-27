@@ -1,7 +1,7 @@
 {
   "version": "1",
-  "updated": "2026-07-25",
-  "description": "Stack enrichment for /setup. stacks = official (each resource/recipe has why). community = non-official curated (why + appliesTo). Pointers + recipes only - never vendor rule bodies. Verify URLs when web is available.",
+  "updated": "2026-07-27",
+  "description": "Stack enrichment for /setup. stacks = official framework sources (each resource/recipe has why). community = non-official curated (why + appliesTo). verification = official cross-cutting verify/audit tools (e.g. Playwright) for web UI — Owner-gated, never vendored into phasestep. Pointers + recipes only - never vendor rule bodies. Verify URLs when web is available.",
   "stacks": [
     {
       "id": "flutter",
@@ -692,6 +692,151 @@
         "description": "Install community Laravel Security skill (Owner confirms)",
         "command": "npx skills add https://github.com/affaan-m/everything-claude-code --skill laravel-security"
       }
+    },
+    {
+      "id": "playwright-best-practices",
+      "appliesTo": [
+        "nextjs",
+        "react",
+        "angular",
+        "svelte",
+        "astro"
+      ],
+      "recommendedWith": [
+        "playwright-cli",
+        "playwright-mcp"
+      ],
+      "kind": "skills",
+      "label": "Playwright Best Practices (Currents)",
+      "url": "https://www.skills.sh/currents-dev/playwright-best-practices-skill/playwright-best-practices",
+      "publisher": "currents-dev",
+      "why": "Community skill for writing/debugging stable Playwright tests (locators, waits, isolation). Complements official microsoft/playwright-cli skills — does not replace them. Recommend when Owner accepts Playwright verification so the agent follows strong test practices automatically once the skill is installed in the project.",
+      "installRecipe": {
+        "description": "Install Currents Playwright Best Practices skill into the project (Owner confirms)",
+        "command": "npx skills add https://github.com/currents-dev/playwright-best-practices-skill"
+      }
+    }
+  ],
+  "verification": [
+    {
+      "id": "playwright-cli",
+      "lane": "official",
+      "publisher": "microsoft",
+      "appliesTo": [
+        "nextjs",
+        "react",
+        "angular",
+        "svelte",
+        "astro"
+      ],
+      "appliesWhen": "Product has a browser-rendered UI (web app). Skip for CLI-only / non-UI backends.",
+      "detectInstalled": {
+        "packageJsonDepsAny": [
+          "@playwright/cli",
+          "@playwright/test",
+          "playwright"
+        ]
+      },
+      "kind": "cli",
+      "label": "Playwright CLI + Skills",
+      "url": "https://playwright.dev/docs/getting-started-cli",
+      "why": "First-party Microsoft browser automation for coding agents. Token-efficient CLI (not pixel vision). Use during /verify-phase and UI audit phases to prove Behavior delta / WHEN-THEN scenarios against a real browser. Prefer this over MCP for routine verify/audit evidence.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Playwright coding agents (CLI) guide",
+          "url": "https://playwright.dev/docs/getting-started-cli",
+          "why": "Official install and usage for playwright-cli + skills."
+        },
+        {
+          "kind": "skills",
+          "label": "playwright-cli skills (skills.sh)",
+          "url": "https://www.skills.sh/microsoft/playwright-cli/playwright-cli",
+          "why": "Discoverable skill listing for agents that use the skills registry."
+        },
+        {
+          "kind": "docs",
+          "label": "Playwright skills reference",
+          "url": "https://playwright.dev/agent-cli/skills",
+          "why": "What playwright-cli install --skills adds for the agent."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "playwright-cli-local",
+          "description": "Install @playwright/cli as a project devDependency (preferred for repos)",
+          "command": "npm install -D @playwright/cli@latest",
+          "why": "Pins the CLI to the project so verify/audit evidence is reproducible for the team."
+        },
+        {
+          "id": "playwright-cli-skills",
+          "description": "Install local agent skills for playwright-cli",
+          "command": "npx playwright-cli install --skills",
+          "why": "Gives Cursor/Claude/Copilot structured skill docs for CLI commands."
+        }
+      ]
+    },
+    {
+      "id": "playwright-mcp",
+      "lane": "official",
+      "publisher": "microsoft",
+      "appliesTo": [
+        "nextjs",
+        "react",
+        "angular",
+        "svelte",
+        "astro"
+      ],
+      "appliesWhen": "Owner wants exploratory / persistent browser sessions (MCP). Prefer playwright-cli for routine verify; offer MCP as optional alternate.",
+      "detectInstalled": {
+        "fileContainsAny": [
+          {
+            "file": ".cursor/mcp.json",
+            "pattern": "@playwright/mcp"
+          },
+          {
+            "file": ".cursor/mcp.json",
+            "pattern": "playwright"
+          }
+        ]
+      },
+      "kind": "mcp",
+      "label": "Playwright MCP",
+      "url": "https://playwright.dev/docs/getting-started-mcp",
+      "why": "Official MCP server: agent drives the browser via accessibility snapshots (no vision model). Better for long exploratory loops with persistent state. Higher token cost than CLI — use when Owner wants MCP, not as the default verify path.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Playwright MCP getting started",
+          "url": "https://playwright.dev/docs/getting-started-mcp",
+          "why": "Official MCP setup for Cursor, Claude Code, VS Code, and other MCP clients."
+        },
+        {
+          "kind": "mcp",
+          "label": "microsoft/playwright-mcp",
+          "url": "https://github.com/microsoft/playwright-mcp",
+          "why": "Source and config reference for the MCP server package."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "cursor-mcp-playwright",
+          "description": "Register Playwright MCP in Cursor (.cursor/mcp.json)",
+          "target": ".cursor/mcp.json",
+          "snippet": {
+            "mcpServers": {
+              "playwright": {
+                "command": "npx",
+                "args": [
+                  "-y",
+                  "@playwright/mcp@latest"
+                ]
+              }
+            }
+          },
+          "why": "Wires Playwright MCP into Cursor so the agent can navigate/click/snapshot during exploratory verify."
+        }
+      ]
     }
   ]
 }

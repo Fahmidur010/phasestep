@@ -1,8 +1,8 @@
 # Phasestep — Constitution
 
-**Version:** 0.4.4  
+**Version:** 0.4.5  
 **Status:** Living constitution (portable framework)  
-**Last updated:** 2026-07-26  
+**Last updated:** 2026-07-27  
 **Product:** Phasestep  
 
 Phasestep is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
@@ -135,7 +135,7 @@ Paths are overridable in `phasestep.json`.
 
 **Audit campaign gates:** `/audit-project` requires accepted product + user flow + architecture (+ design system if UI) — otherwise back to `/setup`. Reports are **read-only**; after each report the Owner picks: approve all for refinement / select findings / record only / continue to next phase. Fixes happen exclusively in `/refine-audit` on approved findings, then `/audit-phase N reaudit` verifies. Findings never silently become build work — promotion into `BUILD_PLAN` is an explicit Owner choice at `/complete-audit`.
 
-**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official** and **community** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (Accept sync / Reject / Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
+**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official**, **community**, and (for web UI) **verification** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (Accept sync / Reject / Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
 
 ---
 
@@ -263,7 +263,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - `phasestep.json` keys `auditPlan`, `auditReportsDir`; new stubs installed by init/upgrade  
 - `upgrade` adds missing Owner stubs without overwriting existing docs  
 
-### v0.4.4 — Audit campaign consistency + AGENT_DOC — *current*
+### v0.4.4 — Audit campaign consistency + AGENT_DOC
 
 **Date:** 2026-07-26  
 
@@ -271,14 +271,26 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
 - **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
+### v0.4.5 — Playwright verification enrichment — *current*
+
+**Date:** 2026-07-27  
+
+- Stack catalog **`verification`** lane — official **playwright-cli** (primary) + **playwright-mcp** (optional); web stacks only; Owner-gated install into the consumer project  
+- Community companion **`playwright-best-practices`** with `recommendedWith` — proposed by default when Playwright is accepted; skill installs via recipe (not vendored into phasestep)  
+- `/setup` Stage 4 section **C — Verification**; `/verify-phase` optional Playwright evidence (Skip stays valid; never silent install)  
+- Campaign `/audit-phase` + `AUDIT_PLAN` browser evidence dimension  
+
 ### Planned
 
 - Optional `/pr-step` + GitHub adapters  
+- WHEN/THEN scenarios on Behavior delta / product (borrowed idea; not OpenSpec product)  
+- Optional project-map enrichment (Graphify or thin native) for mid-project setup / audit slicing  
 - ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
 - ~~`upgrade` command for template refreshes~~ → v0.4.0  
 - ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → see `MAINTAINING.md` / `.github/workflows/`  
 - ~~`/setup` + user flow + stack catalog + design catalog~~ → v0.4.0  
 - ~~Project audit campaign~~ → v0.4.3  
+- ~~Playwright verification enrichment~~ → v0.4.5  
 
 ---
 

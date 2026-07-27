@@ -1,6 +1,6 @@
 # Enrichment catalogs
 
-Used by `/setup` for stack (Stage 4) and design (Stage 7).
+Used by `/setup` for stack (Stage 4) and design (Stage 7). Also consulted by `/verify-phase` and campaign `/audit-phase` for optional browser evidence.
 
 ## Stack — `stack-catalog.json`
 
@@ -8,8 +8,11 @@ Used by `/setup` for stack (Stage 4) and design (Stage 7).
 |-----|---------|
 | `stacks` | **Official** framework sources — each resource/recipe has **`why`** |
 | `community` | **Non-official** curated recipes (`appliesTo` + **`why`**) |
+| `verification` | **Official** cross-cutting verify/audit tools (e.g. Playwright CLI + MCP). Filter by `appliesTo` + `appliesWhen` (web UI). Owner-gated; never vendored into the phasestep package |
 
-Present Official and Community separately. Prefer official.
+Present Official, Community, and Verification separately. Prefer official stack sources; prefer **playwright-cli** over MCP for routine verify/audit evidence.
+
+Community items may declare **`recommendedWith`**: verification ids (e.g. `playwright-cli`) they should be offered with. On Accept of that verification tool, propose those companions by default (Owner can decline). Skills still install **into the consumer project** via recipe — Phasestep never vendors skill bodies.
 
 ## Design — `design-catalog.json`
 
@@ -25,3 +28,4 @@ Each library/guideline lists agent `resources` (`mcp` / `skills` / `llms` / `cli
 - Pointers + recipes only — do not vendor rule/skill bodies into this package
 - Owner-gated installs; verify URLs when web is available
 - Never invent content; failure → propose links or ask Owner for URL/path
+- Playwright (and similar tools) install **into the consumer project** on Accept — they are not dependencies of `phasestep` itself

@@ -68,6 +68,8 @@ Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (desi
 
 Reports live in `docs/audit-reports/` as plain Markdown with stable finding IDs, each citing its ground (spec / universal checklist / stack rules + tool evidence).
 
+Optional **Playwright** (CLI preferred, MCP alternate) can be accepted during `/setup` Stage 4 for web UI projects — strengthens `/verify-phase` and UI audit evidence; not a dependency of the `phasestep` package itself.
+
 ## Local development
 
 ```bash
@@ -79,7 +81,7 @@ npm run smoke
 
 ## Version
 
-**0.4.4** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.4.5** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

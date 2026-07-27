@@ -87,6 +87,30 @@ function main() {
   const stack = JSON.parse(read(path.join('.phasestep', 'stack-catalog.json')));
   assert(stack.stacks && typeof stack.stacks === 'object', 'stack-catalog.stacks');
   assert(Array.isArray(stack.community), 'stack-catalog.community array');
+  assert(Array.isArray(stack.verification), 'stack-catalog.verification array');
+  const pwCli = stack.verification.find((v) => v.id === 'playwright-cli');
+  const pwMcp = stack.verification.find((v) => v.id === 'playwright-mcp');
+  assert(pwCli && pwCli.lane === 'official', 'playwright-cli official verification entry');
+  assert(pwMcp && pwMcp.kind === 'mcp', 'playwright-mcp verification entry');
+  assert(
+    Array.isArray(pwCli.appliesTo) && pwCli.appliesTo.includes('nextjs'),
+    'playwright-cli appliesTo web stacks'
+  );
+  const pwBest = stack.community.find((c) => c.id === 'playwright-best-practices');
+  assert(pwBest && Array.isArray(pwBest.recommendedWith), 'playwright-best-practices community companion');
+  assert(
+    pwBest.recommendedWith.includes('playwright-cli'),
+    'best-practices recommendedWith playwright-cli'
+  );
+
+  const verifyCmd = read(path.join('.cursor', 'commands', 'verify-phase.md'));
+  assert(verifyCmd.includes('Playwright evidence'), 'verify-phase Playwright section');
+  assert(verifyCmd.includes('do **not** install silently'), 'verify-phase no silent install');
+
+  const setupCmd = read(path.join('.cursor', 'commands', 'setup.md'));
+  assert(setupCmd.includes('Verification (web UI'), 'setup Stage 4 verification lane');
+  assert(setupCmd.includes('playwright-cli'), 'setup mentions playwright-cli');
+  assert(setupCmd.includes('recommended companions'), 'setup recommended companions with Playwright');
 
   const design = JSON.parse(read(path.join('.phasestep', 'design-catalog.json')));
   assert(
@@ -113,6 +137,7 @@ function main() {
   const auditProject = read(path.join('.cursor', 'commands', 'audit-project.md'));
   assert(auditProject.includes('Prerequisites (hard gate)'), 'audit-project prereq gate');
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
+  assert(auditPhaseCmd.includes('Browser evidence'), 'audit-phase browser evidence');
   for (const needle of [
     'Mode A — Build audit',
     'Mode B — Campaign audit',
@@ -126,6 +151,7 @@ function main() {
   assert(refineAudit.includes('Approved for refinement'), 'refine-audit approval-only rule');
   const auditPlanStub = read(cfg.auditPlan);
   assert(auditPlanStub.includes('Audit dimensions'), 'audit plan dimensions table');
+  assert(auditPlanStub.includes('Browser evidence'), 'audit plan browser evidence dimension');
 
   // check passes
   run(['check', TMP]);
