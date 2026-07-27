@@ -11,9 +11,9 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/setup` or "run phasestep setup" | Progressive Owner-gated stub fill |
 | `/plan-phase N` | Write `{{PHASE_PLANS_DIR}}/phase-N.md` |
 | `/build-phase N [step]` | Implement; emit Behavior delta; intent gate |
-| `/verify-phase N [step]` | Owner UAT + checks |
+| `/verify-phase N [step]` | Owner UAT + checks; optional Playwright browser evidence (web UI) |
 | `/refine-phase N [step]` | Fix after verify |
-| `/audit-phase N` | Phase acceptance |
+| `/audit-phase N` | Phase acceptance (build or campaign); optional Playwright evidence for web UI |
 | `/complete-phase N` | Mark done + progress |
 | `/session-log` | Optional mid-phase notes |
 | `/audit-ds-phase` | Design-system audit (UI) |

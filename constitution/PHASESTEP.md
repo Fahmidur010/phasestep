@@ -30,7 +30,7 @@ You steer with **written product intent**. An AI agent implements in **small ver
 
 ### Relationship to SDD / OpenSpec philosophy
 
-Phasestep **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step; proof today is primarily **owner verification** plus compile/build checks and phase audits.
+Phasestep **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step; proof is **Owner verification** (the gate) plus compile/build checks and phase audits. For web UI, optional **Playwright** evidence (CLI preferred) may strengthen verify/audit — it never replaces the Owner gate or auto-accepts intent.
 
 ---
 
@@ -107,7 +107,7 @@ Paths are overridable in `phasestep.json`.
 | **Plan** | Agent | Phase execution plan with independently verifiable steps |
 | **Build** | Agent | One step implemented; project build check; **Behavior delta** written |
 | **Intent** | Owner | Accept or reject the delta |
-| **Verify** | Owner | Manual verification proves the accepted delta |
+| **Verify** | Owner | Manual verification proves the accepted delta; optional Playwright evidence for web UI |
 | **Refine** | Agent | Fixes; refresh delta if behavior changed |
 | **Audit** | Agent (read-only) | Phase-wide quality after all steps verified |
 | **Complete** | Agent + Owner confirm | Mark phase done; update progress + session log |
@@ -175,15 +175,15 @@ Rules: 3–12 bullets; product behavior language; not proof of correct code; per
 
 ---
 
-## 8. Verification & proof (v0.3 stance)
+## 8. Verification & proof
 
 | Concern | How Phasestep handles it |
 |---------|--------------------------|
 | Right thing? | Behavior delta (intent gate) |
-| Actually works? | Owner manual verification (+ build check) |
-| Codebase healthy? | Phase audits |
+| Actually works? | Owner manual verification (+ build check); optional Playwright browser evidence for web UI |
+| Codebase healthy? | Phase audits (build + optional campaign); browser evidence when UI is in scope |
 
-Automated tests from specs remain optional / future — not required for compliance.
+Owner UAT remains the gate. Playwright (if accepted at setup or mid-flight) adds proof; it does not auto-pass verify or invent installs. Auto-generated test suites from specs remain optional / future — not required for compliance.
 
 ---
 
@@ -271,7 +271,31 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
 - **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
-### v0.4.5 — Playwright verification enrichment — *current*
+### v0.4.8 — Playwright polish — *current*
+
+**Date:** 2026-07-27  
+
+- Verification `appliesTo`: +tanstack, +laravel; Flutter / React Native explicitly out of scope  
+- Browser install recipe (`playwright-cli install-browser`); Claude `.mcp.json` detect + recipe  
+- Codex AGENTS + setup wording aligned  
+
+### v0.4.7 — Playwright gap fill
+
+**Date:** 2026-07-27  
+
+- Browser evidence + mid-flight shared by **build audit (Mode A)** and **campaign audit (Mode B)**  
+- `AUDIT_PLAN` browser dimension aligned with mid-flight (Owner-gated install; never silent)  
+- Constitution §1 / §8: Owner UAT remains the gate; optional Playwright evidence for web UI  
+- Mid-flight option 2 = this step only; option 3 quiets the whole build phase (verify + Mode A)  
+
+### v0.4.6 — Mid-flight Playwright offer
+
+**Date:** 2026-07-27  
+
+- Mid-flight Playwright offer on `/verify-phase` and campaign `/audit-phase` when UI in scope but not configured (once per phase; decline recorded in PROGRESS)  
+- Setup Stage 4 Skip verification remains valid; mid-flight recovers without nagging every message  
+
+### v0.4.5 — Playwright verification enrichment
 
 **Date:** 2026-07-27  
 
@@ -291,6 +315,9 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - ~~`/setup` + user flow + stack catalog + design catalog~~ → v0.4.0  
 - ~~Project audit campaign~~ → v0.4.3  
 - ~~Playwright verification enrichment~~ → v0.4.5  
+- ~~Mid-flight Playwright offer~~ → v0.4.6  
+- ~~Playwright gap fill (Mode A + plan/constitution)~~ → v0.4.7  
+- ~~Playwright polish (stacks + Claude MCP + Codex)~~ → v0.4.8  
 
 ---
 

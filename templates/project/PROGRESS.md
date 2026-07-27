@@ -33,6 +33,20 @@ Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
 |------|--------------------------------|-----|--------|------------------|
 | | | | | |
 
+### Playwright mid-flight declines (optional)
+
+When Owner declines the mid-flight Playwright offer during `/verify-phase` or `/audit-phase`:
+
+```text
+Playwright mid-flight: declined — build phase 2
+Playwright mid-flight: declined — audit phase 1
+```
+
+- **build phase N** — quiets `/verify-phase` and Mode A `/audit-phase` for that delivery phase  
+- **audit phase N** — quiets campaign Mode B `/audit-phase` for that audit phase  
+
+Do not re-offer for that phase after a decline is recorded.
+
 ---
 
 ## Audit campaign (optional — via `/audit-project`)

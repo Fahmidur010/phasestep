@@ -19,7 +19,7 @@ Each phase MUST evaluate all dimensions (mark N/A with reason, never skip silent
 | Performance | N+1 queries, unbounded loops/allocations, blocking hot paths (evidence-based only) |
 | Stack conformance | official rules/skills for the detected stack; native linter/analyzer output |
 | Design system (UI only) | `{{DESIGN_SYSTEM}}` via `/audit-ds-phase` |
-| Browser evidence (web UI) | If Playwright was accepted / installed: run CLI (preferred) or MCP against in-scope flows; attach outcomes as evidence. Never invent installs mid-audit — propose catalog recipe and STOP if missing. |
+| Browser evidence (web UI) | If Playwright is installed: run CLI (preferred) or MCP against in-scope flows; attach outcomes as evidence. If missing → mid-flight STOP once (Install now \| Owner-only \| Don't ask again for this audit phase). Never silent install. |
 
 ## Grounds
 
@@ -46,7 +46,7 @@ Every finding must cite one:
 
 ### Evidence to run
 - e.g. linter / analyzer / test command for this stack
-- Web UI phases: Playwright CLI (preferred) or MCP if installed — see `{{STACK_CATALOG}}` `verification` lane
+- Web UI phases: Playwright CLI (preferred) or MCP if installed — see `{{STACK_CATALOG}}` `verification` lane; mid-flight offer if missing (Owner-gated)
 
 ## Audit Phase 2 — [feature/module title]
 
@@ -58,4 +58,4 @@ Every finding must cite one:
 
 ### Evidence to run
 - …
-- Web UI phases: Playwright CLI (preferred) or MCP if installed
+- Web UI phases: Playwright CLI (preferred) or MCP if installed; mid-flight if missing

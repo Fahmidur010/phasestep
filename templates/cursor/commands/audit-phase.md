@@ -20,6 +20,43 @@ Resolve mode: if `{{AUDIT_PLAN}}` is accepted and defines Audit Phase N, and no 
 
 ---
 
+## Browser evidence (both modes — web UI)
+
+Use when the phase touches a **browser UI** (Mode A: UI steps / checkpoints; Mode B: In scope includes web UI). Otherwise skip.
+
+1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` + `detectInstalled` / `{{PROGRESS}}` enrichment log.
+2. If Playwright CLI is available → exercise critical in-scope flows; attach CLI outcomes under Evidence (prefer CLI over MCP).
+3. If only MCP is available → use it; note higher token cost.
+4. If neither is installed → **Mid-flight Playwright offer** before finishing the report.
+
+Decline keys in `{{PROGRESS}}`:
+
+| Mode | Decline line |
+|------|----------------|
+| **A — Build audit** | `Playwright mid-flight: declined — build phase N` (same key as `/verify-phase` for that delivery phase) |
+| **B — Campaign audit** | `Playwright mid-flight: declined — audit phase N` |
+
+If the matching decline line exists → record "Playwright not configured" (Mode B: under Out of scope / not checked; Mode A: note in the report); do not offer again. Continue Owner-only.
+
+Otherwise **STOP once**:
+
+```text
+Playwright is not configured, but this audit includes web UI.
+1. Install now — playwright-cli (+ recommended companions) | optional MCP
+2. Continue this audit Owner-only — no browser evidence
+3. Don't ask again for this phase — record decline in PROGRESS (build phase N | audit phase N)
+```
+
+- **Install now** → same catalog recipes as `/setup` Stage 4 section C; Owner selects; log in PROGRESS; re-run browser evidence.
+- **Continue Owner-only** → proceed without browser evidence (this audit only; may offer again next time unless declined).
+- **Don't ask again** → append the mode's decline line to `{{PROGRESS}}`.
+
+Never install silently. Never block the audit if Owner chooses 2 or 3.
+
+5. Playwright evidence supports findings; it is **not** a fourth ground by itself — cite Spec / Universal / Stack(+tool) as usual (Mode B) or architecture/product/stack (Mode A).
+
+---
+
 ## Mode A — Build audit (delivery loop)
 
 **When:** only after **all** steps are Owner-**verified** (unless Owner explicitly wants an early audit).
@@ -31,7 +68,8 @@ Resolve mode: if `{{AUDIT_PLAN}}` is accepted and defines Audit Phase N, and no 
    - [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) if present
    - Stack practice docs the project defines
 3. Check: steps reflected in code; layering/forbidden imports; auth/role guards; migrations present when claimed; every audit checkpoint evaluated; short SOLID pass on changed surfaces.
-4. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
+4. If this phase has a **web UI** surface → follow **Browser evidence** above (attach outcomes to the report; mid-flight if Playwright missing).
+5. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
    - Issues → `/refine-phase $ARGUMENTS` then re-audit
    - No C/M → ready for `/complete-phase $ARGUMENTS` after Owner confirmation
 
@@ -57,15 +95,7 @@ Cannot confirm something (no tool, no rule)? Report **"needs manual review"** �
 
 Evaluate **every dimension** in the plan's table. Mark N/A with a reason. Never skip silently.
 
-### Browser evidence (web UI phases)
-
-When the phase's In scope includes browser UI:
-
-1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` + `detectInstalled` / `{{PROGRESS}}` enrichment log.
-2. If Playwright CLI is available → exercise critical in-scope flows; attach CLI outcomes under Evidence (prefer CLI over MCP).
-3. If only MCP is available → use it; note higher token cost.
-4. If neither is installed → do **not** install mid-audit. Record "Playwright not configured" under Out of scope / not checked; optionally STOP once to offer catalog recipes for Owner Accept after this phase.
-5. Playwright evidence supports findings; it is **not** a fourth ground by itself — cite Spec / Universal / Stack(+tool) as usual.
+If In scope includes browser UI → follow **Browser evidence** above before finishing the report.
 
 ### Write the report
 

@@ -162,8 +162,8 @@ Confirm | Correct (tell me the stack) | Unsure (help me decide)
 
 1. Look up matching **official** entries in `stacks` for the confirmed stack(s). Multiple matches are OK when additive (e.g. React + TanStack).
 2. Look up matching **community** entries where `appliesTo` intersects confirmed stack ids.
-3. Look up matching **verification** entries where `appliesTo` intersects confirmed stack ids **and** the product has (or will have) a browser-rendered UI. If the product is CLI-only / no UI → skip verification proposals (or ask once).
-4. If `detectInstalled` already matches (e.g. `@playwright/cli` in package.json) → say so; still offer skills/MCP wiring if missing; do not re-install blindly.
+3. Look up matching **verification** entries where `appliesTo` intersects confirmed stack ids **and** the product has (or will have) a browser-rendered UI. If the product is CLI-only / no UI → skip verification proposals (or ask once). **Never** propose Playwright for **Flutter** or **React Native** (native mobile) — browser automation only; those stay Owner/device UAT.
+4. If `detectInstalled` already matches (e.g. `@playwright/cli` in package.json, or Playwright in `.cursor/mcp.json` / `.mcp.json`) → say so; still offer skills/MCP wiring if missing; do not re-install blindly. If Claude has MCP only in user-global `~/.claude.json`, ask Owner once rather than assuming missing.
 5. Present to Owner in **three clearly labeled sections** (never mix them):
 
 #### A — Official (recommended default)
@@ -212,7 +212,7 @@ Stack enrichment
 ```
 
 9. On Accept: apply only Owner-selected recipes (including any accepted verification companions). Record in `{{PROGRESS}}` Stack enrichment log with provenance (`official` | `community` | `verification`, id, URL, date).
-10. On Skip: record skip/reason; continue.
+10. On Skip: record skip/reason; continue. Skip is valid — `/verify-phase` and `/audit-phase` (build Mode A or campaign Mode B) may **STOP once** later with a mid-flight Playwright offer if a UI step needs browser evidence.
 11. Proceed to Stage 5 — Architecture (cite accepted official sources in conventions; note community / verification extras if any).
 
 

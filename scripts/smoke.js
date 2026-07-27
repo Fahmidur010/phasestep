@@ -57,6 +57,10 @@ function main() {
   assert(fs.existsSync(path.join(TMP, '.claude', 'commands', 'setup.md')), 'claude /setup');
   assert(fs.existsSync(path.join(TMP, 'AGENTS.md')), 'codex AGENTS.md');
   assert(
+    read('AGENTS.md').includes('Playwright'),
+    'codex AGENTS mentions Playwright'
+  );
+  assert(
     fs.existsSync(path.join(TMP, '.phasestep', 'stack-catalog.json')),
     'stack catalog'
   );
@@ -93,9 +97,27 @@ function main() {
   assert(pwCli && pwCli.lane === 'official', 'playwright-cli official verification entry');
   assert(pwMcp && pwMcp.kind === 'mcp', 'playwright-mcp verification entry');
   assert(
-    Array.isArray(pwCli.appliesTo) && pwCli.appliesTo.includes('nextjs'),
+    Array.isArray(pwCli.appliesTo) &&
+      pwCli.appliesTo.includes('nextjs') &&
+      pwCli.appliesTo.includes('tanstack') &&
+      pwCli.appliesTo.includes('laravel'),
     'playwright-cli appliesTo web stacks'
   );
+  assert(!pwCli.appliesTo.includes('flutter'), 'playwright-cli excludes flutter');
+  assert(!pwCli.appliesTo.includes('react-native'), 'playwright-cli excludes react-native');
+  assert(
+    pwCli.installRecipes.some((r) => r.id === 'playwright-cli-browser'),
+    'playwright-cli browser install recipe'
+  );
+  assert(
+    pwMcp.detectInstalled.fileContainsAny.some((f) => f.file === '.mcp.json'),
+    'playwright-mcp detects Claude .mcp.json'
+  );
+  assert(
+    pwMcp.installRecipes.some((r) => r.id === 'claude-mcp-playwright'),
+    'playwright-mcp Claude install recipe'
+  );
+  assert(!pwCli.why.includes('WHEN-THEN'), 'playwright-cli why has no unshipped WHEN/THEN');
   const pwBest = stack.community.find((c) => c.id === 'playwright-best-practices');
   assert(pwBest && Array.isArray(pwBest.recommendedWith), 'playwright-best-practices community companion');
   assert(
@@ -106,6 +128,9 @@ function main() {
   const verifyCmd = read(path.join('.cursor', 'commands', 'verify-phase.md'));
   assert(verifyCmd.includes('Playwright evidence'), 'verify-phase Playwright section');
   assert(verifyCmd.includes('do **not** install silently'), 'verify-phase no silent install');
+  assert(verifyCmd.includes('Mid-flight Playwright offer'), 'verify-phase mid-flight offer');
+  assert(verifyCmd.includes('Don\'t ask again for build phase'), 'verify-phase decline per phase');
+  assert(verifyCmd.includes('this step only'), 'verify-phase option 2 scoped to step');
 
   const setupCmd = read(path.join('.cursor', 'commands', 'setup.md'));
   assert(setupCmd.includes('Verification (web UI'), 'setup Stage 4 verification lane');
@@ -138,6 +163,13 @@ function main() {
   assert(auditProject.includes('Prerequisites (hard gate)'), 'audit-project prereq gate');
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('Browser evidence'), 'audit-phase browser evidence');
+  assert(auditPhaseCmd.includes('both modes'), 'audit-phase browser evidence both modes');
+  assert(auditPhaseCmd.includes('Mid-flight Playwright offer'), 'audit-phase mid-flight offer');
+  assert(auditPhaseCmd.includes('build phase N'), 'audit-phase Mode A decline key');
+
+  const auditPlan = read(cfg.auditPlan);
+  assert(auditPlan.includes('mid-flight'), 'AUDIT_PLAN mid-flight aligned');
+  assert(!auditPlan.includes('Never invent installs mid-audit'), 'AUDIT_PLAN no forbid mid-flight');
   for (const needle of [
     'Mode A — Build audit',
     'Mode B — Campaign audit',
