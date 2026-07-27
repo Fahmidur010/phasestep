@@ -271,7 +271,23 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
 - **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
-### v0.4.8 — Playwright polish — *current*
+### v0.4.10 — Sole vs alongside in /setup — *current*
+
+**Date:** 2026-07-27  
+
+- `/setup` **Workflow mode**: Sole Phasestep (recommended) with Owner-gated archive to `.phasestep/archived-workflow/`, or Alongside (explicit opt-in)  
+- Never silent moves; archive = move + log; niche one-offs may remain if not a second delivery loop  
+- README / init / PROGRESS / AGENTS aligned  
+
+### v0.4.9 — Alongside existing workflows
+
+**Date:** 2026-07-27  
+
+- `init` / `upgrade` / `check` print an **Alongside** summary (foreign commands left alone; Phasestep name collisions skipped unless `--force`)  
+- README + adapter docs: Phasestep is additive; pick a primary loop; mid-project `/setup`  
+- AGENTS managed block: additive hard rule; content outside markers preserved  
+
+### v0.4.8 — Playwright polish
 
 **Date:** 2026-07-27  
 
@@ -318,6 +334,8 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - ~~Mid-flight Playwright offer~~ → v0.4.6  
 - ~~Playwright gap fill (Mode A + plan/constitution)~~ → v0.4.7  
 - ~~Playwright polish (stacks + Claude MCP + Codex)~~ → v0.4.8  
+- ~~Alongside existing Cursor/agent workflows~~ → v0.4.9  
+- ~~Sole vs alongside workflow mode in /setup~~ → v0.4.10  
 
 ---
 

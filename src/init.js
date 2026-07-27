@@ -10,6 +10,8 @@ const {
   installCommands,
   installOwnerStubs,
   installCatalogs,
+  scanAlongside,
+  formatAlongsideReport,
 } = require('./scaffold');
 
 async function init({ packageRoot, targetDir, force, adapters }) {
@@ -20,6 +22,8 @@ async function init({ packageRoot, targetDir, force, adapters }) {
     ...(adapters ? { adapters } : {}),
   });
   config.adapters = normalizeAdapters(adapters || config.adapters);
+
+  const preScan = scanAlongside(targetDir, config.adapters);
 
   installConstitution(packageRoot, targetDir, config, { force });
   installConfig(targetDir, config, { force });
@@ -36,14 +40,21 @@ async function init({ packageRoot, targetDir, force, adapters }) {
   if (config.adapters.includes('claude')) openHint.push('Claude Code');
   if (config.adapters.includes('codex')) openHint.push('Codex');
 
+  const alongside = formatAlongsideReport(preScan, { context: 'init', force: !!force });
+
   console.log(`
 Done.
 
 Adapters: ${adapterNote}
 
+${alongside}
+
 Next:
   1. Open the project in ${openHint.join(' / ')}
-  2. Run /setup  (product → user flow → stack → architecture → decisions → design → build plan)
+  2. Run /setup — choose Setup mode, then Workflow mode:
+     Sole Phasestep (recommended) → Owner-gated archive of competing workflow files
+     Alongside (opt-in) → keep your commands; additive use
+     Mid-project app → Existing (mid-project) in Setup mode
      Or fill ${config.productSpec}, ${config.userFlow}, ${config.buildPlan}, ${config.architecture} manually
   3. Then run /plan-phase 1
 

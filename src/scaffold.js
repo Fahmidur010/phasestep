@@ -326,6 +326,159 @@ function commandPathsForAdapters(adapters, config) {
   return { adapters: list, paths };
 }
 
+/**
+ * Scan command dirs + AGENTS for coexistence with foreign workflows.
+ * Call before install/upgrade to see what already exists.
+ */
+function scanAlongside(targetDir, adapters) {
+  const list = normalizeAdapters(adapters);
+  const owned = new Set(COMMAND_FILES);
+  const collisions = [];
+  const foreign = [];
+
+  for (const adapter of ['cursor', 'claude']) {
+    if (!list.includes(adapter)) continue;
+    const relDir =
+      adapter === 'cursor' ? path.join('.cursor', 'commands') : path.join('.claude', 'commands');
+    const fullDir = path.join(targetDir, relDir);
+    if (!fs.existsSync(fullDir)) continue;
+    for (const name of fs.readdirSync(fullDir).filter((f) => f.endsWith('.md')).sort()) {
+      const rel = path.join(relDir, name);
+      if (owned.has(name)) {
+        collisions.push({ adapter, name, rel });
+      } else {
+        foreign.push({ adapter, name, rel });
+      }
+    }
+  }
+
+  let agents = 'n/a';
+  let agentsOutside = false;
+  if (list.includes('codex')) {
+    const agentsPath = path.join(targetDir, 'AGENTS.md');
+    if (!fs.existsSync(agentsPath)) {
+      agents = 'missing';
+    } else {
+      const text = fs.readFileSync(agentsPath, 'utf8');
+      const start = text.indexOf(CODEX_MARKER_START);
+      const end = text.indexOf(CODEX_MARKER_END);
+      if (start !== -1 && end !== -1 && end > start) {
+        agents = 'has-block';
+        const outside = `${text.slice(0, start)}${text.slice(end + CODEX_MARKER_END.length)}`.trim();
+        agentsOutside = outside.length > 0;
+      } else {
+        agents = 'no-block';
+        agentsOutside = text.trim().length > 0;
+      }
+    }
+  }
+
+  return {
+    adapters: list,
+    collisions,
+    foreign,
+    agents,
+    agentsOutside,
+  };
+}
+
+/**
+ * Format Alongside section for init / upgrade / check.
+ * @param {'init'|'upgrade'|'check'} context
+ * @param {boolean} force — whether Phasestep-owned command files were/will be overwritten
+ */
+function formatAlongsideReport(scan, { context, force }) {
+  const lines = [];
+  lines.push('Alongside existing workflow');
+  lines.push('');
+
+  if (scan.foreign.length) {
+    lines.push(
+      `  Foreign commands left alone (${scan.foreign.length}): ${scan.foreign
+        .map((f) => f.rel)
+        .join(', ')}`
+    );
+  } else if (context !== 'check') {
+    lines.push('  Foreign commands: none detected');
+  }
+
+  if (context === 'check') {
+    if (scan.foreign.length) {
+      lines.push(
+        '  note: Phasestep is additive — your other slash commands stay; pick a primary loop'
+      );
+    }
+    if (scan.adapters.includes('codex') && scan.agentsOutside) {
+      lines.push(
+        '  note: AGENTS.md has content outside the Phasestep markers (preserved)'
+      );
+    }
+    if (!scan.foreign.length && !(scan.adapters.includes('codex') && scan.agentsOutside)) {
+      return '';
+    }
+    return lines.join('\n');
+  }
+
+  if (scan.collisions.length) {
+    if (force) {
+      if (context === 'upgrade') {
+        lines.push(
+          `  Refreshed ${scan.collisions.length} Phasestep-named command file(s); foreign commands were not touched`
+        );
+      } else {
+        lines.push(
+          `  Overwrote Phasestep-named files (${scan.collisions.length}) — foreign commands were not touched`
+        );
+        for (const c of scan.collisions.slice(0, 8)) {
+          lines.push(`         ${c.rel}`);
+        }
+      }
+    } else {
+      lines.push(
+        `  WARN  Name collision(s) skipped (${scan.collisions.length}) — kept your file; Phasestep body not installed for:`
+      );
+      for (const c of scan.collisions.slice(0, 8)) {
+        lines.push(`         ${c.rel}`);
+      }
+      if (scan.collisions.length > 8) {
+        lines.push(`         … +${scan.collisions.length - 8} more`);
+      }
+      lines.push(
+        '         Fix: rename your custom file, or re-run with --force to replace Phasestep-named commands only'
+      );
+    }
+  } else {
+    lines.push('  Name collisions: none');
+  }
+
+  if (scan.adapters.includes('codex')) {
+    if (scan.agents === 'missing') {
+      lines.push('  AGENTS.md: will be created with Phasestep block');
+    } else if (scan.agents === 'no-block') {
+      lines.push('  AGENTS.md: Phasestep block appended (your content preserved)');
+    } else if (scan.agents === 'has-block') {
+      lines.push(
+        scan.agentsOutside
+          ? '  AGENTS.md: Phasestep block present; content outside markers preserved'
+          : '  AGENTS.md: Phasestep managed block present'
+      );
+    }
+  }
+
+  lines.push('');
+  lines.push(
+    '  Phasestep is additive — pick a primary loop; do not expect the agent to merge two workflows.'
+  );
+  if (context === 'init') {
+    lines.push('  Mid-project: run /setup → Existing (mid-project).');
+    lines.push(
+      '  Then /setup Workflow mode: Sole Phasestep (recommended, Owner-gated archive) or Alongside (opt-in).'
+    );
+  }
+
+  return lines.join('\n');
+}
+
 module.exports = {
   DEFAULTS,
   COMMAND_FILES,
@@ -349,4 +502,6 @@ module.exports = {
   installCatalogs,
   commandPathsForAdapters,
   resolveCatalogPaths,
+  scanAlongside,
+  formatAlongsideReport,
 };

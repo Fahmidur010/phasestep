@@ -33,6 +33,22 @@ phasestep upgrade
 
 Then run `/setup` (or fill `docs/product.md` + `docs/BUILD_PLAN.md`), open in your agent, run `/plan-phase 1`. Mid-project: `/setup` documents what exists and plans remaining work.
 
+## Adopting alongside an existing workflow
+
+Phasestep **installs additively** (foreign slash commands are not deleted). For the **best outcome**, make Phasestep the **sole delivery workflow**.
+
+| Path | What happens |
+|------|----------------|
+| **`/setup` → Sole (recommended)** | Agent lists competing workflow candidates → Owner Accepts an **archive** plan → files move to `.phasestep/archived-workflow/YYYY-MM-DD/` (not deleted) → continue setup as the only plan/build/verify/audit loop |
+| **`/setup` → Alongside (opt-in)** | Keep your commands; use Phasestep additively. Full results are not guaranteed if both loops stay in use |
+| Custom file with a **Phasestep name** at `init` | `init` **skips** it (keeps yours) unless `--force`. Sole archive + `upgrade` restores Phasestep bodies |
+| Existing `AGENTS.md` | Phasestep **appends** a marker-delimited block; Sole may archive outside content with Owner Accept |
+| `upgrade` | Refreshes Phasestep commands/catalogs/constitution; foreign commands untouched; Owner docs sacred unless `--force-docs` |
+
+`init` prints an **Alongside** summary and points you to `/setup` for Sole vs Alongside. Never silent archives.
+
+**Practice:** land with `init` → run `/setup` → choose Sole when ready → archive competing delivery-loop files → proceed. Niche one-off commands can remain if they are not a second full agentic workflow.
+
 ## What you get
 
 | Path | Purpose |
@@ -81,7 +97,7 @@ npm run smoke
 
 ## Version
 
-**0.4.8** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.4.10** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

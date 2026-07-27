@@ -7,6 +7,8 @@ const {
   normalizeAdapters,
   commandPathsForAdapters,
   CODEX_MARKER_START,
+  scanAlongside,
+  formatAlongsideReport,
 } = require('./scaffold');
 
 function exists(p) {
@@ -91,6 +93,13 @@ async function check({ targetDir }) {
     process.exitCode = 1;
   } else {
     console.log('\nAll required Phasestep artifacts present.');
+  }
+
+  const scan = scanAlongside(targetDir, config.adapters);
+  const alongside = formatAlongsideReport(scan, { context: 'check', force: false });
+  if (alongside) {
+    console.log('');
+    console.log(alongside);
   }
 }
 

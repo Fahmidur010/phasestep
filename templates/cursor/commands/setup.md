@@ -7,6 +7,8 @@ Run **Phasestep setup** — progressively fill project stubs with Owner gates. *
 
 Resume with `$ARGUMENTS` if provided: `product` | `flow` | `stack` | `architecture` | `decisions` | `design` | `build-plan` | `build-command` (otherwise continue from the first incomplete stage).
 
+Before Stage 1, complete **Setup mode** then **Workflow mode** (below) unless `{{PROGRESS}}` already records both.
+
 ## Greenfield vs existing (mid-project) project
 
 Detect which mode applies **before Stage 1** (scan repo: app code, commits, existing features):
@@ -24,17 +26,86 @@ Detect which mode applies **before Stage 1** (scan repo: app code, commits, exis
 4. Design: if a component library is already in `package.json` / deps, propose that as the pick-one default.
 5. Build plan: phases for **next / remaining** work. Mark already-shipped capability as done or out-of-scope in `{{PROGRESS}}` / phase “Out of scope”.
 6. Never rewrite production code during setup. Never use `init --force` / upgrade `--force-*` on Owner docs unless Owner asks.
+7. **Workflow mode (below)** decides sole vs alongside. Do not invent a merged meta-workflow. After sole archive, treat Phasestep as the only plan/build/verify/audit loop.
 
-At start, **STOP** once:
+At start, **STOP** once (skip if `{{PROGRESS}}` already has Setup mode):
 
 ```text
 Setup mode → Greenfield | Existing (mid-project) | Unsure (help me decide)
 ```
 
+Record in `{{PROGRESS}}`: `Setup mode: greenfield | mid-project`.
+
+---
+
+## Workflow mode — sole Phasestep (recommended) vs alongside
+
+Phasestep can **install safely** next to other agent files. For the **best outcome**, the project should run **one** delivery workflow: Phasestep (plan → build → Behavior delta → verify → audit). A second full agentic loop undercuts the gates.
+
+### Detect candidates (do not move yet)
+
+Scan and list:
+
+1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `complete-phase`, `session-log`, `audit-ds-phase`, `audit-project`, `refine-audit`, `complete-audit`, plus adapter `README.md`)
+2. **Name collisions** — Phasestep-owned filenames that exist but are **not** clearly Phasestep bodies (e.g. custom `setup.md` kept at init)
+3. **AGENTS.md outside markers** — content outside `<!-- phasestep:codex:start -->` … `<!-- phasestep:codex:end -->`
+4. **Owner-pointed extras** — ask once if other rule/command paths are part of their **old delivery loop** (do not auto-grab `.cursor/rules` or random tools)
+
+If **no** candidates (and Owner confirms no other delivery workflow) → record `Workflow mode: sole` in `{{PROGRESS}}` and continue to Stage 1. No STOP needed.
+
+If `{{PROGRESS}}` already has `Workflow mode: sole` or `Workflow mode: alongside` → skip this STOP (unless Owner asks to revisit).
+
+### STOP — choose mode (welcoming)
+
+Present findings briefly, then:
+
+```text
+Phasestep works best as the project's sole delivery workflow (plan → build → intent → verify → audit).
+Other slash commands can stay on disk for niches, but a second full agentic loop weakens the gates.
+
+Workflow mode:
+1. Sole Phasestep (recommended) — archive competing workflow files (Owner-gated), then continue /setup
+2. Alongside — keep everything; use Phasestep additively (full results not guaranteed if both loops are used)
+```
+
+### Option 1 — Sole (after Owner picks 1)
+
+1. Draft an **Archive plan** (paths only — no moves yet):
+   - Default include: name collisions + foreign commands the Owner marks as part of the old delivery loop
+   - AGENTS: if outside-marker content exists → propose copying full `AGENTS.md` into the archive folder, then leaving repo `AGENTS.md` with the Phasestep managed block only (Owner must Accept)
+   - Exclude unless Owner lists them: `.cursor/rules`, IDE settings, unrelated scripts
+2. Destination: `.phasestep/archived-workflow/YYYY-MM-DD/` (preserve relative paths under that folder). Write `ARCHIVE_LOG.md` listing each moved path + date.
+3. **STOP** — never move silently:
+
+```text
+Archive plan ready → Accept archive | Edit list | Cancel (stay Alongside)
+```
+
+4. On **Accept archive**: move (not delete) listed files; write the log; if Phasestep command files are now missing, run or tell Owner to run `npx phasestep upgrade` so Phasestep bodies are restored. Record in `{{PROGRESS}}`:
+
+```text
+Workflow mode: sole
+Archived workflow: .phasestep/archived-workflow/YYYY-MM-DD/
+```
+
+5. On **Cancel** → treat as Alongside (option 2).
+6. Continue setup as the **only** delivery workflow. Do not keep offering the old loop.
+
+### Option 2 — Alongside (explicit opt-in)
+
+1. Record in `{{PROGRESS}}`: `Workflow mode: alongside` (date + one-line reason if given).
+2. Continue setup. Foreign commands and AGENTS outside content stay.
+3. Remind once: for full Phasestep results later, re-run `/setup` and choose Sole (or edit PROGRESS and archive).
+
+Never delete archived files. Never archive without Accept.
+
+---
+
 ## Artifacts
 
 | Stage | File | Gate |
 |-------|------|------|
+| 0 Workflow | `{{PROGRESS}}` + optional `.phasestep/archived-workflow/` | Sole (archive Accept) \| Alongside |
 | 1 Product | [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}}) | Owner accept / reject / edit |
 | 2 User flow | [`{{USER_FLOW}}`](../../{{USER_FLOW}}) | Owner review; refinements sync product |
 | 3 Dual lock | product + user flow | Owner confirms **both** accepted |
@@ -53,7 +124,7 @@ Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if gates or roles are unclear.
 
 1. **One stage at a time.** Stop after each draft or sync. Do not advance until Owner accepts (or explicitly skips an optional stage).
 2. **Owner owns product decisions.** Do not invent features. Mark unknowns as questions.
-3. **Docs / config only** — no app implementation, no commits unless Owner asks.
+3. **Docs / config only** — no app implementation, no commits unless Owner asks. Archive moves are Owner-gated config/docs hygiene, not app code.
 4. **User flow = interaction map** (screens/states/paths). Not visual design, mockups, or design-system polish.
 5. **Bidirectional sync (stage 2):** every Owner change to the user flow **must** update `{{PRODUCT_SPEC}}` in the same turn, then show a **Product sync delta**.
 6. If flow and product disagree → **stop** and ask which wins (during setup, prefer the flow, then rewrite product to match).
@@ -61,6 +132,7 @@ Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if gates or roles are unclear.
 8. **Verify when possible:** if web tools work, confirm catalog URLs resolve. If 404 or unverifiable → say so; fall back to Owner paste/path or skip.
 9. **Architecture does not silently rewrite product/flow.** If an architecture edit implies behavior or interaction-map change → **Architecture → product/flow impact** gate (Stage 5). Never edit locked product/flow as a side effect.
 10. **Design libraries are pick-one.** Never install or document two component libraries for the same UI. Guidelines may be additive. Commercial / preview-access resources need explicit Owner accept.
+11. **Sole vs alongside:** recommend Sole; archive only after Accept; Alongside is explicit opt-in. Never silent moves.
 
 ---
 

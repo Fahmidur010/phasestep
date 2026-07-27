@@ -10,6 +10,8 @@ Phasestep progress tracker. Update during builds; `/complete-phase` marks phases
 
 Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
 
+- [ ] Setup mode (greenfield | mid-project)
+- [ ] Workflow mode (sole | alongside)
 - [ ] Product (`product.md`) accepted
 - [ ] User flow (`USER_FLOW.md`) accepted (or skipped)
 - [ ] Product + flow dual-locked
@@ -20,6 +22,14 @@ Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
 - [ ] Design system (optional) — library pick-one + guidelines
 - [ ] Build plan accepted
 - [ ] `buildCommand` confirmed
+
+```text
+Setup mode: mid-project
+Workflow mode: sole
+Archived workflow: .phasestep/archived-workflow/YYYY-MM-DD/
+```
+
+(or `Workflow mode: alongside`)
 
 ### Stack enrichment log
 

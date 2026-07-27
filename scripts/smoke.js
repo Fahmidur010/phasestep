@@ -72,6 +72,7 @@ function main() {
   const setup = read(path.join('.cursor', 'commands', 'setup.md'));
   const requiredStages = [
     '## Greenfield vs existing (mid-project) project',
+    '## Workflow mode — sole Phasestep (recommended) vs alongside',
     '## Stage 1 — Product',
     '## Stage 2',
     '## Stage 4',
@@ -83,6 +84,9 @@ function main() {
     'Existing / mid-project',
     'Product sync delta',
     'pick-one',
+    'Sole Phasestep (recommended)',
+    'Accept archive',
+    'Never silent moves',
   ];
   for (const needle of requiredStages) {
     assert(setup.includes(needle), `setup.md contains: ${needle}`);
@@ -136,6 +140,12 @@ function main() {
   assert(setupCmd.includes('Verification (web UI'), 'setup Stage 4 verification lane');
   assert(setupCmd.includes('playwright-cli'), 'setup mentions playwright-cli');
   assert(setupCmd.includes('recommended companions'), 'setup recommended companions with Playwright');
+  assert(setupCmd.includes('Workflow mode'), 'setup Workflow mode section');
+  assert(setupCmd.includes('archived-workflow'), 'setup archive destination');
+
+  const cursorReadme = read(path.join('.cursor', 'commands', 'README.md'));
+  assert(cursorReadme.includes('Your other slash commands stay'), 'cursor README coexistence');
+  assert(cursorReadme.includes('Sole Phasestep'), 'cursor README sole workflow');
 
   const design = JSON.parse(read(path.join('.phasestep', 'design-catalog.json')));
   assert(
@@ -148,6 +158,9 @@ function main() {
   assert(Array.isArray(cfg.adapters) && cfg.adapters.includes('cursor'), 'adapters include cursor');
   assert(cfg.userFlow && cfg.stackCatalog && cfg.designCatalog, 'config enrichment keys');
   assert(cfg.auditPlan && cfg.auditReportsDir, 'config audit keys');
+
+  const progressStub = read(cfg.progress);
+  assert(progressStub.includes('Workflow mode'), 'PROGRESS workflow mode checklist');
 
   // audit campaign artifacts
   assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'AUDIT_PLAN stub');
@@ -233,9 +246,48 @@ function main() {
   assert(findChoice('').adapters.length === 3, 'menu default → all');
   assert(findChoice('claude-code').adapters.join(',') === 'claude', 'alias claude-code');
 
+  // Alongside existing Cursor commands + AGENTS
+  const TMP4 = path.join(ROOT, 'tmp-smoke-alongside');
+  rmrf(TMP4);
+  fs.mkdirSync(path.join(TMP4, '.cursor', 'commands'), { recursive: true });
+  fs.writeFileSync(path.join(TMP4, '.cursor', 'commands', 'my-ship.md'), '# custom ship\n', 'utf8');
+  fs.writeFileSync(
+    path.join(TMP4, '.cursor', 'commands', 'setup.md'),
+    '# CUSTOM_SETUP_KEEP\n',
+    'utf8'
+  );
+  fs.writeFileSync(path.join(TMP4, 'AGENTS.md'), '# My agent rules\nKEEP_AGENTS\n', 'utf8');
+  const alongOut = run(['init', TMP4, '--adapters=cursor,codex']);
+  assert(alongOut.includes('Alongside existing workflow'), 'init Alongside section');
+  assert(alongOut.includes('WARN') && alongOut.includes('collision'), 'init warns name collision');
+  assert(alongOut.includes('my-ship.md'), 'init lists foreign command');
+  assert(alongOut.includes('Sole Phasestep'), 'init points to Sole workflow mode');
+  assert(
+    fs
+      .readFileSync(path.join(TMP4, '.cursor', 'commands', 'setup.md'), 'utf8')
+      .includes('CUSTOM_SETUP_KEEP'),
+    'alongside keeps colliding setup.md'
+  );
+  assert(
+    fs.existsSync(path.join(TMP4, '.cursor', 'commands', 'my-ship.md')),
+    'alongside keeps foreign command'
+  );
+  assert(
+    fs.existsSync(path.join(TMP4, '.cursor', 'commands', 'plan-phase.md')),
+    'alongside installs non-colliding commands'
+  );
+  const agentsAlongside = fs.readFileSync(path.join(TMP4, 'AGENTS.md'), 'utf8');
+  assert(agentsAlongside.includes('KEEP_AGENTS'), 'alongside preserves AGENTS content');
+  assert(agentsAlongside.includes('phasestep:codex:start'), 'alongside appends phasestep block');
+  assert(agentsAlongside.includes('Additive'), 'AGENTS block mentions additive');
+  const checkAlong = run(['check', TMP4]);
+  assert(checkAlong.includes('Foreign commands'), 'check notes foreign commands');
+  assert(checkAlong.includes('All required Phasestep artifacts present'), 'alongside check passes');
+
   rmrf(TMP);
   rmrf(TMP2);
   rmrf(TMP3);
+  rmrf(TMP4);
   console.log('\nAll smoke + setup contract checks passed.\n');
 }
 

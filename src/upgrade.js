@@ -11,6 +11,8 @@ const {
   installCommands,
   installOwnerStubs,
   installCatalogs,
+  scanAlongside,
+  formatAlongsideReport,
 } = require('./scaffold');
 
 /**
@@ -78,6 +80,8 @@ async function upgrade({
   console.log('  Merging phasestep.json keys…');
   installConfig(targetDir, merged, { force: true });
 
+  const preScan = scanAlongside(targetDir, merged.adapters);
+
   if (forceConstitution) {
     console.log('  Refreshing constitution…');
     installConstitution(packageRoot, targetDir, merged, { force: true });
@@ -110,12 +114,20 @@ async function upgrade({
     );
   }
 
+  const alongside = formatAlongsideReport(preScan, {
+    context: 'upgrade',
+    force: !!forceCommands,
+  });
+
   console.log(`
 Done.
 
 Adapters: ${merged.adapters.join(', ')}
 Config:   phasestep.json
 Commands/catalogs refreshed. Re-open the agent or reload commands if needed.
+
+${alongside}
+
 Next: /setup (resume) or /plan-phase N
 `);
 }

@@ -43,5 +43,6 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 3. After build: Behavior delta → Owner intent gate → then verify.
 4. Design component libraries are pick-one; never mix kits.
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app.
+6. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
 
 If command markdown files are missing, run `npx phasestep upgrade` or `npx phasestep init`.
