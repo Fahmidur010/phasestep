@@ -29,9 +29,35 @@ Read the step’s **Behavior delta**.
 
 Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED.
 
+## Evidence by surface (before Playwright)
+
+Decide the step’s surface from Behavior delta / product / stack:
+
+| Surface | Evidence path |
+|---------|----------------|
+| **Web UI** (browser-rendered) | Playwright sections below (detect → mid-flight → evidence) |
+| **Flutter / React Native** | **Native evidence** — never Playwright mid-flight |
+| **Backend / CLI / API-only** | **Backend tool evidence** — never Playwright |
+
+### Native evidence (Flutter / React Native)
+
+1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` for `flutter-analyzer-evidence` / `react-native-device-evidence` and `{{PROGRESS}}` enrichment log.
+2. Add checklist items the Owner can run on a device/simulator plus agent-runnable tools:
+   - Flutter: `flutter analyze`, `flutter test` (and `buildCommand` if set)
+   - React Native: project typecheck/lint/tests + `buildCommand` (e.g. `tsc`, Expo lint) — do not invent Detox/Maestro installs unless Owner asks
+3. Report **Evidence: pass | fail | not run** (tool) next to items; Owner marks Pass/Fail for device UAT judgment.
+4. If verification was skipped at setup → proceed with Owner/device UAT + `buildCommand` only. Do **not** offer Playwright.
+
+### Backend tool evidence (API / CLI / no browser UI)
+
+1. Prefer catalog `backend-tool-evidence` + project `buildCommand`.
+2. Checklist: build/lint/test commands + Owner checks against API/CLI contracts from the Behavior delta.
+3. Optional HTTP smoke (curl/script) **only** if Owner wants it — never invent a browser path.
+4. If the product actually has a web UI on a stack like Laravel → use the **Web UI** / Playwright path instead.
+
 ## Playwright — detect before evidence
 
-When this step touches a **web UI** surface:
+When this step touches a **web UI** surface (not Flutter/RN native, not backend-only):
 
 1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` + `detectInstalled` and `{{PROGRESS}}` Stack enrichment log.
 2. **Installed / accepted** → use **Playwright evidence** below.
@@ -82,13 +108,13 @@ When Playwright is available (setup accept, mid-flight install, or already in `p
 - How to run the app / target environment
 - Test accounts / fixtures from the phase plan
 - Entry points for **this step only**
-- Playwright available? yes (cli / mcp) | no
+- Playwright available? yes (cli / mcp) | no | n/a (native/backend)
 
 ### Intent reminder
 - …
 
 ### Checklist (numbered)
-Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in) → Evidence (manual | playwright-cli | mcp | none)
+Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in) → Evidence (manual | playwright-cli | mcp | flutter-analyze | rn-tool | buildCommand | none)
 
 Keep short; call out regression risks to earlier verified steps only when relevant.
 

@@ -122,6 +122,12 @@ function main() {
     'playwright-mcp Claude install recipe'
   );
   assert(!pwCli.why.includes('WHEN-THEN'), 'playwright-cli why has no unshipped WHEN/THEN');
+  const flutterEv = stack.verification.find((v) => v.id === 'flutter-analyzer-evidence');
+  const rnEv = stack.verification.find((v) => v.id === 'react-native-device-evidence');
+  const beEv = stack.verification.find((v) => v.id === 'backend-tool-evidence');
+  assert(flutterEv && flutterEv.appliesTo.includes('flutter'), 'flutter-analyzer-evidence entry');
+  assert(rnEv && rnEv.appliesTo.includes('react-native'), 'react-native-device-evidence entry');
+  assert(beEv && beEv.appliesTo.includes('nodejs'), 'backend-tool-evidence entry');
   const pwBest = stack.community.find((c) => c.id === 'playwright-best-practices');
   assert(pwBest && Array.isArray(pwBest.recommendedWith), 'playwright-best-practices community companion');
   assert(
@@ -130,6 +136,9 @@ function main() {
   );
 
   const verifyCmd = read(path.join('.cursor', 'commands', 'verify-phase.md'));
+  assert(verifyCmd.includes('Evidence by surface'), 'verify-phase evidence by surface');
+  assert(verifyCmd.includes('Native evidence'), 'verify-phase native evidence');
+  assert(verifyCmd.includes('Backend tool evidence'), 'verify-phase backend evidence');
   assert(verifyCmd.includes('Playwright evidence'), 'verify-phase Playwright section');
   assert(verifyCmd.includes('do **not** install silently'), 'verify-phase no silent install');
   assert(verifyCmd.includes('Mid-flight Playwright offer'), 'verify-phase mid-flight offer');
@@ -137,9 +146,11 @@ function main() {
   assert(verifyCmd.includes('this step only'), 'verify-phase option 2 scoped to step');
 
   const setupCmd = read(path.join('.cursor', 'commands', 'setup.md'));
-  assert(setupCmd.includes('Verification (web UI'), 'setup Stage 4 verification lane');
+  assert(setupCmd.includes('Verification → Accept matched surface'), 'setup Stage 4 verification lane');
+  assert(setupCmd.includes('Flutter / React Native'), 'setup native verification surface');
+  assert(setupCmd.includes('Backend / CLI'), 'setup backend verification surface');
   assert(setupCmd.includes('playwright-cli'), 'setup mentions playwright-cli');
-  assert(setupCmd.includes('recommended companions'), 'setup recommended companions with Playwright');
+  assert(setupCmd.includes('playwright-best-practices'), 'setup recommended companions with Playwright');
   assert(setupCmd.includes('Workflow mode'), 'setup Workflow mode section');
   assert(setupCmd.includes('archived-workflow'), 'setup archive destination');
 
@@ -177,6 +188,8 @@ function main() {
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('Browser evidence'), 'audit-phase browser evidence');
   assert(auditPhaseCmd.includes('both modes'), 'audit-phase browser evidence both modes');
+  assert(auditPhaseCmd.includes('Native evidence'), 'audit-phase native evidence');
+  assert(auditPhaseCmd.includes('Backend tool evidence'), 'audit-phase backend evidence');
   assert(auditPhaseCmd.includes('Mid-flight Playwright offer'), 'audit-phase mid-flight offer');
   assert(auditPhaseCmd.includes('build phase N'), 'audit-phase Mode A decline key');
 

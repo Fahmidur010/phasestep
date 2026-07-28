@@ -84,7 +84,7 @@ Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (desi
 
 Reports live in `docs/audit-reports/` as plain Markdown with stable finding IDs, each citing its ground (spec / universal checklist / stack rules + tool evidence).
 
-Optional **Playwright** (CLI preferred, MCP alternate) can be accepted during `/setup` Stage 4 for web UI projects — or offered once mid-flight on `/verify-phase` / `/audit-phase` if skipped. Strengthens verify and UI audit evidence; not a dependency of the `phasestep` package itself.
+Optional **verification by surface:** web UI → Playwright (CLI preferred); Flutter/RN → analyzer/tests + Owner device UAT; backend/CLI → `buildCommand` / lint / tests. Never Playwright for native or pure APIs. Mid-flight Playwright offer only applies to web UI if Stage 4 was skipped.
 
 ## Local development
 
@@ -97,7 +97,7 @@ npm run smoke
 
 ## Version
 
-**0.4.10** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.4.11** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

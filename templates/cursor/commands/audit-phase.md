@@ -20,9 +20,33 @@ Resolve mode: if `{{AUDIT_PLAN}}` is accepted and defines Audit Phase N, and no 
 
 ---
 
-## Browser evidence (both modes — web UI)
+## Evidence by surface (both modes)
 
-Use when the phase touches a **browser UI** (Mode A: UI steps / checkpoints; Mode B: In scope includes web UI). Otherwise skip.
+| Surface | Path |
+|---------|------|
+| **Web UI** | **Browser evidence** below |
+| **Flutter / React Native** | **Native evidence** below — never Playwright |
+| **Backend / CLI / API-only** | **Backend tool evidence** below — never Playwright |
+
+### Native evidence (Flutter / RN)
+
+When the phase is native mobile UI:
+
+1. Run catalog / `buildCommand` tools (`flutter analyze` / `flutter test`, or RN typecheck/tests).
+2. Attach outcomes under Evidence; Owner/device UAT remains the gate for UI judgment.
+3. Do **not** run mid-flight Playwright. Record “native — Owner/device UAT” if tools were not run.
+
+### Backend tool evidence
+
+When the phase is API/CLI with no browser UI:
+
+1. Run `buildCommand` / lint / tests from the plan or catalog `backend-tool-evidence`.
+2. Attach outcomes under Evidence. Optional HTTP smoke only if Owner asked.
+3. If scope secretly includes a web UI → switch to Browser evidence / Playwright.
+
+### Browser evidence (web UI)
+
+Use when the phase touches a **browser UI** (Mode A: UI steps / checkpoints; Mode B: In scope includes web UI). Skip for Flutter/RN native and backend-only.
 
 1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` + `detectInstalled` / `{{PROGRESS}}` enrichment log.
 2. If Playwright CLI is available → exercise critical in-scope flows; attach CLI outcomes under Evidence (prefer CLI over MCP).
@@ -68,7 +92,7 @@ Never install silently. Never block the audit if Owner chooses 2 or 3.
    - [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) if present
    - Stack practice docs the project defines
 3. Check: steps reflected in code; layering/forbidden imports; auth/role guards; migrations present when claimed; every audit checkpoint evaluated; short SOLID pass on changed surfaces.
-4. If this phase has a **web UI** surface → follow **Browser evidence** above (attach outcomes to the report; mid-flight if Playwright missing).
+4. If this phase has a **web UI** surface → follow **Browser evidence** above. If **native** or **backend-only** → follow Native / Backend tool evidence above (no Playwright mid-flight).
 5. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
    - Issues → `/refine-phase $ARGUMENTS` then re-audit
    - No C/M → ready for `/complete-phase $ARGUMENTS` after Owner confirmation
@@ -95,7 +119,7 @@ Cannot confirm something (no tool, no rule)? Report **"needs manual review"** �
 
 Evaluate **every dimension** in the plan's table. Mark N/A with a reason. Never skip silently.
 
-If In scope includes browser UI → follow **Browser evidence** above before finishing the report.
+If In scope includes browser UI → follow **Browser evidence** above. If native mobile → **Native evidence**. If API/CLI only → **Backend tool evidence**.
 
 ### Write the report
 

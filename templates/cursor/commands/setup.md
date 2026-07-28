@@ -214,7 +214,7 @@ When Owner is satisfied:
 **Catalog:** [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) — three lanes:
 - **`stacks`** = official framework sources only
 - **`community`** = non-official curated recipes (`appliesTo` stack ids)
-- **`verification`** = official cross-cutting verify/audit tools (e.g. Playwright) when the product has a **web UI**
+- **`verification`** = official verify/audit evidence by **surface** (web → Playwright; Flutter/RN → analyzer + Owner/device UAT; backend → build/test/lint — see catalog `appliesWhen`)
 
 ### 4a — Detect and confirm stack (required gate)
 
@@ -234,8 +234,12 @@ Confirm | Correct (tell me the stack) | Unsure (help me decide)
 
 1. Look up matching **official** entries in `stacks` for the confirmed stack(s). Multiple matches are OK when additive (e.g. React + TanStack).
 2. Look up matching **community** entries where `appliesTo` intersects confirmed stack ids.
-3. Look up matching **verification** entries where `appliesTo` intersects confirmed stack ids **and** the product has (or will have) a browser-rendered UI. If the product is CLI-only / no UI → skip verification proposals (or ask once). **Never** propose Playwright for **Flutter** or **React Native** (native mobile) — browser automation only; those stay Owner/device UAT.
-4. If `detectInstalled` already matches (e.g. `@playwright/cli` in package.json, or Playwright in `.cursor/mcp.json` / `.mcp.json`) → say so; still offer skills/MCP wiring if missing; do not re-install blindly. If Claude has MCP only in user-global `~/.claude.json`, ask Owner once rather than assuming missing.
+3. Look up matching **verification** entries where `appliesTo` intersects confirmed stack ids **and** `appliesWhen` matches the product surface:
+   - **Web UI** (browser-rendered) → Playwright entries (`playwright-cli` / `playwright-mcp`)
+   - **Flutter / React Native** (native) → native evidence entries — **never** Playwright
+   - **Backend / CLI / API-only** (no browser UI) → backend tool-evidence entry — **never** invent a browser path
+   If surface is unclear → ask once (web UI | native mobile | backend-only).
+4. If `detectInstalled` already matches (e.g. `@playwright/cli` in package.json, or Playwright in `.cursor/mcp.json` / `.mcp.json`) → say so; still offer skills/MCP wiring if missing; do not re-install blindly. If Claude has MCP only in user-global `~/.claude.json`, ask Owner once rather than assuming missing. For Flutter/RN/backend entries, “accept” usually means record evidence commands in `{{PROGRESS}}` / `buildCommand` — not a new browser install.
 5. Present to Owner in **three clearly labeled sections** (never mix them):
 
 #### A — Official (recommended default)
@@ -257,15 +261,25 @@ For each matched community item:
 - What accepting means (install command / target)
 - Explicit caveat: **not official**; may overlap or conflict with official guidance — prefer official first
 
-#### C — Verification (web UI — official, optional)
+#### C — Verification (official, optional — by surface)
 
-For each matched `verification` entry (typically Playwright CLI primary, MCP alternate):
-- Label, kind, URL, publisher
-- **`why`** and `appliesWhen`
+Match catalog `verification` entries to the confirmed surface:
+
+**Web UI** — Playwright CLI (primary) / MCP (optional):
+- Label, kind, URL, publisher, **`why`**, `appliesWhen`
 - Prefer **playwright-cli** for routine `/verify-phase` and audit evidence; offer **playwright-mcp** only if Owner wants exploratory/persistent browser sessions
-- What accepting means (devDependency, `install --skills`, and/or `.cursor/mcp.json`)
+- What accepting means (devDependency, `install-browser`, `install --skills`, and/or MCP config)
+- **Recommended companions:** community items with `recommendedWith` (e.g. `playwright-best-practices`)
 
-**Recommended companions:** look up `community` items whose `recommendedWith` intersects the verification ids being accepted (e.g. `playwright-best-practices`). Present them as **recommended with Playwright** (still labeled **community / not official**). Default suggestion: install companions together with playwright-cli unless the Owner declines.
+**Flutter / React Native** — analyzer/tests + Owner/device UAT:
+- Present matching native verification ids from the catalog
+- **Never** propose Playwright for native mobile
+- What accepting means: record evidence commands (`flutter analyze` / `flutter test`, or RN typecheck/tests + `buildCommand`); Owner still runs device UAT
+
+**Backend / CLI / API-only** — tool evidence + Owner contract UAT:
+- Present `backend-tool-evidence` (or matching entry) when there is no browser UI
+- Evidence = `buildCommand` / lint / tests; optional HTTP smoke only if Owner asks
+- If the stack can also be a web UI (e.g. Laravel) and the product **has** a browser UI → prefer Playwright instead
 
 Do **not** copy skill/rule bodies into the repo from training memory or from the phasestep package — only run the catalog install recipes into **this** project so the agent discovers skills locally.
 
@@ -279,12 +293,12 @@ Do **not** copy skill/rule bodies into the repo from training memory or from the
 Stack enrichment
   Official → Accept selected | Skip
   Community → Accept selected (optional) | Skip all community
-  Verification (web UI) → Accept playwright-cli (+ recommended companions) | Accept MCP too | Skip verification
+  Verification → Accept matched surface evidence (web: Playwright | native: analyze/device | backend: tools) | Skip verification
   Or Provide URL/path (Owner's own rules/skills files)
 ```
 
 9. On Accept: apply only Owner-selected recipes (including any accepted verification companions). Record in `{{PROGRESS}}` Stack enrichment log with provenance (`official` | `community` | `verification`, id, URL, date).
-10. On Skip: record skip/reason; continue. Skip is valid — `/verify-phase` and `/audit-phase` (build Mode A or campaign Mode B) may **STOP once** later with a mid-flight Playwright offer if a UI step needs browser evidence.
+10. On Skip: record skip/reason; continue. Skip is valid — for **web UI**, `/verify-phase` and `/audit-phase` may **STOP once** later with a mid-flight Playwright offer. For **native / backend**, skip means Owner UAT + `buildCommand` only (no Playwright mid-flight).
 11. Proceed to Stage 5 — Architecture (cite accepted official sources in conventions; note community / verification extras if any).
 
 

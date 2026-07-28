@@ -20,6 +20,8 @@ Each phase MUST evaluate all dimensions (mark N/A with reason, never skip silent
 | Stack conformance | official rules/skills for the detected stack; native linter/analyzer output |
 | Design system (UI only) | `{{DESIGN_SYSTEM}}` via `/audit-ds-phase` |
 | Browser evidence (web UI) | If Playwright is installed: run CLI (preferred) or MCP against in-scope flows; attach outcomes as evidence. If missing → mid-flight STOP once (Install now \| Owner-only \| Don't ask again for this audit phase). Never silent install. |
+| Native evidence (Flutter / RN) | Analyzer/tests + Owner device UAT — never Playwright. See catalog `flutter-analyzer-evidence` / `react-native-device-evidence`. |
+| Backend tool evidence (API/CLI) | `buildCommand` / lint / tests + Owner contract UAT — never invent a browser path. See catalog `backend-tool-evidence`. |
 
 ## Grounds
 

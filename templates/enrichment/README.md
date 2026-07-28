@@ -1,6 +1,6 @@
 # Enrichment catalogs
 
-Used by `/setup` for stack (Stage 4) and design (Stage 7). Also consulted by `/verify-phase` and `/audit-phase` (build + campaign) for optional browser evidence.
+Used by `/setup` for stack (Stage 4) and design (Stage 7). Also consulted by `/verify-phase` and `/audit-phase` for evidence by surface (web / native / backend).
 
 ## Stack — `stack-catalog.json`
 
@@ -8,9 +8,9 @@ Used by `/setup` for stack (Stage 4) and design (Stage 7). Also consulted by `/v
 |-----|---------|
 | `stacks` | **Official** framework sources — each resource/recipe has **`why`** |
 | `community` | **Non-official** curated recipes (`appliesTo` + **`why`**) |
-| `verification` | **Official** cross-cutting verify/audit tools (e.g. Playwright CLI + MCP). Filter by `appliesTo` + `appliesWhen` (web UI). **Not** for Flutter / React Native native. Owner-gated; never vendored into the phasestep package |
+| `verification` | **Official** evidence by surface: Playwright (web UI); Flutter/RN analyzer + Owner/device UAT; backend build/test/lint. Filter by `appliesTo` + `appliesWhen`. Owner-gated; never vendored into the phasestep package |
 
-Present Official, Community, and Verification separately. Prefer official stack sources; prefer **playwright-cli** over MCP for routine verify/audit evidence.
+Present Official, Community, and Verification separately. Prefer official stack sources. For web UI prefer **playwright-cli** over MCP. Never propose Playwright for Flutter / React Native native.
 
 Community items may declare **`recommendedWith`**: verification ids (e.g. `playwright-cli`) they should be offered with. On Accept of that verification tool, propose those companions by default (Owner can decline). Skills still install **into the consumer project** via recipe — Phasestep never vendors skill bodies.
 

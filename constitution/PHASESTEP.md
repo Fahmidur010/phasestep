@@ -180,10 +180,10 @@ Rules: 3–12 bullets; product behavior language; not proof of correct code; per
 | Concern | How Phasestep handles it |
 |---------|--------------------------|
 | Right thing? | Behavior delta (intent gate) |
-| Actually works? | Owner manual verification (+ build check); optional Playwright browser evidence for web UI |
-| Codebase healthy? | Phase audits (build + optional campaign); browser evidence when UI is in scope |
+| Actually works? | Owner manual verification (+ build check); optional surface evidence (Playwright for web UI; analyze/device for Flutter/RN; tools for backend) |
+| Codebase healthy? | Phase audits (build + optional campaign); evidence by surface when in scope |
 
-Owner UAT remains the gate. Playwright (if accepted at setup or mid-flight) adds proof; it does not auto-pass verify or invent installs. Auto-generated test suites from specs remain optional / future — not required for compliance.
+Owner UAT remains the gate. Surface evidence (if accepted at setup or mid-flight for web) adds proof; it does not auto-pass verify or invent installs. Auto-generated test suites from specs remain optional / future — not required for compliance.
 
 ---
 
@@ -271,7 +271,14 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
 - **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
-### v0.4.10 — Sole vs alongside in /setup — *current*
+### v0.4.11 — Verification by surface — *current*
+
+**Date:** 2026-07-28  
+
+- Verification catalog: Flutter analyzer/test, React Native device+tools, backend build/test/lint — alongside Playwright for web  
+- `/setup` / `/verify-phase` / `/audit-phase`: evidence by surface; never Playwright for native or pure backend  
+
+### v0.4.10 — Sole vs alongside in /setup
 
 **Date:** 2026-07-27  
 
@@ -322,6 +329,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 ### Planned
 
+- Phasestep marketing / docs site (domain) — explain what it is and how it works  
 - Optional `/pr-step` + GitHub adapters  
 - WHEN/THEN scenarios on Behavior delta / product (borrowed idea; not OpenSpec product)  
 - Optional project-map enrichment (Graphify or thin native) for mid-project setup / audit slicing  
@@ -336,6 +344,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - ~~Playwright polish (stacks + Claude MCP + Codex)~~ → v0.4.8  
 - ~~Alongside existing Cursor/agent workflows~~ → v0.4.9  
 - ~~Sole vs alongside workflow mode in /setup~~ → v0.4.10  
+- ~~Verification by surface (Flutter / RN / backend)~~ → v0.4.11  
 
 ---
 

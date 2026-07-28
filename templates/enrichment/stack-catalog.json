@@ -876,6 +876,110 @@
           "why": "Project-scoped Claude Code MCP (commit-friendly). Prefer this over user-global ~/.claude.json for team repos."
         }
       ]
+    },
+    {
+      "id": "flutter-analyzer-evidence",
+      "lane": "official",
+      "publisher": "flutter",
+      "appliesTo": ["flutter"],
+      "appliesWhen": "Flutter (or Flutter-primary) product — native/mobile UI. Do **not** use Playwright. Evidence = flutter analyze / flutter test + Owner device/simulator UAT.",
+      "detectInstalled": {
+        "fileContainsAny": [
+          {
+            "file": "pubspec.yaml",
+            "pattern": "flutter:"
+          }
+        ]
+      },
+      "kind": "cli",
+      "label": "Flutter analyze + test (native evidence)",
+      "url": "https://docs.flutter.dev/testing/overview",
+      "why": "First-party Flutter tooling for agent-runnable proof during /verify-phase and audits. Complements Owner device UAT; does not replace the Owner gate. Prefer these over inventing browser automation on native.",
+      "notes": "Out of scope: Playwright. Device/simulator UAT stays Owner-run.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Flutter testing overview",
+          "url": "https://docs.flutter.dev/testing/overview",
+          "why": "Official testing guidance for Flutter apps."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "flutter-analyze",
+          "description": "Run analyzer as verify/audit evidence (no extra install if Flutter SDK present)",
+          "command": "flutter analyze",
+          "why": "Fast static check the agent can run after build/refine."
+        },
+        {
+          "id": "flutter-test",
+          "description": "Run Flutter tests as evidence when the project has tests",
+          "command": "flutter test",
+          "why": "Automated proof for non-UI or widget tests; UI flows still need Owner device UAT."
+        }
+      ]
+    },
+    {
+      "id": "react-native-device-evidence",
+      "lane": "official",
+      "publisher": "phasestep",
+      "appliesTo": ["react-native"],
+      "appliesWhen": "React Native / Expo native UI. Do **not** propose Playwright for native. Evidence = project typecheck/lint/tests + buildCommand + Owner device UAT.",
+      "detectInstalled": {
+        "packageJsonDepsAny": ["react-native", "expo"]
+      },
+      "kind": "owner-device",
+      "label": "React Native tool + device UAT",
+      "url": "https://reactnative.dev/docs/testing-overview",
+      "why": "Native mobile proof without browser automation. Agent runs repo scripts / buildCommand; Owner validates on device/simulator. Do not invent Detox/Maestro installs unless the Owner asks.",
+      "notes": "Out of scope: Playwright for native. Optional E2E frameworks only with explicit Owner Accept.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "React Native testing overview",
+          "url": "https://reactnative.dev/docs/testing-overview",
+          "why": "Official testing entry point for RN projects."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "rn-buildcommand",
+          "description": "Use phasestep.json buildCommand as the primary agent check (Owner confirms command)",
+          "command": "npx phasestep check",
+          "why": "Reminds the team that buildCommand is the reproducible agent check; set it in Stage 9 to tsc/lint/test as appropriate."
+        }
+      ]
+    },
+    {
+      "id": "backend-tool-evidence",
+      "lane": "official",
+      "publisher": "phasestep",
+      "appliesTo": ["nodejs", "django", "fastapi", "php", "laravel"],
+      "appliesWhen": "API / CLI / backend with **no** browser-rendered UI (or Owner confirms backend-only). Prefer this over Playwright. If Laravel (or similar) ships a browser UI → use playwright-cli instead.",
+      "detectInstalled": {
+        "packageJsonDepsAny": ["express", "fastify", "koa", "@nestjs/core"]
+      },
+      "kind": "cli",
+      "label": "Backend tool evidence (build / test / lint)",
+      "url": "https://github.com/Fahmidur010/phasestep",
+      "why": "Owner UAT against API/CLI contracts from the Behavior delta, plus agent-runnable buildCommand / lint / tests. No browser automation required for backend-only products.",
+      "notes": "Optional HTTP smoke (curl/script) only if Owner asks. Do not invent Playwright for pure APIs.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Phasestep buildCommand (project config)",
+          "url": "https://github.com/Fahmidur010/phasestep",
+          "why": "buildCommand in phasestep.json is the standard post-build agent check."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "backend-buildcommand",
+          "description": "Confirm buildCommand in phasestep.json (Stage 9) as verify/audit evidence",
+          "command": "npx phasestep check",
+          "why": "Ensures config exists; Owner still sets the real build/test command for the stack."
+        }
+      ]
     }
   ]
 }
