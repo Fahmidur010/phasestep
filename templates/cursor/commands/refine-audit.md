@@ -17,7 +17,10 @@ Fix findings for **Audit Phase $ARGUMENTS** that the Owner marked **Approved for
 3. **STOP.** Show the fix plan and wait:
 
 ```text
-Refine plan for Audit Phase $ARGUMENTS → Approve | Edit (notes) | Cancel
+Refine plan for Audit Phase $ARGUMENTS:
+1. Approve
+2. Edit (notes)
+3. Cancel
 ```
 
 ## Fixing
@@ -32,11 +35,16 @@ Refine plan for Audit Phase $ARGUMENTS → Approve | Edit (notes) | Cancel
 
 1. Update each finding in the report: `Fixed` | `Partially fixed` (why) | `Blocked` (what blocks it). Never delete findings.
 2. Update the report snapshot counts and `{{PROGRESS}}`.
-3. Behavior changed? Present a short **Behavior delta** for Owner intent review before claiming done.
+3. Behavior changed? Present a short **Behavior delta** and **STOP** for intent:
+```text
+Behavior delta (after refine-audit):
+1. Accept
+2. Reject (revise fixes / delta)
+```
 4. Direct the Owner to verify independently:
 
 ```text
-/audit-phase $ARGUMENTS reaudit
+/audit-campaign $ARGUMENTS reaudit
 ```
 
 Re-audit confirms findings closed (or reopens them). Fixes are not "done" until re-audit passes and the Owner acknowledges.

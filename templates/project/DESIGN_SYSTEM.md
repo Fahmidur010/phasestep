@@ -1,6 +1,6 @@
 # Design system
 
-UI rules for this project. Used by `/audit-ds-phase` and UI build steps.
+UI rules for this project. Used by `/audit-ds`, `/audit-campaign-ds`, and UI build steps.
 
 Filled during `/setup` Stage 7 from product + user flow + architecture + **one** chosen component library (or Owner custom) + optional guidelines.
 

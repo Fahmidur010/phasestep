@@ -86,7 +86,7 @@ Playwright is not configured for this project, but this step has a web UI.
 
 - **Install now** → present the same catalog recipes as `/setup` Stage 4 section C (+ `playwright-best-practices` if `recommendedWith` matches). Apply only what Owner selects. Record in Stack enrichment log. Then continue this command with Playwright evidence.
 - **Continue Owner-only** → proceed with manual checklist for **this step only**. Later UI steps in the same phase may offer again.
-- **Don't ask again for build phase PHASE** → append to `{{PROGRESS}}`: `Playwright mid-flight: declined — build phase PHASE` (date). No further mid-flight offers for this build phase (including Mode A `/audit-phase`). Proceed Owner-only.
+- **Don't ask again for build phase PHASE** → append to `{{PROGRESS}}`: `Playwright mid-flight: declined — build phase PHASE` (date). No further mid-flight offers for this build phase (including `/audit-phase`). Proceed Owner-only.
 
 Never auto-install. Never block verification if Owner chooses 2 or 3.
 
@@ -125,7 +125,13 @@ Keep short; call out regression risks to earlier verified steps only when releva
 ## End message
 
 - Confirm intent accepted before treating verification as final
-- On **pass:** mark step `verified` + delta `accepted` → `/build-phase PHASE <next>`
-- On **fail:** `/refine-phase PHASE STEP` then re-verify
-- When **all** steps verified: optional `/audit-ds-phase` (if present) then `/audit-phase`
+- **STOP** once Owner has filled the checklist — reply with a number:
+
+```text
+Step verification result:
+1. Pass — mark step verified + delta accepted → /build-phase PHASE <next>
+2. Fail — /refine-phase PHASE STEP then re-verify
+```
+
+- When **all** steps verified: optional `/audit-ds` (if present) then `/audit-phase`
 - Do not suggest `/complete-phase` until audits are clean

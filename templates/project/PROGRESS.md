@@ -45,15 +45,15 @@ Archived workflow: .phasestep/archived-workflow/YYYY-MM-DD/
 
 ### Playwright mid-flight declines (optional)
 
-When Owner declines the mid-flight Playwright offer during `/verify-phase` or `/audit-phase`:
+When Owner declines the mid-flight Playwright offer during `/verify-phase`, `/audit-phase`, or `/audit-campaign`:
 
 ```text
 Playwright mid-flight: declined — build phase 2
 Playwright mid-flight: declined — audit phase 1
 ```
 
-- **build phase N** — quiets `/verify-phase` and Mode A `/audit-phase` for that delivery phase  
-- **audit phase N** — quiets campaign Mode B `/audit-phase` for that audit phase  
+- **build phase N** — quiets `/verify-phase` and `/audit-phase` for that delivery phase  
+- **audit phase N** — quiets `/audit-campaign` for that campaign audit phase  
 
 Do not re-offer for that phase after a decline is recorded.
 

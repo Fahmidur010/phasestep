@@ -5,6 +5,8 @@ argument-hint: [stage?]
 
 Run **Phasestep setup** — progressively fill project stubs with Owner gates. **Docs only. No application code** (except Owner-approved config like `.cursor/mcp.json` / `AGENTS.md` during stack enrichment).
 
+**Owner gate format:** every STOP that presents choices uses a numbered list (`1.` `2.` `3.` …). Words are labels; the Owner may reply with the number alone.
+
 Resume with `$ARGUMENTS` if provided: `product` | `flow` | `stack` | `architecture` | `decisions` | `design` | `build-plan` | `build-command` (otherwise continue from the first incomplete stage).
 
 Before Stage 1, complete **Setup mode** then **Workflow mode** (below) unless `{{PROGRESS}}` already records both.
@@ -31,7 +33,10 @@ Detect which mode applies **before Stage 1** (scan repo: app code, commits, exis
 At start, **STOP** once (skip if `{{PROGRESS}}` already has Setup mode):
 
 ```text
-Setup mode → Greenfield | Existing (mid-project) | Unsure (help me decide)
+Setup mode:
+1. Greenfield
+2. Existing (mid-project)
+3. Unsure (help me decide)
 ```
 
 Record in `{{PROGRESS}}`: `Setup mode: greenfield | mid-project`.
@@ -46,7 +51,7 @@ Phasestep can **install safely** next to other agent files. For the **best outco
 
 Scan and list:
 
-1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `complete-phase`, `session-log`, `audit-ds-phase`, `audit-project`, `refine-audit`, `complete-audit`, plus adapter `README.md`)
+1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, plus adapter `README.md`)
 2. **Name collisions** — Phasestep-owned filenames that exist but are **not** clearly Phasestep bodies (e.g. custom `setup.md` kept at init)
 3. **AGENTS.md outside markers** — content outside `<!-- phasestep:codex:start -->` … `<!-- phasestep:codex:end -->`
 4. **Owner-pointed extras** — ask once if other rule/command paths are part of their **old delivery loop** (do not auto-grab `.cursor/rules` or random tools)
@@ -78,17 +83,20 @@ Workflow mode:
 3. **STOP** — never move silently:
 
 ```text
-Archive plan ready → Accept archive | Edit list | Cancel (stay Alongside)
+Archive plan ready:
+1. Accept archive — move listed files
+2. Edit list — revise paths, show again
+3. Cancel — stay Alongside (Workflow mode option 2)
 ```
 
-4. On **Accept archive**: move (not delete) listed files; write the log; if Phasestep command files are now missing, run or tell Owner to run `npx phasestep upgrade` so Phasestep bodies are restored. Record in `{{PROGRESS}}`:
+4. On **1. Accept archive**: move (not delete) listed files; write the log; if Phasestep command files are now missing, run or tell Owner to run `npx phasestep upgrade` so Phasestep bodies are restored. Record in `{{PROGRESS}}`:
 
 ```text
 Workflow mode: sole
 Archived workflow: .phasestep/archived-workflow/YYYY-MM-DD/
 ```
 
-5. On **Cancel** → treat as Alongside (option 2).
+5. On **3. Cancel** → treat as Alongside (Workflow mode option 2).
 6. Continue setup as the **only** delivery workflow. Do not keep offering the old loop.
 
 ### Option 2 — Alongside (explicit opt-in)
@@ -149,11 +157,14 @@ Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if gates or roles are unclear.
 5. **STOP.** Show the draft summary and wait:
 
 ```text
-Product draft ready → Accept | Reject | Edit (notes)
+Product draft ready:
+1. Accept
+2. Reject
+3. Edit (notes)
 ```
 
-- **Accept** → Stage 2  
-- **Reject / Edit** → revise product, stop again  
+- **1. Accept** → Stage 2  
+- **2. Reject / 3. Edit** → revise product, stop again  
 
 Do **not** draft the user flow until product is accepted.
 
@@ -174,7 +185,10 @@ Do **not** draft the user flow until product is accepted.
 4. **STOP.** Tell Owner the map is the overview surface — easier than reading the full product line-by-line. Wait for:
 
 ```text
-User flow ready → Accept both (product + flow) | Tweak flow | Reject
+User flow ready:
+1. Accept both (product + flow)
+2. Tweak flow
+3. Reject
 ```
 
 ### Refinement loop (until dual accept)
@@ -223,7 +237,9 @@ When Owner is satisfied:
 
 ```text
 Detected stack(s): [e.g. Flutter]
-Confirm | Correct (tell me the stack) | Unsure (help me decide)
+1. Confirm
+2. Correct (tell me the stack)
+3. Unsure (help me decide)
 ```
 
 3. Do **not** look up or propose Official/Community items until the Owner confirms or corrects the stack identity.
@@ -290,15 +306,22 @@ Do **not** copy skill/rule bodies into the repo from training memory or from the
 8. **STOP** and wait:
 
 ```text
-Stack enrichment
-  Official → Accept selected | Skip
-  Community → Accept selected (optional) | Skip all community
-  Verification → Accept matched surface evidence (web: Playwright | native: analyze/device | backend: tools) | Skip verification
-  Or Provide URL/path (Owner's own rules/skills files)
+Stack enrichment — answer each section with a number:
+Official:
+  1. Accept selected
+  2. Skip
+Community:
+  1. Accept selected (optional)
+  2. Skip all community
+Verification:
+  1. Accept matched surface evidence (web: Playwright | native: analyze/device | backend: tools)
+  2. Skip verification
+Or overall:
+  3. Provide URL/path (Owner's own rules/skills files)
 ```
 
-9. On Accept: apply only Owner-selected recipes (including any accepted verification companions). Record in `{{PROGRESS}}` Stack enrichment log with provenance (`official` | `community` | `verification`, id, URL, date).
-10. On Skip: record skip/reason; continue. Skip is valid — for **web UI**, `/verify-phase` and `/audit-phase` may **STOP once** later with a mid-flight Playwright offer. For **native / backend**, skip means Owner UAT + `buildCommand` only (no Playwright mid-flight).
+9. On Accept (option 1 in a section): apply only Owner-selected recipes (including any accepted verification companions). Record in `{{PROGRESS}}` Stack enrichment log with provenance (`official` | `community` | `verification`, id, URL, date).
+10. On Skip (option 2): record skip/reason; continue. Skip is valid — for **web UI**, `/verify-phase`, `/audit-phase`, and `/audit-campaign` may **STOP once** later with a mid-flight Playwright offer. For **native / backend**, skip means Owner UAT + `buildCommand` only (no Playwright mid-flight).
 11. Proceed to Stage 5 — Architecture (cite accepted official sources in conventions; note community / verification extras if any).
 
 
@@ -312,10 +335,13 @@ Stack enrichment
 2. Draft `{{ARCHITECTURE}}` from product + finalized flow + repo scan + **any accepted stack enrichment** (cite official sources in conventions).
 3. Align `buildCommand` suggestion with the stack (see Stage 9).
 4. For fresh scaffolds: propose a conventional layout justified by the user flow. For existing features/folders: **document and follow** them — do not reinvent.
-5. **STOP** for Accept | Reject | Edit.
+5. **STOP** for numbered Accept / Reject / Edit.
 
 ```text
-Architecture draft ready → Accept | Reject | Edit (notes)
+Architecture draft ready:
+1. Accept
+2. Reject
+3. Edit (notes)
 ```
 
 ### Architecture → product/flow impact gate
@@ -338,12 +364,15 @@ If an Owner edit or the draft **implies** a change to product behavior or the in
 3. Wait for Owner:
 
 ```text
-Impact → Accept (sync product/flow) | Reject (fit architecture to existing product/flow) | Defer (log in decisions)
+Impact:
+1. Accept (sync product/flow)
+2. Reject (fit architecture to existing product/flow)
+3. Defer (log in decisions)
 ```
 
-4. **Accept** → same turn: update `{{PRODUCT_SPEC}}` and/or `{{USER_FLOW}}` as needed; keep them aligned (Product sync delta if product behavior changed); re-affirm dual lock; then continue architecture finalize.
-5. **Reject** → revise `{{ARCHITECTURE}}` so it fits the existing locked product/flow; do not change product/flow.
-6. **Defer** → add an Open row in `{{DECISIONS}}` (`Status: tbd`, `Blocker?` as appropriate); architecture must not assume the deferred outcome; proceed only with an architecture that works without inventing that answer.
+4. **1. Accept** → same turn: update `{{PRODUCT_SPEC}}` and/or `{{USER_FLOW}}` as needed; keep them aligned (Product sync delta if product behavior changed); re-affirm dual lock; then continue architecture finalize.
+5. **2. Reject** → revise `{{ARCHITECTURE}}` so it fits the existing locked product/flow; do not change product/flow.
+6. **3. Defer** → add an Open row in `{{DECISIONS}}` (`Status: tbd`, `Blocker?` as appropriate); architecture must not assume the deferred outcome; proceed only with an architecture that works without inventing that answer.
 
 When architecture is finalized with **no** open impact:
 
@@ -362,7 +391,10 @@ When architecture is finalized with **no** open impact:
 4. **STOP** for Owner review:
 
 ```text
-Decisions → Resolve some | Leave TBD | Mark blockers
+Decisions:
+1. Resolve some
+2. Leave TBD
+3. Mark blockers
 ```
 
 ### On resolve
@@ -399,7 +431,9 @@ When Owner is done with this review pass → Stage 7 — Design system.
 3. If UI → continue.
 
 ```text
-Design → UI product | Skip (non-UI / later)
+Design:
+1. UI product
+2. Skip (non-UI / later)
 ```
 
 ### 7b — Detect and confirm design context (required gate)
@@ -410,7 +444,9 @@ Design → UI product | Skip (non-UI / later)
 
 ```text
 Design context: surface=[…] existing=[none | …]
-Confirm | Correct surface | I have my own rules (URL/path)
+1. Confirm
+2. Correct surface
+3. I have my own rules (URL/path)
 ```
 
 4. If Owner provides own rules → verify path/URL; those become primary input for `{{DESIGN_SYSTEM}}`; catalog becomes optional extras only if Owner asks.
@@ -439,10 +475,15 @@ For each matching guideline:
 ### 7d — Owner choice gate
 
 ```text
-Design choice
-  Library → pick ONE id | None
-  Guidelines → zero or more ids
-  Or Provide own files only
+Design choice — answer each section with a number:
+Library:
+  1. Pick ONE id from the list above
+  2. None
+Guidelines:
+  1. Cite zero or more ids from the list above
+  2. None
+Or overall:
+  3. Provide own files only
 ```
 
 Record choice in `{{PROGRESS}}`.
@@ -455,8 +496,10 @@ Record choice in `{{PROGRESS}}`.
 4. **STOP** per batch (or per resource):
 
 ```text
-Agent resources for [library]
-  Accept selected | Skip all | Provide alternate URL/path
+Agent resources for [library]:
+1. Accept selected
+2. Skip all
+3. Provide alternate URL/path
 ```
 
 5. Apply **only** Owner-accepted recipes. Never invent APIs, license keys, or package names — follow cited docs.
@@ -483,7 +526,10 @@ Not mockups or full visual redesign.
 ### 7g — Accept gate
 
 ```text
-DESIGN_SYSTEM.md ready → Accept | Reject | Edit
+DESIGN_SYSTEM.md ready:
+1. Accept
+2. Reject
+3. Edit
 ```
 
 On accept → Stage 8 — Build plan.
@@ -521,12 +567,15 @@ Read before drafting:
 **STOP.** Present the phase order (short summary per phase) and wait:
 
 ```text
-BUILD_PLAN.md ready → Accept | Reject | Edit (notes)
+BUILD_PLAN.md ready:
+1. Accept
+2. Reject
+3. Edit (notes)
 ```
 
-- **Accept** → mark Build plan accepted in `{{PROGRESS}}`; proceed to Stage 9 — buildCommand  
-- **Reject / Edit** → revise `{{BUILD_PLAN}}`, stop again  
-- If blocker TBDs remain unresolved and Owner still accepts → record the **Owner override** in `{{DECISIONS}}` notes and in the build plan risk section
+- **1. Accept** → mark Build plan accepted in `{{PROGRESS}}`; proceed to Stage 9 — buildCommand  
+- **2. Reject / 3. Edit** → revise `{{BUILD_PLAN}}`, stop again  
+- If blocker TBDs remain unresolved and Owner still accepts (1) → record the **Owner override** in `{{DECISIONS}}` notes and in the build plan risk section
 
 ---
 
@@ -547,12 +596,15 @@ BUILD_PLAN.md ready → Accept | Reject | Edit (notes)
 **STOP.** Wait:
 
 ```text
-buildCommand → Accept proposed ([command]) | Use different (Owner specifies) | Keep current
+buildCommand:
+1. Accept proposed ([command])
+2. Use different (Owner specifies)
+3. Keep current
 ```
 
 ### 9c — Apply
 
-1. On Accept / Owner-specified: update `phasestep.json` `buildCommand` only.
+1. On **1. Accept** / **2. Owner-specified**: update `phasestep.json` `buildCommand` only.
 2. Sync [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}}) “Build & quality” to the same command.
 3. Mark `buildCommand` confirmed in `{{PROGRESS}}`.
 4. Proceed to **Finish**.

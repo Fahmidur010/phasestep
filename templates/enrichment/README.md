@@ -1,6 +1,6 @@
 # Enrichment catalogs
 
-Used by `/setup` for stack (Stage 4) and design (Stage 7). Also consulted by `/verify-phase` and `/audit-phase` for evidence by surface (web / native / backend).
+Used by `/setup` for stack (Stage 4) and design (Stage 7). Also consulted by `/verify-phase`, `/audit-phase`, and `/audit-campaign` for evidence by surface (web / native / backend).
 
 ## Stack — `stack-catalog.json`
 
@@ -29,5 +29,5 @@ Each library/guideline lists agent `resources` (`mcp` / `skills` / `llms` / `cli
 - Owner-gated installs; verify URLs when web is available
 - Never invent content; failure → propose links or ask Owner for URL/path
 - Playwright (and similar tools) install **into the consumer project** on Accept — they are not dependencies of `phasestep` itself
-- If verification was skipped at setup, `/verify-phase` / `/audit-phase` (Mode A or B) may offer a **mid-flight** install (Owner-gated, once per phase; decline recorded in `PROGRESS`) — never silent install
+- If verification was skipped at setup, `/verify-phase` / `/audit-phase` / `/audit-campaign` may offer a **mid-flight** install for web UI (Owner-gated, once per phase; decline recorded in `PROGRESS`) — never silent install
 - MCP detect: project `.cursor/mcp.json` (Cursor) and `.mcp.json` (Claude Code). User-global Claude config is outside the repo

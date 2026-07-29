@@ -63,7 +63,7 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Phase execution plan** | `docs/phase-plans/phase-N.md` | Steps, done-when, verify checklist, Behavior delta. |
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history (includes Setup checklist). |
 | **Tooling adapters** | `.cursor/commands/`, `.claude/commands/`, `AGENTS.md` | Commands / guidance implementing §5 (Cursor, Claude Code, Codex). |
-| **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds-phase`. Leave unused for non-UI projects. |
+| **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds` / `audit-campaign-ds`. Leave unused for non-UI projects. |
 | **Config** | `phasestep.json` | Paths + `buildCommand` for this project. |
 
 Paths are overridable in `phasestep.json`.
@@ -123,19 +123,23 @@ Paths are overridable in `phasestep.json`.
 | **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta; stop for intent gate. |
 | **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist anchored to delta. No code changes. |
 | **refine-phase** | `N` `[S]` | Agent | Minimal fixes; update delta if behavior changed. |
-| **audit-phase** | `N` `[reaudit]` | Agent | Read-only audit. Build mode: phase acceptance after steps verified. Campaign mode: audit-plan phase → report in `docs/audit-reports/`. |
-| **audit-ds-phase** | `N` \| `all` | Agent | Design-system audit (skip for non-UI projects). |
+| **audit-phase** | `N` | Agent | Read-only **build** acceptance audit after steps verified. Not for campaign. |
+| **audit-ds** | `N` \| `all` | Agent | Design-system audit for delivery (skip for non-UI). |
 | **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log. |
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes. |
 | **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); Owner accept gate; docs only. |
+| **audit-campaign** | `N` `[reaudit]` | Agent | Read-only **campaign** audit against audit plan → report in `docs/audit-reports/`. |
+| **audit-campaign-ds** | `N` | Agent | Design-system checks for a campaign phase (fold into campaign report). |
 | **refine-audit** | `N` | Agent | Fix **only Owner-approved** findings from an audit report; STOP-gated plan; re-audit verifies. |
 | **complete-audit** | — | Agent + Owner | All phases reported → `AUDIT_SUMMARY.md`; optionally promote findings into the build plan. |
 
 **Shorthand:** `build-phase N` with no step = next unfinished step only.
 
-**Audit campaign gates:** `/audit-project` requires accepted product + user flow + architecture (+ design system if UI) — otherwise back to `/setup`. Reports are **read-only**; after each report the Owner picks: approve all for refinement / select findings / record only / continue to next phase. Fixes happen exclusively in `/refine-audit` on approved findings, then `/audit-phase N reaudit` verifies. Findings never silently become build work — promotion into `BUILD_PLAN` is an explicit Owner choice at `/complete-audit`.
+**Owner gate format:** Every Owner STOP that presents choices must use a **numbered list** (`1.` `2.` `3.` …). Words are labels; the Owner may reply with the number alone. Never present word-only choice rows such as `Accept | Reject | Edit` without numbers.
 
-**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official**, **community**, and (for web UI) **verification** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (Accept sync / Reject / Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
+**Audit campaign gates:** `/audit-project` requires accepted product + user flow + architecture (+ design system if UI) — otherwise back to `/setup`. Reports are **read-only**; after each report the Owner picks numbered options: approve all for refinement / select findings / record only / continue to next phase. Fixes happen exclusively in `/refine-audit` on approved findings, then `/audit-campaign N reaudit` verifies. Findings never silently become build work — promotion into `BUILD_PLAN` is an explicit Owner choice at `/complete-audit`.
+
+**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official**, **community**, and (for web UI) **verification** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (1 Accept sync / 2 Reject / 3 Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
 
 ---
 
@@ -271,61 +275,20 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
 - **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
-### v0.4.11 — Verification by surface — *current*
+### v0.4.5–v0.4.11 — Playwright, coexistence, sole workflow, surface evidence
 
-**Date:** 2026-07-28  
+See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
 
-- Verification catalog: Flutter analyzer/test, React Native device+tools, backend build/test/lint — alongside Playwright for web  
-- `/setup` / `/verify-phase` / `/audit-phase`: evidence by surface; never Playwright for native or pure backend  
+### v0.5.0 — Split build vs campaign audit commands + numbered Owner gates — *current*
 
-### v0.4.10 — Sole vs alongside in /setup
+**Date:** 2026-07-29  
 
-**Date:** 2026-07-27  
-
-- `/setup` **Workflow mode**: Sole Phasestep (recommended) with Owner-gated archive to `.phasestep/archived-workflow/`, or Alongside (explicit opt-in)  
-- Never silent moves; archive = move + log; niche one-offs may remain if not a second delivery loop  
-- README / init / PROGRESS / AGENTS aligned  
-
-### v0.4.9 — Alongside existing workflows
-
-**Date:** 2026-07-27  
-
-- `init` / `upgrade` / `check` print an **Alongside** summary (foreign commands left alone; Phasestep name collisions skipped unless `--force`)  
-- README + adapter docs: Phasestep is additive; pick a primary loop; mid-project `/setup`  
-- AGENTS managed block: additive hard rule; content outside markers preserved  
-
-### v0.4.8 — Playwright polish
-
-**Date:** 2026-07-27  
-
-- Verification `appliesTo`: +tanstack, +laravel; Flutter / React Native explicitly out of scope  
-- Browser install recipe (`playwright-cli install-browser`); Claude `.mcp.json` detect + recipe  
-- Codex AGENTS + setup wording aligned  
-
-### v0.4.7 — Playwright gap fill
-
-**Date:** 2026-07-27  
-
-- Browser evidence + mid-flight shared by **build audit (Mode A)** and **campaign audit (Mode B)**  
-- `AUDIT_PLAN` browser dimension aligned with mid-flight (Owner-gated install; never silent)  
-- Constitution §1 / §8: Owner UAT remains the gate; optional Playwright evidence for web UI  
-- Mid-flight option 2 = this step only; option 3 quiets the whole build phase (verify + Mode A)  
-
-### v0.4.6 — Mid-flight Playwright offer
-
-**Date:** 2026-07-27  
-
-- Mid-flight Playwright offer on `/verify-phase` and campaign `/audit-phase` when UI in scope but not configured (once per phase; decline recorded in PROGRESS)  
-- Setup Stage 4 Skip verification remains valid; mid-flight recovers without nagging every message  
-
-### v0.4.5 — Playwright verification enrichment
-
-**Date:** 2026-07-27  
-
-- Stack catalog **`verification`** lane — official **playwright-cli** (primary) + **playwright-mcp** (optional); web stacks only; Owner-gated install into the consumer project  
-- Community companion **`playwright-best-practices`** with `recommendedWith` — proposed by default when Playwright is accepted; skill installs via recipe (not vendored into phasestep)  
-- `/setup` Stage 4 section **C — Verification**; `/verify-phase` optional Playwright evidence (Skip stays valid; never silent install)  
-- Campaign `/audit-phase` + `AUDIT_PLAN` browser evidence dimension  
+- **`/audit-phase`** = delivery build acceptance only (no campaign mode)  
+- **`/audit-campaign`** (+ `reaudit`) = project audit-plan phases  
+- **`/audit-ds`** = delivery design-system audit; **`/audit-campaign-ds`** = campaign DS (folds into campaign report)  
+- Removes dual-mode ambiguity when build phase N and audit plan phase N both exist  
+- Breaking for consumers who used `/audit-phase` for campaign — run `npx phasestep upgrade` and switch invokes to `/audit-campaign`  
+- **Owner gate format:** every STOP choice list is numbered (`1.` `2.` `3.` …); Owner may reply with the number alone  
 
 ### Planned
 
@@ -333,18 +296,15 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - Optional `/pr-step` + GitHub adapters  
 - WHEN/THEN scenarios on Behavior delta / product (borrowed idea; not OpenSpec product)  
 - Optional project-map enrichment (Graphify or thin native) for mid-project setup / audit slicing  
+- Better name for `/audit-campaign-ds` if a clearer two-word label appears  
 - ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
 - ~~`upgrade` command for template refreshes~~ → v0.4.0  
 - ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → see `MAINTAINING.md` / `.github/workflows/`  
 - ~~`/setup` + user flow + stack catalog + design catalog~~ → v0.4.0  
 - ~~Project audit campaign~~ → v0.4.3  
-- ~~Playwright verification enrichment~~ → v0.4.5  
-- ~~Mid-flight Playwright offer~~ → v0.4.6  
-- ~~Playwright gap fill (Mode A + plan/constitution)~~ → v0.4.7  
-- ~~Playwright polish (stacks + Claude MCP + Codex)~~ → v0.4.8  
-- ~~Alongside existing Cursor/agent workflows~~ → v0.4.9  
-- ~~Sole vs alongside workflow mode in /setup~~ → v0.4.10  
-- ~~Verification by surface (Flutter / RN / backend)~~ → v0.4.11  
+- ~~Playwright / coexistence / sole / surface evidence~~ → v0.4.5–v0.4.11  
+- ~~Split build vs campaign audit commands~~ → v0.5.0  
+- ~~Numbered Owner gates~~ → v0.5.0  
 
 ---
 

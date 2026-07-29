@@ -1,6 +1,6 @@
 # Audit reports
 
-One report per audit phase, written by `/audit-phase N` when running against [`{{AUDIT_PLAN}}`](../../{{AUDIT_PLAN}}).
+One report per audit phase, written by `/audit-campaign N` when running against [`{{AUDIT_PLAN}}`](../../{{AUDIT_PLAN}}).
 
 ```text
 audit-phase-1.md
@@ -15,7 +15,7 @@ AUDIT_SUMMARY.md   ← written by /complete-audit when all phases are done
 - Findings have stable IDs (`C-01`, `M-02`, `Mi-03`) so refine/re-audit updates the same entry
 - Every finding cites its **ground** (spec / universal dimension / stack rule or tool output)
 - Statuses: `Open` → `Approved for refinement` → `Fixed` / `Partially fixed` / `Blocked` · or `Deferred`
-- Fixes happen only via `/refine-audit N` on Owner-approved findings, then `/audit-phase N reaudit` verifies
+- Fixes happen only via `/refine-audit N` on Owner-approved findings, then `/audit-campaign N reaudit` verifies
 
 ## Reading order
 

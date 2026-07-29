@@ -3,7 +3,7 @@ description: Draft an Owner-gated full-project audit plan (feature-listed phases
 argument-hint: [resume?]
 ---
 
-Run **Phasestep project audit planning** — draft [`{{AUDIT_PLAN}}`](../../{{AUDIT_PLAN}}) from accepted project truth, get Owner acceptance, then hand off to `/audit-phase N`. **Docs only — never modify application code.**
+Run **Phasestep project audit planning** — draft [`{{AUDIT_PLAN}}`](../../{{AUDIT_PLAN}}) from accepted project truth, get Owner acceptance, then hand off to `/audit-campaign N`. **Docs only — never modify application code.**
 
 This is for **assessing an existing codebase**. It does not require stack enrichment, decisions, or a delivery build plan.
 
@@ -20,7 +20,7 @@ If any are missing → **STOP** and direct the Owner to `/setup` (Existing / mid
 
 ## Resume
 
-If `{{AUDIT_PLAN}}` is already **accepted**: report phase statuses from [`{{AUDIT_REPORTS_DIR}}/`](../../{{AUDIT_REPORTS_DIR}}/) and `{{PROGRESS}}`, then suggest the next `/audit-phase N`. Do not redraft an accepted plan unless the Owner asks to revise it.
+If `{{AUDIT_PLAN}}` is already **accepted**: report phase statuses from [`{{AUDIT_REPORTS_DIR}}/`](../../{{AUDIT_REPORTS_DIR}}/) and `{{PROGRESS}}`, then suggest the next `/audit-campaign N`. Do not redraft an accepted plan unless the Owner asks to revise it.
 
 ## Draft the audit plan
 
@@ -36,15 +36,18 @@ If `{{AUDIT_PLAN}}` is already **accepted**: report phase statuses from [`{{AUDI
 ## STOP — Owner gate
 
 ```text
-Audit plan draft ready → Accept | Reject | Edit (notes)
+Audit plan draft ready:
+1. Accept
+2. Reject
+3. Edit (notes)
 ```
 
-- **Accept** → set plan Status: accepted; update `{{PROGRESS}}` (Audit section); tell Owner to run `/audit-phase 1`
-- **Reject / Edit** → apply notes, re-show, stop again
+- **1. Accept** → set plan Status: accepted; update `{{PROGRESS}}` (Audit section); tell Owner to run `/audit-campaign 1`
+- **2. Reject / 3. Edit** → apply notes, re-show, stop again
 
 ## Hard rules
 
 1. **Read-only toward code.** This command writes only `{{AUDIT_PLAN}}` and `{{PROGRESS}}`.
 2. Do not invent unbuilt features into the plan as if they exist — audit what is there.
-3. Findings/fixes are not part of this command: audits run via `/audit-phase N`; fixes only via `/refine-audit N` after Owner approval.
+3. Findings/fixes are not part of this command: audits run via `/audit-campaign N`; fixes only via `/refine-audit N` after Owner approval.
 4. Report-only by default — completing an audit never obligates fixes.

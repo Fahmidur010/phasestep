@@ -146,13 +146,17 @@ function main() {
   assert(verifyCmd.includes('this step only'), 'verify-phase option 2 scoped to step');
 
   const setupCmd = read(path.join('.cursor', 'commands', 'setup.md'));
-  assert(setupCmd.includes('Verification → Accept matched surface'), 'setup Stage 4 verification lane');
+  assert(setupCmd.includes('Accept matched surface evidence'), 'setup Stage 4 verification lane');
   assert(setupCmd.includes('Flutter / React Native'), 'setup native verification surface');
   assert(setupCmd.includes('Backend / CLI'), 'setup backend verification surface');
   assert(setupCmd.includes('playwright-cli'), 'setup mentions playwright-cli');
   assert(setupCmd.includes('playwright-best-practices'), 'setup recommended companions with Playwright');
   assert(setupCmd.includes('Workflow mode'), 'setup Workflow mode section');
   assert(setupCmd.includes('archived-workflow'), 'setup archive destination');
+  assert(setupCmd.includes('Owner gate format'), 'setup documents numbered gates');
+  assert(setupCmd.includes('1. Accept'), 'setup product gate numbered');
+  assert(setupCmd.includes('1. Greenfield'), 'setup mode numbered');
+  assert(!setupCmd.includes('Accept | Reject | Edit'), 'setup no word-only Accept|Reject|Edit');
 
   const cursorReadme = read(path.join('.cursor', 'commands', 'README.md'));
   assert(cursorReadme.includes('Your other slash commands stay'), 'cursor README coexistence');
@@ -179,34 +183,70 @@ function main() {
     fs.existsSync(path.join(TMP, cfg.auditReportsDir, 'README.md')),
     'audit-reports README'
   );
-  for (const cmd of ['audit-project.md', 'refine-audit.md', 'complete-audit.md']) {
+  for (const cmd of [
+    'audit-project.md',
+    'audit-campaign.md',
+    'audit-campaign-ds.md',
+    'audit-ds.md',
+    'refine-audit.md',
+    'complete-audit.md',
+  ]) {
     assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', cmd)), `cursor ${cmd}`);
     assert(fs.existsSync(path.join(TMP, '.claude', 'commands', cmd)), `claude ${cmd}`);
   }
+  assert(
+    !fs.existsSync(path.join(TMP, '.cursor', 'commands', 'audit-ds-phase.md')),
+    'no legacy audit-ds-phase on fresh init'
+  );
   const auditProject = read(path.join('.cursor', 'commands', 'audit-project.md'));
   assert(auditProject.includes('Prerequisites (hard gate)'), 'audit-project prereq gate');
+  assert(auditProject.includes('/audit-campaign'), 'audit-project hands off to audit-campaign');
+  assert(auditProject.includes('1. Accept'), 'audit-project gate numbered');
+  assert(!auditProject.includes('Accept | Reject | Edit'), 'audit-project no word-only gate');
+
+  const buildPhaseCmd = read(path.join('.cursor', 'commands', 'build-phase.md'));
+  assert(buildPhaseCmd.includes('1. Accept →'), 'build-phase intent gate numbered');
+
+  const completeAuditCmd = read(path.join('.cursor', 'commands', 'complete-audit.md'));
+  assert(completeAuditCmd.includes('1. Promote selected'), 'complete-audit gate numbered');
+  assert(!completeAuditCmd.includes('Promote selected findings to build plan | Leave'), 'complete-audit no word-only gate');
+
+  const refineAuditCmd = read(path.join('.cursor', 'commands', 'refine-audit.md'));
+  assert(refineAuditCmd.includes('1. Approve'), 'refine-audit plan gate numbered');
+
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
+  assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');
   assert(auditPhaseCmd.includes('Browser evidence'), 'audit-phase browser evidence');
-  assert(auditPhaseCmd.includes('both modes'), 'audit-phase browser evidence both modes');
   assert(auditPhaseCmd.includes('Native evidence'), 'audit-phase native evidence');
-  assert(auditPhaseCmd.includes('Backend tool evidence'), 'audit-phase backend evidence');
-  assert(auditPhaseCmd.includes('Mid-flight Playwright offer'), 'audit-phase mid-flight offer');
-  assert(auditPhaseCmd.includes('build phase N'), 'audit-phase Mode A decline key');
+  assert(auditPhaseCmd.includes('/audit-campaign'), 'audit-phase points to audit-campaign');
+  assert(!auditPhaseCmd.includes('Mode B'), 'audit-phase has no campaign Mode B');
+
+  const auditCampaignCmd = read(path.join('.cursor', 'commands', 'audit-campaign.md'));
+  assert(auditCampaignCmd.includes('campaign-only') || auditCampaignCmd.includes('Campaign Audit'), 'audit-campaign campaign only');
+  assert(auditCampaignCmd.includes('Approve all findings for refinement'), 'audit-campaign Owner gate');
+  assert(auditCampaignCmd.includes('Record findings; no fixes'), 'audit-campaign record option');
+  assert(auditCampaignCmd.includes('reaudit'), 'audit-campaign reaudit');
+  assert(auditCampaignCmd.includes('/audit-phase'), 'audit-campaign points to audit-phase for delivery');
+  assert(auditCampaignCmd.includes('audit-campaign-ds'), 'audit-campaign invokes audit-campaign-ds');
+  assert(auditCampaignCmd.includes('/audit-campaign N+1'), 'audit-campaign option 4 uses audit-campaign next');
+  assert(!auditCampaignCmd.includes('Mode A'), 'audit-campaign has no delivery Mode A');
+
+  const auditDs = read(path.join('.cursor', 'commands', 'audit-ds.md'));
+  assert(auditDs.includes('Delivery-only'), 'audit-ds delivery only');
+  assert(auditDs.includes('/refine-phase'), 'audit-ds refine-phase path');
+
+  const auditCampaignDs = read(path.join('.cursor', 'commands', 'audit-campaign-ds.md'));
+  assert(auditCampaignDs.includes('Campaign-only'), 'audit-campaign-ds campaign only');
+  assert(auditCampaignDs.includes('/refine-audit'), 'audit-campaign-ds refine-audit path');
 
   const auditPlan = read(cfg.auditPlan);
   assert(auditPlan.includes('mid-flight'), 'AUDIT_PLAN mid-flight aligned');
+  assert(auditPlan.includes('/audit-campaign'), 'AUDIT_PLAN uses audit-campaign');
   assert(!auditPlan.includes('Never invent installs mid-audit'), 'AUDIT_PLAN no forbid mid-flight');
-  for (const needle of [
-    'Mode A — Build audit',
-    'Mode B — Campaign audit',
-    'Approve all findings for refinement',
-    'Record findings; no fixes',
-    'reaudit',
-  ]) {
-    assert(auditPhaseCmd.includes(needle), `audit-phase contains: ${needle}`);
-  }
+
   const refineAudit = read(path.join('.cursor', 'commands', 'refine-audit.md'));
   assert(refineAudit.includes('Approved for refinement'), 'refine-audit approval-only rule');
+  assert(refineAudit.includes('/audit-campaign'), 'refine-audit reaudits via audit-campaign');
   const auditPlanStub = read(cfg.auditPlan);
   assert(auditPlanStub.includes('Audit dimensions'), 'audit plan dimensions table');
   assert(auditPlanStub.includes('Browser evidence'), 'audit plan browser evidence dimension');

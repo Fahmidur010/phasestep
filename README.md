@@ -67,20 +67,22 @@ Phasestep **installs additively** (foreign slash commands are not deleted). For 
 ```text
 /setup (once) → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
 plan-phase → build-phase → Behavior delta (intent) → verify-phase
-           → refine as needed → audit → complete-phase
+           → refine as needed → audit-phase (+ optional audit-ds) → complete-phase
 ```
 
-Also installed: `session-log` (optional mid-phase notes), `audit-ds-phase` (design-system audit — use when the project has UI).
+Also installed: `session-log` (optional mid-phase notes), `audit-ds` (design-system audit for delivery — use when the project has UI).
 
 ## Project audit (audit-only or health check)
 
 ```text
 /setup (product → flow → architecture → DS if UI)
-  → /audit-project      draft AUDIT_PLAN (feature-listed phases) → Owner accept
-  → /audit-phase 1…N    read-only report per phase → Owner decides fixes
-  → /refine-audit N     fix only approved findings → /audit-phase N reaudit
-  → /complete-audit     AUDIT_SUMMARY; optionally promote findings to build plan
+  → /audit-project         draft AUDIT_PLAN (feature-listed phases) → Owner accept
+  → /audit-campaign 1…N    read-only report per phase → Owner decides fixes
+  → /refine-audit N        fix only approved findings → /audit-campaign N reaudit
+  → /complete-audit        AUDIT_SUMMARY; optionally promote findings to build plan
 ```
+
+Delivery (`/audit-phase`) and campaign (`/audit-campaign`) are **separate commands** so build phase N and audit plan phase N never share one slash command.
 
 Reports live in `docs/audit-reports/` as plain Markdown with stable finding IDs, each citing its ground (spec / universal checklist / stack rules + tool evidence).
 
@@ -97,7 +99,7 @@ npm run smoke
 
 ## Version
 
-**0.4.11** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.5.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

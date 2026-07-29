@@ -8,8 +8,14 @@ Close the **project audit** driven by [`{{AUDIT_PLAN}}`](../../{{AUDIT_PLAN}}) a
 ## Preconditions
 
 1. `{{AUDIT_PLAN}}` is accepted.
-2. Every phase in the plan has a report in [`{{AUDIT_REPORTS_DIR}}/`](../../{{AUDIT_REPORTS_DIR}}/). Missing phases → **STOP** and list them (`/audit-phase N` to run).
-3. Ask once whether the Owner wants to close with findings still open — closing does **not** require zero findings, only awareness.
+2. Every phase in the plan has a report in [`{{AUDIT_REPORTS_DIR}}/`](../../{{AUDIT_REPORTS_DIR}}/). Missing phases → **STOP** and list them (`/audit-campaign N` to run).
+3. Ask once whether the Owner wants to close with findings still open — closing does **not** require zero findings, only awareness:
+
+```text
+Close audit with open findings still present?
+1. Yes — close anyway (awareness recorded)
+2. No — keep campaign open (refine / reaudit first)
+```
 
 ## Write `AUDIT_SUMMARY.md`
 
@@ -28,11 +34,14 @@ Preview-friendly, summary first:
 2. **STOP.** Options:
 
 ```text
-Audit complete → Promote selected findings to build plan | Leave as report | Re-open a phase
+Audit complete:
+1. Promote selected findings to build plan
+2. Leave as report
+3. Re-open a phase
 ```
 
-- **Promote** → with Owner's selected IDs, add matching items to `{{BUILD_PLAN}}` (scoped, referencing finding IDs) — delivery then flows through normal `/plan-phase` → `/build-phase`
-- **Leave as report** → done; reports remain the record
-- **Re-open** → direct to `/audit-phase N reaudit` or `/refine-audit N`
+- **1. Promote** → with Owner's selected IDs, add matching items to `{{BUILD_PLAN}}` (scoped, referencing finding IDs) — delivery then flows through normal `/plan-phase` → `/build-phase`
+- **2. Leave as report** → done; reports remain the record
+- **3. Re-open** → direct to `/audit-campaign N reaudit` or `/refine-audit N`
 
 Never modify application code from this command.

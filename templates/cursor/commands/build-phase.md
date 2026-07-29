@@ -72,9 +72,14 @@ Rules: product behavior language; 3–12 bullets; align with product spec + done
 2. Update [`{{PROGRESS}}`](../../{{PROGRESS}}) — mark phase in progress
 3. Short summary: what built, how to try, what’s out of scope
 4. **Lead with Behavior delta**
-5. Intent gate:
-   - **Accept** → `/verify-phase PHASE STEP`
-   - **Reject** → `/refine-phase PHASE STEP` (or chat notes), then re-review delta
+5. **STOP** — Intent gate (Owner replies with a number):
+
+```text
+Behavior delta ready:
+1. Accept → /verify-phase PHASE STEP
+2. Reject → /refine-phase PHASE STEP (or chat notes), then re-review delta
+```
+
 6. Do not suggest `/audit-phase` or `/complete-phase` until all steps verified
 
 Do not start the next step until Owner confirms verification passed (or explicitly continues).

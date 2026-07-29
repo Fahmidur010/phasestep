@@ -37,11 +37,18 @@ If purely structural/style with no behavior change: say **Behavior unchanged**.
 ## After fixes
 
 1. List issue → fix
-2. If delta updated: Owner accept/reject intent again
+2. If delta updated: **STOP** — same numbered intent gate as `/build-phase`:
+
+```text
+Behavior delta ready:
+1. Accept → /verify-phase PHASE STEP
+2. Reject → continue refine, then re-review delta
+```
+
 3. Next:
-   - Intent rejection → accept → `/verify-phase PHASE STEP`
+   - After intent **1. Accept** → `/verify-phase PHASE STEP`
    - Verify failures → re `/verify-phase PHASE STEP`
-   - audit-ds → re `/audit-ds-phase PHASE`
+   - audit-ds → re `/audit-ds PHASE`
    - audit → re `/audit-phase PHASE`
 4. Step re-verify pass → `/build-phase PHASE <next>` if more steps
 5. All steps verified + audits clean → `/complete-phase PHASE`

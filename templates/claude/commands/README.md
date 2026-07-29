@@ -8,14 +8,15 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /build-phase <n> [step]    → implement step(s); emit Behavior delta; intent gate
 /verify-phase <n> [step]   → Owner UAT + automated checks
 /refine-phase <n> [step]   → fix after verify
-/audit-phase <n>           → phase acceptance
+/audit-phase <n>           → build-phase acceptance audit (delivery)
+/audit-ds <n|all>          → design-system audit (delivery)
 /complete-phase <n>        → mark done + progress
 /session-log …             → optional mid-phase notes
-/audit-ds-phase            → design-system audit (UI projects)
 
-/audit-project             → draft AUDIT_PLAN (feature-listed audit phases) → Owner accept
-/audit-phase <n> [reaudit] → campaign mode: read-only report per audit phase
-/refine-audit <n>          → fix only Owner-approved findings
+/audit-project             → draft AUDIT_PLAN → Owner accept
+/audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase
+/audit-campaign-ds <n>     → design-system checks folded into campaign report
+/refine-audit <n>          → fix only Owner-approved campaign findings
 /complete-audit            → AUDIT_SUMMARY; optionally promote findings to build plan
 ```
 

@@ -1,6 +1,6 @@
 # Audit plan
 
-Ordered **audit phases** for this product. Drafted by `/audit-project` from product, user flow, architecture, and design system (if any). Each phase is executed with `/audit-phase N` (read-only) and reported into `{{AUDIT_REPORTS_DIR}}/`.
+Ordered **audit phases** for this product. Drafted by `/audit-project` from product, user flow, architecture, and design system (if any). Each phase is executed with `/audit-campaign N` (read-only) and reported into `{{AUDIT_REPORTS_DIR}}/`.
 
 This plan is for **assessment**, not delivery — future feature work stays in `{{BUILD_PLAN}}`.
 
@@ -18,8 +18,8 @@ Each phase MUST evaluate all dimensions (mark N/A with reason, never skip silent
 | Architecture & maintainability | layer violations, circular deps, duplication, SOLID smells, test coverage on critical paths |
 | Performance | N+1 queries, unbounded loops/allocations, blocking hot paths (evidence-based only) |
 | Stack conformance | official rules/skills for the detected stack; native linter/analyzer output |
-| Design system (UI only) | `{{DESIGN_SYSTEM}}` via `/audit-ds-phase` |
-| Browser evidence (web UI) | If Playwright is installed: run CLI (preferred) or MCP against in-scope flows; attach outcomes as evidence. If missing → mid-flight STOP once (Install now \| Owner-only \| Don't ask again for this audit phase). Never silent install. |
+| Design system (UI only) | `{{DESIGN_SYSTEM}}` via `/audit-campaign-ds` (campaign) or `/audit-ds` (delivery) |
+| Browser evidence (web UI) | If Playwright is installed: run CLI (preferred) or MCP against in-scope flows; attach outcomes as evidence. If missing → mid-flight STOP once (1. Install now | 2. Owner-only | 3. Don't ask again for this audit phase). Never silent install. |
 | Native evidence (Flutter / RN) | Analyzer/tests + Owner device UAT — never Playwright. See catalog `flutter-analyzer-evidence` / `react-native-device-evidence`. |
 | Backend tool evidence (API/CLI) | `buildCommand` / lint / tests + Owner contract UAT — never invent a browser path. See catalog `backend-tool-evidence`. |
 

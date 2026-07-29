@@ -11,7 +11,15 @@ The Owner has **completed the full phase loop** for Build Phase $ARGUMENTS:
 
 ## Confirm with Owner
 
-If not explicitly confirmed, ask once whether Phase $ARGUMENTS is complete (steps verified, audits clean). Do not mark complete without confirmation.
+If not explicitly confirmed, **STOP** once:
+
+```text
+Phase $ARGUMENTS complete (steps verified, audits clean)?
+1. Confirm complete
+2. Not yet (what is missing)
+```
+
+Do not mark complete without **1. Confirm complete**.
 
 ## Update documentation
 

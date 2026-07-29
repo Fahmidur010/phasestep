@@ -13,11 +13,13 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/build-phase N [step]` | Implement; emit Behavior delta; intent gate |
 | `/verify-phase N [step]` | Owner UAT + checks; optional Playwright browser evidence (web UI) |
 | `/refine-phase N [step]` | Fix after verify |
-| `/audit-phase N` | Phase acceptance (build or campaign); optional Playwright evidence for web UI |
+| `/audit-phase N` | Build-phase acceptance audit (delivery) |
+| `/audit-ds N\|all` | Design-system audit (delivery) |
 | `/complete-phase N` | Mark done + progress |
 | `/session-log` | Optional mid-phase notes |
-| `/audit-ds-phase` | Design-system audit (UI) |
 | `/audit-project` | Draft `{{AUDIT_PLAN}}` (Owner-gated audit phases) |
+| `/audit-campaign N [reaudit]` | Campaign audit against audit plan |
+| `/audit-campaign-ds N` | Design-system checks for a campaign phase |
 | `/refine-audit N` | Fix only Owner-approved audit findings |
 | `/complete-audit` | Audit summary; optional promotion to build plan |
 
