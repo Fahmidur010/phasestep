@@ -180,9 +180,11 @@ function main() {
   assert(cfg.userFlow && cfg.stackCatalog && cfg.designCatalog, 'config enrichment keys');
   assert(cfg.auditPlan && cfg.auditReportsDir, 'config audit keys');
   assert(cfg.projectMap, 'config projectMap key');
+  assert(cfg.github && cfg.github.remote === 'origin', 'config github.remote default');
 
   const progressStub = read(cfg.progress);
   assert(progressStub.includes('Workflow mode'), 'PROGRESS workflow mode checklist');
+  assert(progressStub.includes('GitHub: connected'), 'PROGRESS GitHub section');
 
   // audit campaign artifacts
   assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'AUDIT_PLAN stub');
@@ -199,6 +201,8 @@ function main() {
     'refine-audit.md',
     'complete-audit.md',
     'map-project.md',
+    'github-connect.md',
+    'pr-step.md',
   ]) {
     assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', cmd)), `cursor ${cmd}`);
     assert(fs.existsSync(path.join(TMP, '.claude', 'commands', cmd)), `claude ${cmd}`);
@@ -260,6 +264,19 @@ function main() {
   assert(refinePhaseCmd.includes('4. Not cross-cutting'), 'refine-phase local-refine escape');
 
   assert(buildPhaseCmd.includes('Cross-cutting STOP') || buildPhaseCmd.includes('core principle'), 'build-phase points to cross-cutting');
+  assert(buildPhaseCmd.includes('/pr-step'), 'build-phase points to pr-step for commits');
+
+  const githubConnectCmd = read(path.join('.cursor', 'commands', 'github-connect.md'));
+  assert(githubConnectCmd.includes('gh auth'), 'github-connect mentions gh auth');
+  assert(githubConnectCmd.includes('no commit'), 'github-connect no commit');
+  assert(githubConnectCmd.includes('1. Connect'), 'github-connect numbered gate');
+
+  const prStepCmd = read(path.join('.cursor', 'commands', 'pr-step.md'));
+  assert(prStepCmd.includes('Gate A'), 'pr-step Gate A');
+  assert(prStepCmd.includes('Gate B'), 'pr-step Gate B');
+  assert(prStepCmd.includes('Gate C'), 'pr-step Gate C');
+  assert(prStepCmd.includes('Never** merge without Gate C'), 'pr-step no silent merge');
+  assert(prStepCmd.includes('Fail soft'), 'pr-step fail soft');
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');

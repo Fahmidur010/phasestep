@@ -52,7 +52,7 @@ Phasestep can **install safely** next to other agent files. For the **best outco
 
 Scan and list:
 
-1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, plus adapter `README.md`)
+1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`, plus adapter `README.md`)
 2. **Name collisions** — Phasestep-owned filenames that exist but are **not** clearly Phasestep bodies (e.g. custom `setup.md` kept at init)
 3. **AGENTS.md outside markers** — content outside `<!-- phasestep:codex:start -->` … `<!-- phasestep:codex:end -->`
 4. **Owner-pointed extras** — ask once if other rule/command paths are part of their **old delivery loop** (do not auto-grab `.cursor/rules` or random tools)
@@ -633,4 +633,5 @@ buildCommand:
 Setup complete → run /plan-phase 1
 ```
 
+Optional: `/github-connect` if the Owner uses GitHub (install/auth `gh`, link remote) — then later `/pr-step` after verify/complete.  
 Optional: `npx phasestep check` to confirm artifacts exist.

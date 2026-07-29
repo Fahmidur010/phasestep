@@ -70,7 +70,7 @@ plan-phase → build-phase → Behavior delta (WHEN/THEN) → intent gate → ve
            → refine as needed → audit-phase (+ optional audit-ds) → complete-phase
 ```
 
-Also installed: `session-log`, `audit-ds` (UI), `map-project` (agent navigation map — no Owner gate; useful mid-project / before audit / as the codebase grows).
+Also installed: `session-log`, `audit-ds` (UI), `map-project` (agent navigation map), `github-connect` + `pr-step` (Owner-gated GitHub handoff via `gh`).
 
 ## Project audit (audit-only or health check)
 
@@ -89,6 +89,15 @@ Reports live in `docs/audit-reports/` as plain Markdown with stable finding IDs,
 
 Optional **verification by surface:** web UI → Playwright (CLI preferred); Flutter/RN → analyzer/tests + Owner device UAT; backend/CLI → `buildCommand` / lint / tests. Never Playwright for native or pure APIs. Mid-flight Playwright offer only applies to web UI if Stage 4 was skipped.
 
+## GitHub (optional)
+
+```text
+/github-connect [repo]     → gh auth + origin (no commit)
+/pr-step N [step?]         → Gate A commit → Gate B push+PR → Gate C merge if checks green
+```
+
+Requires local `git` + [GitHub CLI](https://cli.github.com/) (`gh auth login`). Owner Accepts each irreversible step — never silent push/merge.
+
 ## Local development
 
 ```bash
@@ -100,7 +109,7 @@ npm run smoke
 
 ## Version
 
-**0.6.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.7.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

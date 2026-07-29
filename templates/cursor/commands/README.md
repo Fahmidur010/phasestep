@@ -2,7 +2,7 @@
 
 Slash commands for Cursor. The same command bodies are also installed for Claude Code (`.claude/commands/`) when that adapter is enabled. Codex gets a managed block in `AGENTS.md`.
 
-**Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
+**Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
 
 ```text
 /setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
@@ -15,6 +15,8 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 /complete-phase <n>        → mark done + progress
 /session-log …             → optional mid-phase notes
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
+/github-connect [repo]     → link GitHub remote + gh auth (no commit)
+/pr-step <n> [step?]       → Owner-gated branch → commit → push → PR → optional merge
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

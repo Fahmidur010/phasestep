@@ -40,8 +40,8 @@ Phasestep **inherits the intent-review philosophy** of spec-driven agentic work 
 
 | Role | Responsibility |
 |------|----------------|
-| **Owner** | Product authority. Accepts/rejects Behavior deltas. Runs manual verification. Confirms phase complete. Asks for commits/PRs. |
-| **Agent** | Plans and implements within contracts. Writes Behavior deltas. Runs project build checks. Does not invent product decisions. Does not commit unless Owner asks. |
+| **Owner** | Product authority. Accepts/rejects Behavior deltas. Runs manual verification. Confirms phase complete. Accepts `/pr-step` gates for commit/PR/merge. |
+| **Agent** | Plans and implements within contracts. Writes Behavior deltas. Runs project build checks. Does not invent product decisions. Does not commit/push/merge unless Owner Accepts via `/pr-step` (or an explicit ask executed through that path). |
 | **Reviewer** (optional) | Human or automated review on PRs; does not replace Owner intent/UAT gates. |
 
 ---
@@ -131,6 +131,8 @@ Paths are overridable in `phasestep.json`.
 | **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log. |
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
+| **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; record in config/PROGRESS. No commit. |
+| **pr-step** | `N` `[S]` | Agent + Owner | Owner-gated branch → commit → push → PR → optional merge via `git`/`gh`. |
 | **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); prefer project map seams; Owner accept gate; docs only. |
 | **audit-campaign** | `N` `[reaudit]` | Agent | Read-only **campaign** audit against audit plan → report in `docs/audit-reports/`. |
 | **audit-campaign-ds** | `N` | Agent | Design-system checks for a campaign phase (fold into campaign report). |
@@ -194,12 +196,15 @@ Rules:
 5. Verify before next step  
 6. Audit only after all steps verified  
 7. Owner owns product decisions  
-8. No commit unless asked  
+8. No commit / push / merge unless Owner Accepts via `/pr-step` (or an explicit Owner ask that `/pr-step` then executes)  
 9. Minimize scope  
 10. Run project build check after implement/refine (`buildCommand` in `phasestep.json`)
 11. Cross-cutting / principle changes: **STOP** before code — decision + product/flow sync (or scoped/defer); never silently cascade across features during refine/build
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
+
+**GitHub handoff:** `/github-connect` links the remote; `/pr-step` runs Gates A (branch+commit), B (push+PR), C (merge if checks green)—each numbered. Missing `gh`/auth → fail soft with a checklist. Never force-push; never auto-merge without Gate C Accept.
+
 ---
 
 ## 8. Verification & proof
@@ -302,7 +307,16 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
 
-### v0.6.0 — First-party project map + cross-cutting STOP — *current*
+### v0.7.0 — GitHub connect + Owner-gated `/pr-step` — *current*
+
+**Date:** 2026-07-29  
+
+- **`/github-connect`** — link `gh` auth + git remote; record in `phasestep.json` / PROGRESS; no commit  
+- **`/pr-step`** — numbered Gates A (branch+commit) → B (push+PR) → C (merge if checks green); never silent  
+- Fail soft without `git`/`gh`/auth; no force-push; no Issues/Projects automation  
+- Standard commit path — build/refine still do not commit alone  
+
+### v0.6.0 — First-party project map + cross-cutting STOP
 
 **Date:** 2026-07-29  
 
@@ -335,7 +349,7 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 ### Planned
 
 - Phasestep marketing / docs site (domain) — explain what it is and how it works  
-- Optional `/pr-step` + GitHub adapters  
+- ~~Optional `/pr-step` + GitHub adapters~~ → v0.7.0  
 - ~~WHEN/THEN scenarios on Behavior delta~~ → v0.5.1  
 - ~~Optional project-map enrichment (thin first-party)~~ → v0.6.0  
 - ~~Cross-cutting / principle-change STOP on refine~~ → v0.6.0  
@@ -367,6 +381,7 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
+| **pr-step** | Owner-gated GitHub handoff (branch, commit, PR, optional merge via `gh`) |
 | **Adapter** | IDE-specific command implementation |
 
 ---

@@ -30,7 +30,7 @@ Refine plan for Audit Phase $ARGUMENTS:
 2. Stay within the audit phase's scope — do not refactor unrelated code "while you're there".
 3. Run the phase's **Evidence** commands (linter/analyzer/tests) and `{{BUILD_COMMAND}}` after fixes.
 4. If a fix requires a product decision → **stop**, add to [`{{DECISIONS}}`](../../{{DECISIONS}}), ask the Owner (or run Cross-cutting STOP if multi-feature).
-5. Do not commit unless asked.
+5. Do not commit unless asked — use `/pr-step` after reaudit if the Owner wants a PR for the fixes.
 
 ## After fixes
 

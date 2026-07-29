@@ -18,6 +18,8 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/complete-phase N` | Mark done + progress |
 | `/session-log` | Optional mid-phase notes |
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
+| `/github-connect [repo]` | Link GitHub remote + gh auth (no commit) |
+| `/pr-step N [step?]` | Owner-gated branch → commit → push → PR → optional merge |
 | `/audit-project` | Draft `{{AUDIT_PLAN}}` (Owner-gated audit phases) |
 | `/audit-campaign N [reaudit]` | Campaign audit against audit plan |
 | `/audit-campaign-ds N` | Design-system checks for a campaign phase |
@@ -48,6 +50,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 4. Design component libraries are pick-one; never mix kits.
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app. Prefer `{{PROJECT_MAP}}` when present; refresh via `/map-project` without Owner gate.
 6. Principle / multi-feature changes: follow Cross-cutting STOP in `/refine-phase` before coding (decision + product sync, or scoped/defer).
-7. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
+7. Commit / push / PR / merge only via `/pr-step` (or explicit Owner ask that `/pr-step` executes) — never silent from build/refine.
+8. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
 
 If command markdown files are missing, run `npx phasestep upgrade` or `npx phasestep init`.

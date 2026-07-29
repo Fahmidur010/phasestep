@@ -57,6 +57,13 @@ Playwright mid-flight: declined — audit phase 1
 
 Do not re-offer for that phase after a decline is recorded.
 
+### GitHub (optional — via `/github-connect` + `/pr-step`)
+
+```text
+GitHub: connected — owner/repo (origin) — YYYY-MM-DD
+GitHub PR: phase 1 step 2 — branch phasestep/phase-1-step-2 — PR https://… — status open — date
+```
+
 ---
 
 ## Audit campaign (optional — via `/audit-project`)

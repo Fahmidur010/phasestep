@@ -13,6 +13,8 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /complete-phase <n>        → mark done + progress
 /session-log …             → optional mid-phase notes
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
+/github-connect [repo]     → link GitHub remote + gh auth (no commit)
+/pr-step <n> [step?]       → Owner-gated branch → commit → push → PR → optional merge
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

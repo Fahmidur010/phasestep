@@ -139,9 +139,10 @@ Keep short; call out regression risks to earlier verified steps only when releva
 
 ```text
 Step verification result:
-1. Pass — mark step verified + delta accepted → /build-phase PHASE <next>
+1. Pass — mark step verified + delta accepted → /build-phase PHASE <next> (or /pr-step PHASE STEP for GitHub handoff)
 2. Fail — /refine-phase PHASE STEP then re-verify
 ```
 
 - When **all** steps verified: optional `/audit-ds` (if present) then `/audit-phase`
 - Do not suggest `/complete-phase` until audits are clean
+- Optional: `/pr-step PHASE STEP` after a verified step when the Owner wants a PR before the full phase completes

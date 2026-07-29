@@ -21,6 +21,10 @@ const DEFAULTS = {
   stackCatalog: '.phasestep/stack-catalog.json',
   designCatalog: '.phasestep/design-catalog.json',
   adapters: ['cursor', 'claude', 'codex'],
+  github: {
+    remote: 'origin',
+    repo: '',
+  },
 };
 
 const COMMAND_FILES = [
@@ -40,6 +44,8 @@ const COMMAND_FILES = [
   'refine-audit.md',
   'complete-audit.md',
   'map-project.md',
+  'github-connect.md',
+  'pr-step.md',
 ];
 
 const OWNER_STUBS = [

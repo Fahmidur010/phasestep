@@ -38,9 +38,9 @@ Or expanded block: built / UAT / audit / decisions / next phase command.
 ## Do not
 
 - Auto-start the next phase unless Owner asks
-- Commit unless asked
+- Commit/push/merge here — use `/pr-step $ARGUMENTS` (Owner-gated) instead
 
 ## Report
 
 - Phase $ARGUMENTS: **complete**
-- Suggest next: `/plan-phase` for the next phase in `{{BUILD_PLAN}}`
+- Suggest next: `/pr-step $ARGUMENTS` (optional GitHub PR) and/or `/plan-phase` for the next phase in `{{BUILD_PLAN}}`
