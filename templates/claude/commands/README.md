@@ -7,11 +7,12 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /plan-phase <n>            → write phase-N.md
 /build-phase <n> [step]    → implement step(s); Behavior delta (WHEN/THEN); intent gate
 /verify-phase <n> [step]   → Owner UAT from THEN outcomes + automated checks
-/refine-phase <n> [step]   → fix after verify
+/refine-phase <n> [step]   → fix after verify (Cross-cutting STOP if principle cascades)
 /audit-phase <n>           → build-phase acceptance audit (delivery)
 /audit-ds <n|all>          → design-system audit (delivery)
 /complete-phase <n>        → mark done + progress
 /session-log …             → optional mid-phase notes
+/map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

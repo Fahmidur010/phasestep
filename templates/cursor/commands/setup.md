@@ -23,12 +23,13 @@ Detect which mode applies **before Stage 1** (scan repo: app code, commits, exis
 **Mid-project rules (apply in every stage):**
 
 1. Prefer **truth from the repo + Owner** over inventing a parallel product.
-2. Product / user flow: capture **current** intended behavior (as-is + agreed near-term). Do not pretend unbuilt features are done.
-3. Architecture: **document and follow** existing folders/patterns; propose changes only with Owner gate (impact gate still applies).
-4. Design: if a component library is already in `package.json` / deps, propose that as the pick-one default.
-5. Build plan: phases for **next / remaining** work. Mark already-shipped capability as done or out-of-scope in `{{PROGRESS}}` / phase “Out of scope”.
-6. Never rewrite production code during setup. Never use `init --force` / upgrade `--force-*` on Owner docs unless Owner asks.
-7. **Workflow mode (below)** decides sole vs alongside. Do not invent a merged meta-workflow. After sole archive, treat Phasestep as the only plan/build/verify/audit loop.
+2. **Project map (agent aid):** if [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) is missing, empty, or stale → run `/map-project` (or `/map-project refresh`) **before** drafting product/architecture when the codebase is non-trivial. No Owner gate. Prefer the map over blind repo grep for modules, hubs, and seams. Map is **context** — accepted product/flow/architecture still win on conflict.
+3. Product / user flow: capture **current** intended behavior (as-is + agreed near-term). Do not pretend unbuilt features are done. Use map modules/hubs as orientation hints only.
+4. Architecture: **document and follow** existing folders/patterns (use map seams); propose changes only with Owner gate (impact gate still applies).
+5. Design: if a component library is already in `package.json` / deps, propose that as the pick-one default.
+6. Build plan: phases for **next / remaining** work. Mark already-shipped capability as done or out-of-scope in `{{PROGRESS}}` / phase “Out of scope”. Map seams may suggest remaining slices — Owner still accepts the build plan.
+7. Never rewrite production code during setup. Never use `init --force` / upgrade `--force-*` on Owner docs unless Owner asks.
+8. **Workflow mode (below)** decides sole vs alongside. Do not invent a merged meta-workflow. After sole archive, treat Phasestep as the only plan/build/verify/audit loop.
 
 At start, **STOP** once (skip if `{{PROGRESS}}` already has Setup mode):
 
@@ -51,7 +52,7 @@ Phasestep can **install safely** next to other agent files. For the **best outco
 
 Scan and list:
 
-1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, plus adapter `README.md`)
+1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, plus adapter `README.md`)
 2. **Name collisions** — Phasestep-owned filenames that exist but are **not** clearly Phasestep bodies (e.g. custom `setup.md` kept at init)
 3. **AGENTS.md outside markers** — content outside `<!-- phasestep:codex:start -->` … `<!-- phasestep:codex:end -->`
 4. **Owner-pointed extras** — ask once if other rule/command paths are part of their **old delivery loop** (do not auto-grab `.cursor/rules` or random tools)
@@ -147,7 +148,7 @@ Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if gates or roles are unclear.
 ## Stage 1 — Product
 
 1. If `{{PRODUCT_SPEC}}` is already substantive and Owner says it is accepted, skip to Stage 2.
-2. **Existing / mid-project:** scan README, app entrypoints, and major features; draft product as **current behavior + near-term intent**. Ask Owner what is already shipped vs still planned. Do not mark unbuilt features as live.
+2. **Existing / mid-project:** if `{{PROJECT_MAP}}` is missing/empty/stale and the repo has real app code → run `/map-project` first (no Owner gate). Then scan README, map hubs/modules, and major features; draft product as **current behavior + near-term intent**. Ask Owner what is already shipped vs still planned. Do not mark unbuilt features as live.
 3. Ask how they will provide intent (one mode):
    - **paste** — description in chat
    - **path** — point to a file (PRD, README, notes)
@@ -331,8 +332,8 @@ Or overall:
 
 **Prerequisite:** stack enrichment completed or explicitly skipped.
 
-1. Lightly scan the repo for stack/layout cues (reuse Stage 4 detection).
-2. Draft `{{ARCHITECTURE}}` from product + finalized flow + repo scan + **any accepted stack enrichment** (cite official sources in conventions).
+1. Lightly scan the repo for stack/layout cues (reuse Stage 4 detection). Prefer [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) when Status is `current` for modules, hubs, and folder seams; refresh via `/map-project` if stale and the codebase is non-trivial.
+2. Draft `{{ARCHITECTURE}}` from product + finalized flow + map/repo scan + **any accepted stack enrichment** (cite official sources in conventions).
 3. Align `buildCommand` suggestion with the stack (see Stage 9).
 4. For fresh scaffolds: propose a conventional layout justified by the user flow. For existing features/folders: **document and follow** them — do not reinvent.
 5. **STOP** for numbered Accept / Reject / Edit.

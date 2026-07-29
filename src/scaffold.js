@@ -11,6 +11,7 @@ const DEFAULTS = {
   buildPlan: 'docs/BUILD_PLAN.md',
   auditPlan: 'docs/AUDIT_PLAN.md',
   auditReportsDir: 'docs/audit-reports',
+  projectMap: 'docs/PROJECT_MAP.md',
   progress: 'docs/PROGRESS.md',
   phasePlansDir: 'docs/phase-plans',
   designSystem: 'docs/DESIGN_SYSTEM.md',
@@ -38,6 +39,7 @@ const COMMAND_FILES = [
   'audit-project.md',
   'refine-audit.md',
   'complete-audit.md',
+  'map-project.md',
 ];
 
 const OWNER_STUBS = [
@@ -47,6 +49,7 @@ const OWNER_STUBS = [
   ['project/decisions.md', 'decisions'],
   ['project/BUILD_PLAN.md', 'buildPlan'],
   ['project/AUDIT_PLAN.md', 'auditPlan'],
+  ['project/PROJECT_MAP.md', 'projectMap'],
   ['project/PROGRESS.md', 'progress'],
   ['project/phase-plans-README.md', { dirKey: 'phasePlansDir' }],
   ['project/audit-reports-README.md', { dirKey: 'auditReportsDir' }],
@@ -120,6 +123,7 @@ function varsFromConfig(config) {
     BUILD_PLAN: config.buildPlan,
     AUDIT_PLAN: config.auditPlan,
     AUDIT_REPORTS_DIR: config.auditReportsDir,
+    PROJECT_MAP: config.projectMap,
     PROGRESS: config.progress,
     PHASE_PLANS_DIR: config.phasePlansDir,
     DESIGN_SYSTEM: config.designSystem,

@@ -179,12 +179,14 @@ function main() {
   assert(Array.isArray(cfg.adapters) && cfg.adapters.includes('cursor'), 'adapters include cursor');
   assert(cfg.userFlow && cfg.stackCatalog && cfg.designCatalog, 'config enrichment keys');
   assert(cfg.auditPlan && cfg.auditReportsDir, 'config audit keys');
+  assert(cfg.projectMap, 'config projectMap key');
 
   const progressStub = read(cfg.progress);
   assert(progressStub.includes('Workflow mode'), 'PROGRESS workflow mode checklist');
 
   // audit campaign artifacts
   assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'AUDIT_PLAN stub');
+  assert(fs.existsSync(path.join(TMP, cfg.projectMap)), 'PROJECT_MAP stub');
   assert(
     fs.existsSync(path.join(TMP, cfg.auditReportsDir, 'README.md')),
     'audit-reports README'
@@ -196,6 +198,7 @@ function main() {
     'audit-ds.md',
     'refine-audit.md',
     'complete-audit.md',
+    'map-project.md',
   ]) {
     assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', cmd)), `cursor ${cmd}`);
     assert(fs.existsSync(path.join(TMP, '.claude', 'commands', cmd)), `claude ${cmd}`);
@@ -209,6 +212,30 @@ function main() {
   assert(auditProject.includes('/audit-campaign'), 'audit-project hands off to audit-campaign');
   assert(auditProject.includes('1. Accept'), 'audit-project gate numbered');
   assert(!auditProject.includes('Accept | Reject | Edit'), 'audit-project no word-only gate');
+  assert(auditProject.includes('/map-project'), 'audit-project prefers project map');
+  assert(auditProject.includes('extracted'), 'audit-project uses extracted seams');
+
+  const mapProjectCmd = read(path.join('.cursor', 'commands', 'map-project.md'));
+  assert(mapProjectCmd.includes('Owner gate:** none') || mapProjectCmd.includes('Owner gate: none'), 'map-project no Owner gate');
+  assert(mapProjectCmd.includes('extracted'), 'map-project extracted label');
+  assert(mapProjectCmd.includes('heuristic'), 'map-project heuristic label');
+  assert(mapProjectCmd.includes('Audience:** agents') || mapProjectCmd.includes('Audience: agents'), 'map-project agent audience');
+  assert(mapProjectCmd.includes('Do **not** STOP for Owner Accept'), 'map-project no accept STOP');
+
+  const projectMapStub = read(cfg.projectMap);
+  assert(projectMapStub.includes('Agent navigation aid'), 'PROJECT_MAP stub audience');
+  assert(projectMapStub.includes('Core hubs'), 'PROJECT_MAP stub hubs');
+  assert(projectMapStub.includes('When Status is stale'), 'PROJECT_MAP defines stale');
+
+  assert(setupCmd.includes('/map-project'), 'setup mid-project uses map-project');
+  assert(setupCmd.includes('Project map (agent aid)'), 'setup documents project map');
+
+  const completePhaseCmd = read(path.join('.cursor', 'commands', 'complete-phase.md'));
+  assert(completePhaseCmd.includes('Project map'), 'complete-phase updates project map');
+  assert(completePhaseCmd.includes('/map-project refresh') || completePhaseCmd.includes('stale'), 'complete-phase stale or refresh');
+
+  const planPhaseCmd = read(path.join('.cursor', 'commands', 'plan-phase.md'));
+  assert(planPhaseCmd.includes('PROJECT_MAP') || planPhaseCmd.includes('project map') || planPhaseCmd.includes('/map-project'), 'plan-phase may use project map');
 
   const buildPhaseCmd = read(path.join('.cursor', 'commands', 'build-phase.md'));
   assert(buildPhaseCmd.includes('1. Accept →'), 'build-phase intent gate numbered');
@@ -223,6 +250,16 @@ function main() {
 
   const refineAuditCmd = read(path.join('.cursor', 'commands', 'refine-audit.md'));
   assert(refineAuditCmd.includes('1. Approve'), 'refine-audit plan gate numbered');
+  assert(refineAuditCmd.includes('Cross-cutting'), 'refine-audit cross-cutting redirect');
+
+  const refinePhaseCmd = read(path.join('.cursor', 'commands', 'refine-phase.md'));
+  assert(refinePhaseCmd.includes('Cross-cutting STOP'), 'refine-phase has cross-cutting STOP');
+  assert(refinePhaseCmd.includes('1. Record decision'), 'refine-phase cross-cutting option 1');
+  assert(refinePhaseCmd.includes('2. Scoped only'), 'refine-phase cross-cutting option 2');
+  assert(refinePhaseCmd.includes('3. Defer'), 'refine-phase cross-cutting defer');
+  assert(refinePhaseCmd.includes('4. Not cross-cutting'), 'refine-phase local-refine escape');
+
+  assert(buildPhaseCmd.includes('Cross-cutting STOP') || buildPhaseCmd.includes('core principle'), 'build-phase points to cross-cutting');
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');

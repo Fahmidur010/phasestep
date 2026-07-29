@@ -31,12 +31,14 @@ If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first.
 7. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — prior phases
 8. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}})
 9. For UI steps: if [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) exists, follow it
+10. If Owner chat asks to change a **core principle** or behavior that **cascades to other features/phases** → **do not code yet**. Follow the **Cross-cutting STOP** in [`refine-phase`](./refine-phase.md) (decision → product/flow sync → re-scope), then return to this step with an updated plan/delta. Local step work only after that gate (or Owner picks scoped/defer).
 
 ## Implementation rules
 
 - Minimize scope to the step’s done-when
 - Match existing project patterns
 - Do **not** commit unless Owner asks
+- Do **not** silently cascade principle changes across features during a single step build
 
 ## Execute
 

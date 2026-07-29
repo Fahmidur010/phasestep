@@ -27,6 +27,7 @@ Do not mark complete without **1. Confirm complete**.
 2. [`{{PROGRESS}}`](../../{{PROGRESS}}) — mark Phase $ARGUMENTS done; add **session log** entry (required; do **not** tell Owner to run `/session-log` for this finale)
 3. Update progress doc **Last Updated** if present
 4. [`{{DECISIONS}}`](../../{{DECISIONS}}) — move newly locked decisions to Resolved
+5. **Project map:** if this phase added/renamed major modules, hubs, or entrypoints → mark [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) Status `stale` **or** run `/map-project refresh` (agent aid; no Owner gate). Skip if the map is empty/unused (tiny greenfield).
 
 ### Session log shape
 

@@ -61,6 +61,7 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Open decisions** | `docs/decisions.md` | Unresolved choices; blockers stop build. |
 | **Master build plan** | `docs/BUILD_PLAN.md` | Ordered phases and scope boundaries. |
 | **Audit plan** | `docs/AUDIT_PLAN.md` | Feature-listed audit phases + dimensions; drafted by `/audit-project`; Owner-gated. |
+| **Project map** | `docs/PROJECT_MAP.md` | Agent navigation aid (modules, hubs, seams). Stub installed empty; filled by `/map-project`. Not Owner-gated; not product truth. |
 | **Audit reports** | `docs/audit-reports/` | One report per audit phase + `AUDIT_SUMMARY.md`; stable finding IDs; read-only evidence. |
 | **Phase execution plan** | `docs/phase-plans/phase-N.md` | Steps, done-when, verify checklist, Behavior delta. |
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history (includes Setup checklist). |
@@ -124,12 +125,13 @@ Paths are overridable in `phasestep.json`.
 | **plan-phase** | `N` | Agent | Write phase plan only. No application code. |
 | **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta (WHEN/THEN per SHALL); stop for intent gate. |
 | **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist from step plan + Behavior delta THEN outcomes. No code changes. |
-| **refine-phase** | `N` `[S]` | Agent | Minimal fixes; update delta if behavior changed. |
+| **refine-phase** | `N` `[S]` | Agent | Minimal fixes; **Cross-cutting STOP** if principle/multi-feature change; update delta if behavior changed. |
 | **audit-phase** | `N` | Agent | Read-only **build** acceptance audit after steps verified. Not for campaign. |
 | **audit-ds** | `N` \| `all` | Agent | Design-system audit for delivery (skip for non-UI). |
 | **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log. |
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes. |
-| **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); Owner accept gate; docs only. |
+| **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
+| **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); prefer project map seams; Owner accept gate; docs only. |
 | **audit-campaign** | `N` `[reaudit]` | Agent | Read-only **campaign** audit against audit plan → report in `docs/audit-reports/`. |
 | **audit-campaign-ds** | `N` | Agent | Design-system checks for a campaign phase (fold into campaign report). |
 | **refine-audit** | `N` | Agent | Fix **only Owner-approved** findings from an audit report; STOP-gated plan; re-audit verifies. |
@@ -138,6 +140,8 @@ Paths are overridable in `phasestep.json`.
 **Shorthand:** `build-phase N` with no step = next unfinished step only.
 
 **Owner gate format:** Every Owner STOP that presents choices must use a **numbered list** (`1.` `2.` `3.` …). Words are labels; the Owner may reply with the number alone. Never present word-only choice rows such as `Accept | Reject | Edit` without numbers.
+
+**Project map:** Optional agent aid (`/map-project`). Prefer when present for mid-project `/setup` and `/audit-project` slicing. Claims labeled **extracted** vs **heuristic**. Never overrides accepted product, user flow, or architecture. No Owner gate to create or use.
 
 **Audit campaign gates:** `/audit-project` requires accepted product + user flow + architecture (+ design system if UI) — otherwise back to `/setup`. Reports are **read-only**; after each report the Owner picks numbered options: approve all for refinement / select findings / record only / continue to next phase. Fixes happen exclusively in `/refine-audit` on approved findings, then `/audit-campaign N reaudit` verifies. Findings never silently become build work — promotion into `BUILD_PLAN` is an explicit Owner choice at `/complete-audit`.
 
@@ -193,7 +197,9 @@ Rules:
 8. No commit unless asked  
 9. Minimize scope  
 10. Run project build check after implement/refine (`buildCommand` in `phasestep.json`)
+11. Cross-cutting / principle changes: **STOP** before code — decision + product/flow sync (or scoped/defer); never silently cascade across features during refine/build
 
+**Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
 ---
 
 ## 8. Verification & proof
@@ -296,7 +302,18 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
 
-### v0.5.1 — Behavior delta WHEN/THEN scenarios — *current*
+### v0.6.0 — First-party project map + cross-cutting STOP — *current*
+
+**Date:** 2026-07-29  
+
+- **`docs/PROJECT_MAP.md`** + **`/map-project`** — thin structural map (modules, hubs, seams; extracted vs heuristic)  
+- Agent aid only — **no Owner gate** to create or use; not product truth  
+- Mid-project `/setup` and `/audit-project` prefer the map when present / refresh when stale  
+- `/complete-phase` marks map stale (or refreshes) when the phase changed major structure  
+- Inherits Graphify *ideas* (orientation digest, seams) — not Graphify tooling  
+- **Cross-cutting STOP** on `/refine-phase` (mirrored from `/build-phase` / `/refine-audit`): principle or multi-feature change → decision + product/flow sync / scoped / defer **before** code  
+
+### v0.5.1 — Behavior delta WHEN/THEN scenarios
 
 **Date:** 2026-07-29  
 
@@ -320,7 +337,8 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 - Phasestep marketing / docs site (domain) — explain what it is and how it works  
 - Optional `/pr-step` + GitHub adapters  
 - ~~WHEN/THEN scenarios on Behavior delta~~ → v0.5.1  
-- Optional project-map enrichment (Graphify or thin native) for mid-project setup / audit slicing  
+- ~~Optional project-map enrichment (thin first-party)~~ → v0.6.0  
+- ~~Cross-cutting / principle-change STOP on refine~~ → v0.6.0  
 - Better name for `/audit-campaign-ds` if a clearer two-word label appears  
 - ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
 - ~~`upgrade` command for template refreshes~~ → v0.4.0  
@@ -345,8 +363,10 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 | **Design catalog** | Component libraries (pick one) + guidelines; agent MCP/skills/llms |
 | **Behavior delta** | ADDED/CHANGED/REMOVED SHALL statements, each with ≥1 WHEN/THEN scenario |
 | **Intent gate** | Owner accept/reject of the Behavior delta |
+| **Project map** | Agent navigation digest (modules / hubs / seams); context only |
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
+| **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
 | **Adapter** | IDE-specific command implementation |
 
 ---

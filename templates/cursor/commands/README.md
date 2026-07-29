@@ -2,18 +2,19 @@
 
 Slash commands for Cursor. The same command bodies are also installed for Claude Code (`.claude/commands/`) when that adapter is enabled. Codex gets a managed block in `AGENTS.md`.
 
-**Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
+**Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
 
 ```text
 /setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
 /plan-phase <n>            → write phase-N.md
 /build-phase <n> [step]    → implement step(s); Behavior delta (WHEN/THEN); intent gate
 /verify-phase <n> [step]   → Owner UAT from THEN outcomes + automated checks
-/refine-phase <n> [step]   → fix after verify
+/refine-phase <n> [step]   → fix after verify (Cross-cutting STOP if principle cascades)
 /audit-phase <n>           → build-phase acceptance audit (delivery)
 /audit-ds <n|all>          → design-system audit (delivery)
 /complete-phase <n>        → mark done + progress
 /session-log …             → optional mid-phase notes
+/map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

@@ -17,9 +17,10 @@ Use a filesystem-safe filename (e.g. `phase-6a.md`).
 4. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — list **decision gates** for this phase
 5. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — confirm prior phases complete unless Owner overrides
 6. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}}) — project conventions
-7. Scan the codebase for patterns relevant to this phase
-8. Read [`.cursor/commands/README.md`](./README.md) — step workflow
-9. Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if unclear on gates
+7. If [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) Status is `current`, use its modules/hubs/seams to orient Files / scope (context only). If stale and the phase touches structure → `/map-project refresh` first. Skip if empty.
+8. Scan the codebase for patterns relevant to this phase
+9. Read [`.cursor/commands/README.md`](./README.md) — step workflow
+10. Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if unclear on gates
 
 ## Guardrails
 
