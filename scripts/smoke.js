@@ -144,6 +144,12 @@ function main() {
   assert(verifyCmd.includes('Mid-flight Playwright offer'), 'verify-phase mid-flight offer');
   assert(verifyCmd.includes('Don\'t ask again for build phase'), 'verify-phase decline per phase');
   assert(verifyCmd.includes('this step only'), 'verify-phase option 2 scoped to step');
+  assert(verifyCmd.includes('Scenarios → checklist'), 'verify-phase maps scenarios to checklist');
+  assert(verifyCmd.includes('THEN'), 'verify-phase uses THEN outcomes');
+  assert(verifyCmd.includes('lacks a WHEN/THEN scenario'), 'verify-phase blocks incomplete delta');
+
+  const auditPhaseCmdEarly = read(path.join('.cursor', 'commands', 'audit-phase.md'));
+  assert(auditPhaseCmdEarly.includes('Behavior delta traceability'), 'audit-phase checks delta scenarios');
 
   const setupCmd = read(path.join('.cursor', 'commands', 'setup.md'));
   assert(setupCmd.includes('Accept matched surface evidence'), 'setup Stage 4 verification lane');
@@ -206,6 +212,10 @@ function main() {
 
   const buildPhaseCmd = read(path.join('.cursor', 'commands', 'build-phase.md'));
   assert(buildPhaseCmd.includes('1. Accept →'), 'build-phase intent gate numbered');
+  assert(buildPhaseCmd.includes('WHEN'), 'build-phase behavior delta WHEN');
+  assert(buildPhaseCmd.includes('THEN'), 'build-phase behavior delta THEN');
+  assert(buildPhaseCmd.includes('≥1 scenario'), 'build-phase requires scenarios per SHALL');
+  assert(buildPhaseCmd.includes('Before the intent gate'), 'build-phase blocks incomplete delta');
 
   const completeAuditCmd = read(path.join('.cursor', 'commands', 'complete-audit.md'));
   assert(completeAuditCmd.includes('1. Promote selected'), 'complete-audit gate numbered');

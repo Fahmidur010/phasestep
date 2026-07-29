@@ -72,8 +72,9 @@ Never install silently. Never block the audit if Owner chooses 2 or 3.
    - [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) if present
    - Stack practice docs the project defines
 3. Check: steps reflected in code; layering/forbidden imports; auth/role guards; migrations present when claimed; every audit checkpoint evaluated; short SOLID pass on changed surfaces.
-4. If this phase has a **web UI** surface → follow **Browser evidence** above. If **native** or **backend-only** → follow Native / Backend tool evidence above.
-5. If UI in scope and `{{DESIGN_SYSTEM}}` exists → run `/audit-ds $ARGUMENTS` (or note as a separate step).
-6. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
+4. **Behavior delta traceability:** for each verified step in the phase plan, read its Behavior delta scenarios — confirm implemented behavior matches each **THEN** (and REMOVED scenarios if present). Flag mismatches as findings.
+5. If this phase has a **web UI** surface → follow **Browser evidence** above. If **native** or **backend-only** → follow Native / Backend tool evidence above.
+6. If UI in scope and `{{DESIGN_SYSTEM}}` exists → run `/audit-ds $ARGUMENTS` (or note as a separate step).
+7. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
    - Issues → `/refine-phase $ARGUMENTS` then re-run `/audit-phase $ARGUMENTS`
    - No C/M → ready for `/complete-phase $ARGUMENTS` after Owner confirmation

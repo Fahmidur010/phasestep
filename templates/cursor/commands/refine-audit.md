@@ -35,7 +35,7 @@ Refine plan for Audit Phase $ARGUMENTS:
 
 1. Update each finding in the report: `Fixed` | `Partially fixed` (why) | `Blocked` (what blocks it). Never delete findings.
 2. Update the report snapshot counts and `{{PROGRESS}}`.
-3. Behavior changed? Present a short **Behavior delta** and **STOP** for intent:
+3. Behavior changed? Present a short **Behavior delta** (same shape as `/build-phase` — each changed `SHALL` with **WHEN/THEN** scenarios) and **STOP** for intent:
 ```text
 Behavior delta (after refine-audit):
 1. Accept

@@ -200,7 +200,7 @@ When Owner **tweaks** the flow:
 3. Show a short **Product sync delta** in chat:
 
 ```markdown
-**Product sync delta** (flow → product):
+**Product sync delta** (flow → product; not a Behavior delta — no WHEN/THEN here):
 - **ADDED:** …
 - **CHANGED:** … (was: …)
 - **REMOVED:** … (or `none`)

@@ -5,8 +5,8 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 ```text
 /setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
 /plan-phase <n>            → write phase-N.md
-/build-phase <n> [step]    → implement step(s); emit Behavior delta; intent gate
-/verify-phase <n> [step]   → Owner UAT + automated checks
+/build-phase <n> [step]    → implement step(s); Behavior delta (WHEN/THEN); intent gate
+/verify-phase <n> [step]   → Owner UAT from THEN outcomes + automated checks
 /refine-phase <n> [step]   → fix after verify
 /audit-phase <n>           → build-phase acceptance audit (delivery)
 /audit-ds <n|all>          → design-system audit (delivery)

@@ -30,7 +30,9 @@ You steer with **written product intent**. An AI agent implements in **small ver
 
 ### Relationship to SDD / OpenSpec philosophy
 
-Phasestep **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step; proof is **Owner verification** (the gate) plus compile/build checks and phase audits. For web UI, optional **Playwright** evidence (CLI preferred) may strengthen verify/audit — it never replaces the Owner gate or auto-accepts intent.
+Phasestep **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step with **WHEN/THEN scenarios** (minimal BDD — no required GIVEN, no `openspec/` corpus); proof is **Owner verification** (the gate) plus compile/build checks and phase audits. For web UI, optional **Playwright** evidence may strengthen verify/audit — it never replaces the Owner gate or auto-accepts intent.
+
+**Phasestep vs OpenSpec:** OpenSpec manages a versioned spec corpus and change proposals. Phasestep manages **delivery** — gated build steps, Owner verify, and phase audit. Use Phasestep to ship; do not run both as parallel truth systems.
 
 ---
 
@@ -120,8 +122,8 @@ Paths are overridable in `phasestep.json`.
 |---------|------|-------|------|
 | **setup** | optional stage | Agent + Owner | Progressive stub fill. Product → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design (pick-one library)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
 | **plan-phase** | `N` | Agent | Write phase plan only. No application code. |
-| **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta; stop for intent gate. |
-| **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist anchored to delta. No code changes. |
+| **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta (WHEN/THEN per SHALL); stop for intent gate. |
+| **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist from step plan + Behavior delta THEN outcomes. No code changes. |
 | **refine-phase** | `N` `[S]` | Agent | Minimal fixes; update delta if behavior changed. |
 | **audit-phase** | `N` | Agent | Read-only **build** acceptance audit after steps verified. Not for campaign. |
 | **audit-ds** | `N` \| `all` | Agent | Design-system audit for delivery (skip for non-UI). |
@@ -146,21 +148,36 @@ Paths are overridable in `phasestep.json`.
 ## 6. Behavior delta (intent gate)
 
 ```markdown
-**Behavior delta** (post-build — Owner reviews before verify-phase):
-- **Intent status:** pending_owner_review | accepted
+**Behavior delta** (post-build — Owner reviews before `/verify-phase`):
+- **Intent status:** pending_owner_review
 - **ADDED:**
   - The system SHALL …
+    - **Scenario:** [short title]
+      - WHEN …
+      - THEN …
+      - AND … (optional, extra observable outcome)
 - **CHANGED:**
   - The system SHALL … (was: …)
+    - **Scenario:** …
+      - WHEN …
+      - THEN …
 - **REMOVED:**
   - The system no longer … (or `none`)
+    - **Scenario:** … (optional — WHEN/THEN for regression check that old behavior is gone)
 - **UNCHANGED (explicit non-goals for this step):**
   - …
 - **Risks / edge cases to watch in verification:**
   - …
 ```
 
-Rules: 3–12 bullets; product behavior language; not proof of correct code; persist in phase plan and chat; accept → verify; reject → refine.
+Rules:
+- Product behavior language (`SHALL`); 1–4 requirements per step (each with ≥1 scenario).
+- **WHEN** = trigger, action, or condition the Owner can observe or perform.
+- **THEN** = observable outcome (what verify checklist **Expected** will assert).
+- **AND** = optional extra observable outcomes (edge cases, error messages, persistence).
+- Context (role, data, starting screen) may live in WHEN or the phase plan — **GIVEN is not required**.
+- Align with product spec + step done-when; surface unintended adds; not proof of correct code.
+- Persist under the step in the phase plan **and** show in chat.
 
 ---
 
@@ -279,7 +296,15 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
 
-### v0.5.0 — Split build vs campaign audit commands + numbered Owner gates — *current*
+### v0.5.1 — Behavior delta WHEN/THEN scenarios — *current*
+
+**Date:** 2026-07-29  
+
+- Each ADDED/CHANGED `SHALL` in a step Behavior delta includes ≥1 **WHEN/THEN** scenario (optional **AND**); REMOVED may include an optional regression scenario; GIVEN not required  
+- `/verify-phase` derives checklist **Expected** from scenario **THEN** outcomes  
+- Minimal BDD borrowed from SDD/OpenSpec philosophy — not OpenSpec tooling, no auto-generated test suite  
+
+### v0.5.0 — Split build vs campaign audit commands + numbered Owner gates
 
 **Date:** 2026-07-29  
 
@@ -294,7 +319,7 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 
 - Phasestep marketing / docs site (domain) — explain what it is and how it works  
 - Optional `/pr-step` + GitHub adapters  
-- WHEN/THEN scenarios on Behavior delta / product (borrowed idea; not OpenSpec product)  
+- ~~WHEN/THEN scenarios on Behavior delta~~ → v0.5.1  
 - Optional project-map enrichment (Graphify or thin native) for mid-project setup / audit slicing  
 - Better name for `/audit-campaign-ds` if a clearer two-word label appears  
 - ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
@@ -318,7 +343,7 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 | **User flow** | Interaction map (entry → paths → exits); setup overview surface |
 | **Stack catalog** | Curated official agentic resource pointers per framework |
 | **Design catalog** | Component libraries (pick one) + guidelines; agent MCP/skills/llms |
-| **Behavior delta** | ADDED/CHANGED/REMOVED SHALL statements |
+| **Behavior delta** | ADDED/CHANGED/REMOVED SHALL statements, each with ≥1 WHEN/THEN scenario |
 | **Intent gate** | Owner accept/reject of the Behavior delta |
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |

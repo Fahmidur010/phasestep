@@ -23,11 +23,21 @@ If missing → Owner should run `/plan-phase PHASE` first.
 
 Read the step’s **Behavior delta**.
 
-- Missing → note intent review skipped; still provide checklist
+- **Missing** → **STOP**: tell Owner to run `/build-phase PHASE STEP` to produce the delta (with scenarios).
+- **Present but any ADDED/CHANGED `SHALL` lacks a WHEN/THEN scenario** → **STOP**: complete the delta via `/build-phase` or `/refine-phase` before verify.
 - `pending_owner_review` → remind to accept or reject (reject → `/refine-phase`) before treating UAT as final
 - If Owner already accepted in chat, proceed; on verify pass set **Intent status: accepted**
 
-Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED.
+Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED **and** list each **Scenario** title with its **THEN** outcome.
+
+## Scenarios → checklist
+
+After reading the Behavior delta:
+
+1. For **each** scenario under ADDED/CHANGED (and REMOVED if present), add or update a checklist item whose **Expected** matches the scenario’s **THEN** (and **AND** lines if they are separate observable checks).
+2. Keep the phase plan **Step verification** block as the primary structure; **merge** scenario THEN outcomes — do not duplicate conflicting expectations. If plan and delta disagree → **STOP** and ask Owner which is correct before verify.
+3. **Steps** column = what the Owner does (from WHEN, made concrete: URLs, buttons, roles, test data).
+4. At least one checklist item per scenario; happy path + material edge cases from **Risks** when relevant.
 
 ## Evidence by surface (before Playwright)
 
@@ -96,7 +106,7 @@ When Playwright is available (setup accept, mid-flight install, or already in `p
 
 1. Prefer **`playwright-cli`** (token-efficient). Use MCP only if the Owner installed it and prefers exploratory sessions.
 2. Add an **Automated evidence** subsection under the checklist:
-   - Commands the agent (or Owner) can run, e.g. open app URL → exercise the ADDED/CHANGED behavior → snapshot / screenshot on fail
+   - Commands the agent (or Owner) can run, e.g. open app URL → exercise each Behavior delta **scenario** (WHEN action → observe THEN outcome) → snapshot / screenshot on fail
    - Map each critical checklist item to a concrete CLI action when possible
 3. Report outcomes as **Evidence: pass | fail | not run** next to those items. Owner still marks Pass/Fail for UAT judgment.
 4. If a companion skill such as **playwright-best-practices** was installed into the project → follow that skill’s guidance when designing evidence steps (stable locators, waits, isolation). Do not invent a parallel best-practices doc from memory.

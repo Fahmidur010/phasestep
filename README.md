@@ -2,7 +2,7 @@
 
 **Phase-step agentic delivery with Behavior delta intent gates.**
 
-Framework-agnostic workflow for AI-assisted development. Review **intent** (a short SHALL-based behavior diff) before deep code reading or manual verification — then prove it with Owner UAT and phase audits.
+Framework-agnostic workflow for AI-assisted development. Review **intent** (a short SHALL-based behavior diff with **WHEN/THEN** scenarios) before deep code reading or manual verification — then prove it with Owner UAT and phase audits.
 
 ## Quick start
 
@@ -66,7 +66,7 @@ Phasestep **installs additively** (foreign slash commands are not deleted). For 
 
 ```text
 /setup (once) → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
-plan-phase → build-phase → Behavior delta (intent) → verify-phase
+plan-phase → build-phase → Behavior delta (WHEN/THEN) → intent gate → verify-phase
            → refine as needed → audit-phase (+ optional audit-ds) → complete-phase
 ```
 

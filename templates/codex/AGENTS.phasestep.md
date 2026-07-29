@@ -10,8 +10,8 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 |--------|---------|
 | `/setup` or "run phasestep setup" | Progressive Owner-gated stub fill |
 | `/plan-phase N` | Write `{{PHASE_PLANS_DIR}}/phase-N.md` |
-| `/build-phase N [step]` | Implement; emit Behavior delta; intent gate |
-| `/verify-phase N [step]` | Owner UAT + checks; optional Playwright browser evidence (web UI) |
+| `/build-phase N [step]` | Implement; Behavior delta (WHEN/THEN); intent gate |
+| `/verify-phase N [step]` | Owner UAT from THEN outcomes + checks; optional Playwright (web UI) |
 | `/refine-phase N [step]` | Fix after verify |
 | `/audit-phase N` | Build-phase acceptance audit (delivery) |
 | `/audit-ds N\|all` | Design-system audit (delivery) |
@@ -42,7 +42,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 
 1. Owner owns product decisions; agent drafts and stops at gates.
 2. Docs/config only during `/setup` (no app code unless Owner-approved tooling install).
-3. After build: Behavior delta → Owner intent gate → then verify.
+3. After build: Behavior delta (each SHALL with WHEN/THEN scenarios) → Owner intent gate → then verify.
 4. Design component libraries are pick-one; never mix kits.
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app.
 6. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.

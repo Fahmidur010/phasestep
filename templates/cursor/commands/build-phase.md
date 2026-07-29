@@ -54,8 +54,15 @@ After code + build check, write a short intent diff for **this step**. Persist u
 - **Intent status:** pending_owner_review
 - **ADDED:**
   - The system SHALL …
+    - **Scenario:** [short title]
+      - WHEN …
+      - THEN …
+      - AND … (optional)
 - **CHANGED:**
   - The system SHALL … (was: …)
+    - **Scenario:** …
+      - WHEN …
+      - THEN …
 - **REMOVED:**
   - The system no longer … (or `none`)
 - **UNCHANGED (explicit non-goals for this step):**
@@ -64,7 +71,11 @@ After code + build check, write a short intent diff for **this step**. Persist u
   - …
 ```
 
-Rules: product behavior language; 3–12 bullets; align with product spec + done-when; surface unintended adds; not proof of correct code.
+Rules:
+- 1–4 requirements per step; **each ADDED/CHANGED SHALL has ≥1 scenario** with **WHEN** (trigger) and **THEN** (observable outcome). Optional **AND** for extra outcomes.
+- Context may live in WHEN or the phase plan — no required GIVEN block.
+- Product behavior language; align with product spec + done-when; surface unintended adds; not proof of correct code.
+- **Before the intent gate:** if any ADDED/CHANGED `SHALL` lacks a scenario → **STOP** and complete the delta (do not offer Accept/Reject yet).
 
 ## After implementation
 

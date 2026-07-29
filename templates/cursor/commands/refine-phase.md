@@ -30,7 +30,7 @@ Fix issues for **Build Phase** from **intent rejection**, **verification**, **au
 
 ## Behavior delta update
 
-If behavior changed (including after intent rejection): update the step’s Behavior delta; set **Intent status:** `pending_owner_review`; show revised delta in chat.
+If behavior changed (including after intent rejection): update the step’s Behavior delta (including **WHEN/THEN** scenarios under each changed `SHALL`); set **Intent status:** `pending_owner_review`; show revised delta in chat.
 
 If purely structural/style with no behavior change: say **Behavior unchanged**.
 
