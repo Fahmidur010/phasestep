@@ -40,7 +40,7 @@
   "bugs": {
     "url": "https://github.com/Fahmidur010/phasestep/issues"
   },
-  "homepage": "https://github.com/Fahmidur010/phasestep#readme",
+  "homepage": "https://phasestep.vercel.app/",
   "publishConfig": {
     "access": "public",
     "provenance": true

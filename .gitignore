@@ -12,3 +12,4 @@ sandbox/
 # Maintainer-only (keep locally; not for public GitHub)
 AGENT_DOC.md
 MAINTAINING.md
+site/
