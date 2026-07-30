@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.7.4  
+**Version:** 0.7.5  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-07-30  
 **Product:** Phasestep  
@@ -247,7 +247,14 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.7.4 — README clarity + evolution log order — *current*
+### v0.7.5 — Site homepage on public surface — *current*
+
+**Date:** 2026-07-30  
+
+- README + `package.json` homepage point to https://phasestep.vercel.app/  
+- `site/` kept local-only (gitignore); landing hosted separately  
+
+### v0.7.4 — README clarity + evolution log order
 
 **Date:** 2026-07-30  
 
@@ -421,4 +428,4 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 ---
 
-*End of constitution — Phasestep v0.7.4*
+*End of constitution — Phasestep v0.7.5*
