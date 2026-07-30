@@ -96,7 +96,7 @@ Optional **verification by surface:** web UI → Playwright (CLI preferred); Flu
 /pr-step N [step?]         → Gate A commit → Gate B push+PR → Gate C merge if checks green
 ```
 
-Requires local `git` + [GitHub CLI](https://cli.github.com/) (`gh auth login`). Owner Accepts each irreversible step — never silent push/merge.
+Requires local `git` + [GitHub CLI](https://cli.github.com/) (`gh auth login`). Owner Accepts each irreversible step — never silent push/merge. Offered as a numbered STOP at `/setup` Finish (Connect now / Skip); not during `npx init`.
 
 ## Local development
 
@@ -109,7 +109,7 @@ npm run smoke
 
 ## Version
 
-**0.7.0** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.7.1** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 

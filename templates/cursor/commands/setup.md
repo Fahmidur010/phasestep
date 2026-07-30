@@ -627,11 +627,21 @@ buildCommand:
    - Design: library chosen / skipped + resources installed
    - Build plan phase order
    - Final `buildCommand`
-3. Tell Owner next step — do **not** run it unless asked:
+3. **STOP — optional GitHub connect** (primary embed). Skip this STOP if `{{PROGRESS}}` already has a `GitHub: connected` line.
+
+```text
+Setup complete — optional GitHub handoff:
+1. Connect now — run /github-connect (auth + remote; no commit), then continue Finish
+2. Skip — continue without GitHub automation (manual git/PR OK; /pr-step will fail soft until connected)
+```
+
+   - On **1. Connect now**: run `/github-connect` (same session or tell Owner to invoke it), then resume Finish step 4.
+   - On **2. Skip**: record `GitHub: skipped at setup — YYYY-MM-DD` in `{{PROGRESS}}` (optional note); do not block delivery.
+4. Tell Owner next step — do **not** run it unless asked:
 
 ```text
 Setup complete → run /plan-phase 1
 ```
 
-Optional: `/github-connect` if the Owner uses GitHub (install/auth `gh`, link remote) — then later `/pr-step` after verify/complete.  
+Later (after verify/complete): `/pr-step` for Owner-gated PR.  
 Optional: `npx phasestep check` to confirm artifacts exist.

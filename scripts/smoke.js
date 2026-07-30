@@ -51,6 +51,7 @@ function main() {
   // Non-TTY / --yes → all adapters (no interactive hang in CI)
   const initAllOut = run(['init', TMP, '--yes']);
   assert(initAllOut.includes('all adapters') || initAllOut.includes('Adapters:'), 'init --yes runs');
+  assert(initAllOut.includes('github-connect') || initAllOut.includes('/github-connect'), 'init hints Setup Finish github-connect');
 
   assert(fs.existsSync(path.join(TMP, 'phasestep.json')), 'phasestep.json written');
   assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', 'setup.md')), 'cursor /setup');
@@ -91,6 +92,9 @@ function main() {
   for (const needle of requiredStages) {
     assert(setup.includes(needle), `setup.md contains: ${needle}`);
   }
+  assert(setup.includes('optional GitHub handoff'), 'setup Finish GitHub connect STOP');
+  assert(setup.includes('1. Connect now'), 'setup Finish Connect now option');
+  assert(setup.includes('2. Skip'), 'setup Finish Skip GitHub option');
 
   const stack = JSON.parse(read(path.join('.phasestep', 'stack-catalog.json')));
   assert(stack.stacks && typeof stack.stacks === 'object', 'stack-catalog.stacks');
@@ -237,6 +241,7 @@ function main() {
   const completePhaseCmd = read(path.join('.cursor', 'commands', 'complete-phase.md'));
   assert(completePhaseCmd.includes('Project map'), 'complete-phase updates project map');
   assert(completePhaseCmd.includes('/map-project refresh') || completePhaseCmd.includes('stale'), 'complete-phase stale or refresh');
+  assert(completePhaseCmd.includes('/github-connect'), 'complete-phase soft-reminds github-connect');
 
   const planPhaseCmd = read(path.join('.cursor', 'commands', 'plan-phase.md'));
   assert(planPhaseCmd.includes('PROJECT_MAP') || planPhaseCmd.includes('project map') || planPhaseCmd.includes('/map-project'), 'plan-phase may use project map');

@@ -59,8 +59,11 @@ Do not re-offer for that phase after a decline is recorded.
 
 ### GitHub (optional — via `/github-connect` + `/pr-step`)
 
+Offered at `/setup` Finish (Connect now / Skip). Re-run `/github-connect` anytime if skipped or remote changes.
+
 ```text
 GitHub: connected — owner/repo (origin) — YYYY-MM-DD
+GitHub: skipped at setup — YYYY-MM-DD
 GitHub PR: phase 1 step 2 — branch phasestep/phase-1-step-2 — PR https://… — status open — date
 ```
 

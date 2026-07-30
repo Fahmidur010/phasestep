@@ -56,6 +56,7 @@ Next:
      Alongside (opt-in) → keep your commands; additive use
      Mid-project app → Existing (mid-project) in Setup mode
      Or fill ${config.productSpec}, ${config.userFlow}, ${config.buildPlan}, ${config.architecture} manually
+     (Setup Finish offers optional /github-connect — not during init)
   3. Then run /plan-phase 1
 
 Constitution: ${config.constitutionPath}

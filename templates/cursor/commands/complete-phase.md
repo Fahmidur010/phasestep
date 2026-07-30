@@ -44,3 +44,4 @@ Or expanded block: built / UAT / audit / decisions / next phase command.
 
 - Phase $ARGUMENTS: **complete**
 - Suggest next: `/pr-step $ARGUMENTS` (optional GitHub PR) and/or `/plan-phase` for the next phase in `{{BUILD_PLAN}}`
+- If `{{PROGRESS}}` has no `GitHub: connected` line and Owner wants PRs → soft remind `/github-connect` first (do not block complete)

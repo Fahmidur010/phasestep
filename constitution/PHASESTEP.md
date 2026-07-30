@@ -307,7 +307,15 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
 
-### v0.7.0 — GitHub connect + Owner-gated `/pr-step` — *current*
+### v0.7.1 — Setup Finish GitHub connect gate — *current*
+
+**Date:** 2026-07-30  
+
+- **`/setup` Finish** — numbered STOP: Connect now (`/github-connect`) / Skip (record in PROGRESS)  
+- Primary embed for GitHub wiring; init only hints; `/complete-phase` soft-reminds if never connected  
+- Capability still installed at `init` (command files); connect itself is not an adapter  
+
+### v0.7.0 — GitHub connect + Owner-gated `/pr-step`
 
 **Date:** 2026-07-29  
 
