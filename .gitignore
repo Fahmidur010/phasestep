@@ -1,9 +1,14 @@
 tmp-smoke/
 tmp-smoke-cursor/
 tmp-smoke-nontty/
+tmp-smoke-alongside/
 node_modules/
 .DS_Store
 *.log
 .tmp/
 sandbox/
 *.tgz
+
+# Maintainer-only (keep locally; not for public GitHub)
+AGENT_DOC.md
+MAINTAINING.md

@@ -4,6 +4,8 @@
 
 Framework-agnostic workflow for AI-assisted development. Review **intent** (a short SHALL-based behavior diff with **WHEN/THEN** scenarios) before deep code reading or manual verification — then prove it with Owner UAT and phase audits.
 
+**Author:** [Fahmidur010](https://github.com/Fahmidur010)
+
 ## Quick start
 
 ```bash
@@ -31,7 +33,7 @@ phasestep check
 phasestep upgrade
 ```
 
-Then run `/setup` (or fill `docs/product.md` + `docs/BUILD_PLAN.md`), open in your agent, run `/plan-phase 1`. Mid-project: `/setup` documents what exists and plans remaining work.
+Then run `/setup` (or fill `docs/product.md` + `docs/BUILD_PLAN.md`), open in your coding agent, run `/plan-phase 1`. Mid-project: `/setup` documents what exists and plans remaining work.
 
 ## Adopting alongside an existing workflow
 
@@ -98,36 +100,14 @@ Optional **verification by surface:** web UI → Playwright (CLI preferred); Flu
 
 Requires local `git` + [GitHub CLI](https://cli.github.com/) (`gh auth login`). Owner Accepts each irreversible step — never silent push/merge. Offered as a numbered STOP at `/setup` Finish (Connect now / Skip); not during `npx init`.
 
-## Local development
-
-```bash
-node ./bin/phasestep.js init /path/to/project
-node ./bin/phasestep.js upgrade /path/to/project
-node ./bin/phasestep.js check /path/to/project
-npm run smoke
-```
-
 ## Version
 
-**0.7.2** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.7.3** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
-## Maintaining / releasing
+## Links
 
-See **[MAINTAINING.md](./MAINTAINING.md)** — branch model, semver, tag-triggered npm publish via GitHub Actions (Trusted Publishing / OIDC).
-
-Contributing to the package itself? Start with **[AGENT_DOC.md](./AGENT_DOC.md)** — module map, design rationale, invariants, and the running engineering log.
-
-Quick release (after merging to `main`):
-
-```bash
-npm run release:patch   # or release:minor / release:major
-git push origin main --follow-tags
-```
-
-## Repo
-
-Source: [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)  
-npm package: **`phasestep`**
+- Source: [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)
+- npm: **`phasestep`**
 
 ## License
 

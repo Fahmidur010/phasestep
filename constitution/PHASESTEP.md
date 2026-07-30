@@ -1,13 +1,14 @@
 # Phasestep — Constitution
 
-**Version:** 0.4.5  
+**Version:** 0.7.3  
 **Status:** Living constitution (portable framework)  
-**Last updated:** 2026-07-27  
+**Last updated:** 2026-07-30  
 **Product:** Phasestep  
+**Author:** Fahmidur010  
 
 Phasestep is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
 
-> Install / scaffold: `npx phasestep init` (or `npm i -g phasestep` then `phasestep init`). Adapters (Cursor commands) implement the command contracts below.
+> Install / scaffold: `npx phasestep init` (or `npm i -g phasestep` then `phasestep init`). Adapters (Cursor, Claude Code, Codex) implement the command contracts below.
 
 ---
 
@@ -24,15 +25,13 @@ You steer with **written product intent**. An AI agent implements in **small ver
 ### What this is not
 
 - Not classic waterfall (no months of upfront freeze)
-- Not pure vibe coding (intent and gates are mandatory)
-- Not a full Spec-Driven Development (SDD) test factory (no required GIVEN/WHEN/THEN → auto-generated suite in v0.3)
+- Not unstructured “just ship code” loops (intent and gates are mandatory)
+- Not a test-factory that auto-generates suites from specs (WHEN/THEN guide Owner verify; suites are optional)
 - Not a replacement for product judgment — the **Owner** accepts intent and verification
 
-### Relationship to SDD / OpenSpec philosophy
+### Intent before code
 
-Phasestep **inherits the intent-review philosophy** of spec-driven agentic work (review a behavior diff, not a 500-line code diff first) without requiring OpenSpec tooling. Specs live as project documents; deltas are written per step with **WHEN/THEN scenarios** (minimal BDD — no required GIVEN, no `openspec/` corpus); proof is **Owner verification** (the gate) plus compile/build checks and phase audits. For web UI, optional **Playwright** evidence may strengthen verify/audit — it never replaces the Owner gate or auto-accepts intent.
-
-**Phasestep vs OpenSpec:** OpenSpec manages a versioned spec corpus and change proposals. Phasestep manages **delivery** — gated build steps, Owner verify, and phase audit. Use Phasestep to ship; do not run both as parallel truth systems.
+Phasestep puts a short **Behavior delta** in front of deep code review: ADDED / CHANGED / REMOVED `SHALL` statements, each with **WHEN/THEN** scenarios (optional **AND**; GIVEN not required). Specs live as ordinary project documents. Proof is **Owner verification** (the gate) plus compile/build checks and phase audits. For web UI, optional **Playwright** evidence may strengthen verify/audit — it never replaces the Owner gate or auto-accepts intent.
 
 ---
 
@@ -282,7 +281,7 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 **Date:** 2026-07-26  
 
-- Remove external-project references from README / MAINTAINING  
+- Remove external-project references from README  
 
 ### v0.4.3 — Project audit campaign
 
@@ -295,19 +294,29 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - `phasestep.json` keys `auditPlan`, `auditReportsDir`; new stubs installed by init/upgrade  
 - `upgrade` adds missing Owner stubs without overwriting existing docs  
 
-### v0.4.4 — Audit campaign consistency + AGENT_DOC
+### v0.4.4 — Audit campaign consistency
 
 **Date:** 2026-07-26  
 
 - **`/audit-ds-phase`** — Build / Campaign / all modes; campaign findings fold into the audit phase report (not a separate file); fix path is `/refine-audit` in campaign mode  
 - **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
-- **`AGENT_DOC.md`** — package engineering log (rationale, invariants, work log, known gaps) for contributors  
 
 ### v0.4.5–v0.4.11 — Playwright, coexistence, sole workflow, surface evidence
 
-See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
+**Date:** 2026-07-27  
 
-### v0.7.2 — GitHub handoff polish — *current*
+- Verification lane + mid-flight Playwright offer for web UI  
+- Alongside CLI; `/setup` Sole vs Alongside workflow mode  
+- Flutter / React Native / backend evidence by surface (never Playwright for native or pure APIs)  
+
+### v0.7.3 — Public product surface — *current*
+
+**Date:** 2026-07-30  
+
+- Public docs describe the product only (constitution + README)  
+- Maintainer engineering notes kept out of the published repository  
+
+### v0.7.2 — GitHub handoff polish
 
 **Date:** 2026-07-30  
 
@@ -341,7 +350,6 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 - Agent aid only — **no Owner gate** to create or use; not product truth  
 - Mid-project `/setup` and `/audit-project` prefer the map when present / refresh when stale  
 - `/complete-phase` marks map stale (or refreshes) when the phase changed major structure  
-- Inherits Graphify *ideas* (orientation digest, seams) — not Graphify tooling  
 - **Cross-cutting STOP** on `/refine-phase` (mirrored from `/build-phase` / `/refine-audit`): principle or multi-feature change → decision + product/flow sync / scoped / defer **before** code  
 
 ### v0.5.1 — Behavior delta WHEN/THEN scenarios
@@ -350,7 +358,7 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 
 - Each ADDED/CHANGED `SHALL` in a step Behavior delta includes ≥1 **WHEN/THEN** scenario (optional **AND**); REMOVED may include an optional regression scenario; GIVEN not required  
 - `/verify-phase` derives checklist **Expected** from scenario **THEN** outcomes  
-- Minimal BDD borrowed from SDD/OpenSpec philosophy — not OpenSpec tooling, no auto-generated test suite  
+- No auto-generated test suite from scenarios — Owner gate unchanged  
 
 ### v0.5.0 — Split build vs campaign audit commands + numbered Owner gates
 
@@ -368,12 +376,12 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 - Phasestep marketing / docs site (domain) — explain what it is and how it works  
 - ~~Optional `/pr-step` + GitHub adapters~~ → v0.7.0  
 - ~~WHEN/THEN scenarios on Behavior delta~~ → v0.5.1  
-- ~~Optional project-map enrichment (thin first-party)~~ → v0.6.0  
+- ~~Optional project-map enrichment~~ → v0.6.0  
 - ~~Cross-cutting / principle-change STOP on refine~~ → v0.6.0  
 - Better name for `/audit-campaign-ds` if a clearer two-word label appears  
 - ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
 - ~~`upgrade` command for template refreshes~~ → v0.4.0  
-- ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → see `MAINTAINING.md` / `.github/workflows/`  
+- ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → `.github/workflows/`  
 - ~~`/setup` + user flow + stack catalog + design catalog~~ → v0.4.0  
 - ~~Project audit campaign~~ → v0.4.3  
 - ~~Playwright / coexistence / sole / surface evidence~~ → v0.4.5–v0.4.11  
@@ -404,4 +412,4 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 
 ---
 
-*End of constitution — Phasestep v0.3.0*
+*End of constitution — Phasestep v0.7.3*
