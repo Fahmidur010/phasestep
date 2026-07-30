@@ -307,7 +307,16 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwright; Alongside CLI; `/setup` Sole vs Alongside; Flutter/RN/backend evidence by surface.
 
-### v0.7.1 — Setup Finish GitHub connect gate — *current*
+### v0.7.2 — GitHub handoff polish — *current*
+
+**Date:** 2026-07-30  
+
+- **`/pr-step`** — numbered STOPs when not connected or tooling missing (Connect / manual checklist / Cancel)  
+- Glossary: **github-connect**  
+- **`upgrade`** soft-migrates a GitHub section into existing `PROGRESS.md` without `--force-docs`  
+- Smoke: verify-phase `/pr-step`, not-connected/tooling STOPs, PROGRESS migrate  
+
+### v0.7.1 — Setup Finish GitHub connect gate
 
 **Date:** 2026-07-30  
 
@@ -390,6 +399,7 @@ See `AGENT_DOC.md` work log. Highlights: verification lane + mid-flight Playwrig
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
 | **pr-step** | Owner-gated GitHub handoff (branch, commit, PR, optional merge via `gh`) |
+| **github-connect** | Link `gh` auth + git remote; record in config/PROGRESS; no commit |
 | **Adapter** | IDE-specific command implementation |
 
 ---

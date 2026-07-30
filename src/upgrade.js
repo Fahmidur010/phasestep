@@ -13,6 +13,7 @@ const {
   installCatalogs,
   scanAlongside,
   formatAlongsideReport,
+  ensureProgressGitHubSection,
 } = require('./scaffold');
 
 /**
@@ -106,6 +107,7 @@ async function upgrade({
   } else {
     console.log('  Adding missing Owner stubs (existing docs untouched)…');
     installOwnerStubs(packageRoot, targetDir, merged, { force: false });
+    ensureProgressGitHubSection(targetDir, merged);
   }
 
   if (existing.path.endsWith('phasegate.json')) {

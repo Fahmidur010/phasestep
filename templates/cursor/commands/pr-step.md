@@ -14,7 +14,19 @@ Run the **GitHub delivery handoff** for Phasestep work: branch → commit → pu
 
 ## Preconditions
 
-1. Prefer GitHub already linked via `/github-connect`. If not → run connect first or **STOP** with connect options.
+1. Prefer GitHub already linked via `/github-connect` (check `{{PROGRESS}}` for `GitHub: connected`, or `phasestep.json` `github.repo`). If **not** linked → **STOP**:
+
+```text
+GitHub is not connected for this project:
+1. Run /github-connect now, then re-run /pr-step
+2. Continue with manual git/PR checklist (agent prints steps; no git/gh automation)
+3. Cancel
+```
+
+   On **1**: run `/github-connect` (or tell Owner to), then resume this command.  
+   On **2**: print a short manual checklist (branch → commit → push → PR → merge); do **not** run `git`/`gh` write actions; end.  
+   On **3**: stop.
+
 2. Read [`{{PHASE_PLANS_DIR}}/phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/) — step/phase status, Files checklist, Behavior delta.
 3. **Intent / verify:**
    - Step handoff: step should be **verified** and Behavior delta **accepted**. If `pending_owner_review` or unverified → **STOP**:
@@ -30,7 +42,15 @@ Work is not ready for a normal PR:
 
 ## Preflight (tooling)
 
-1. `git` and `gh` available; `gh auth status` OK — else **STOP** (install/auth checklist; point to `/github-connect`).
+1. `git` and `gh` available; `gh auth status` OK — else **STOP** (fail soft; no fake success):
+
+```text
+GitHub tooling not ready:
+1. Install/auth checklist — point Owner to /github-connect (or install git + gh, then gh auth login), then re-run /pr-step
+2. Continue with manual git/PR checklist only (no automation)
+3. Cancel
+```
+
 2. `git status` — list staged/unstaged/untracked. Propose **include set** from phase plan Files checklist + clearly related changes. If unrelated junk is present → ask which paths to include; never commit the whole tree blindly.
 3. Detect default branch (`main`/`master` via `gh repo view` or `origin/HEAD`).
 4. Never `--force`, never `--no-verify` unless Owner explicitly asked in this chat (record that ask).

@@ -293,6 +293,48 @@ function installOwnerStubs(packageRoot, targetDir, config, { force }) {
   }
 }
 
+/** Section appended to existing PROGRESS.md on upgrade when missing (no full stub rewrite). */
+const PROGRESS_GITHUB_SECTION = `### GitHub (optional — via \`/github-connect\` + \`/pr-step\`)
+
+Offered at \`/setup\` Finish (Connect now / Skip). Re-run \`/github-connect\` anytime if skipped or remote changes.
+
+\`\`\`text
+GitHub: connected — owner/repo (origin) — YYYY-MM-DD
+GitHub: skipped at setup — YYYY-MM-DD
+GitHub PR: phase 1 step 2 — branch phasestep/phase-1-step-2 — PR https://… — status open — date
+\`\`\`
+
+`;
+
+/**
+ * Soft-migrate: if PROGRESS exists but lacks a GitHub section, insert it
+ * before Audit campaign (or append). Never overwrites Owner checklist content.
+ * @returns {boolean} whether the file was updated
+ */
+function ensureProgressGitHubSection(targetDir, config) {
+  const rel = (config && config.progress) || DEFAULTS.progress;
+  const full = path.join(targetDir, rel);
+  if (!fs.existsSync(full)) return false;
+
+  const body = fs.readFileSync(full, 'utf8');
+  if (/###\s*GitHub/i.test(body) || /GitHub \(optional/i.test(body)) {
+    return false;
+  }
+
+  const block = `\n---\n\n${PROGRESS_GITHUB_SECTION}`;
+  let next;
+  const auditIdx = body.search(/\n##\s+Audit campaign\b/);
+  if (auditIdx !== -1) {
+    next = `${body.slice(0, auditIdx).replace(/\s*$/, '')}${block}${body.slice(auditIdx)}`;
+  } else {
+    next = `${body.replace(/\s*$/, '')}${block}`;
+  }
+
+  fs.writeFileSync(full, next, 'utf8');
+  console.log(`  update: ${rel} (added GitHub section)`);
+  return true;
+}
+
 function installCatalogs(packageRoot, targetDir, config, { force }) {
   const paths = resolveCatalogPaths(targetDir, config);
 
@@ -511,6 +553,7 @@ module.exports = {
   installCommands,
   installCodexAgents,
   installOwnerStubs,
+  ensureProgressGitHubSection,
   installCatalogs,
   commandPathsForAdapters,
   resolveCatalogPaths,

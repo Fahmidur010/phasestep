@@ -151,6 +151,7 @@ function main() {
   assert(verifyCmd.includes('Scenarios → checklist'), 'verify-phase maps scenarios to checklist');
   assert(verifyCmd.includes('THEN'), 'verify-phase uses THEN outcomes');
   assert(verifyCmd.includes('lacks a WHEN/THEN scenario'), 'verify-phase blocks incomplete delta');
+  assert(verifyCmd.includes('/pr-step'), 'verify-phase suggests pr-step');
 
   const auditPhaseCmdEarly = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmdEarly.includes('Behavior delta traceability'), 'audit-phase checks delta scenarios');
@@ -282,6 +283,10 @@ function main() {
   assert(prStepCmd.includes('Gate C'), 'pr-step Gate C');
   assert(prStepCmd.includes('Never** merge without Gate C'), 'pr-step no silent merge');
   assert(prStepCmd.includes('Fail soft'), 'pr-step fail soft');
+  assert(prStepCmd.includes('GitHub is not connected'), 'pr-step numbered not-connected STOP');
+  assert(prStepCmd.includes('GitHub tooling not ready'), 'pr-step numbered tooling STOP');
+  assert(prStepCmd.includes('1. Run /github-connect now'), 'pr-step connect-now option');
+  assert(prStepCmd.includes('2. Continue with manual git/PR checklist'), 'pr-step manual checklist option');
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');
@@ -335,6 +340,19 @@ function main() {
     read(path.join('.cursor', 'commands', 'setup.md')).includes('Greenfield vs existing'),
     'upgrade refreshed setup command'
   );
+
+  // Soft-migrate GitHub section into existing PROGRESS without --force-docs
+  const progressPath = path.join(TMP, cfg.progress);
+  let progressBody = read(cfg.progress);
+  progressBody = progressBody.replace(
+    /### GitHub[\s\S]*?(?=\n---\n\n## Audit campaign|\n## Audit campaign|$)/,
+    ''
+  );
+  fs.writeFileSync(progressPath, progressBody, 'utf8');
+  assert(!read(cfg.progress).includes('### GitHub'), 'PROGRESS GitHub section stripped for migrate test');
+  run(['upgrade', TMP]);
+  assert(read(cfg.progress).includes('### GitHub'), 'upgrade soft-migrates PROGRESS GitHub section');
+  assert(read(cfg.productSpec).includes('KEEP_ME'), 'upgrade GitHub migrate preserves Owner docs');
 
   // force-docs overwrites
   run(['upgrade', TMP, '--force-docs']);

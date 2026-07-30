@@ -109,7 +109,7 @@ npm run smoke
 
 ## Version
 
-**0.7.1** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
+**0.7.2** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
 
 ## Maintaining / releasing
 
