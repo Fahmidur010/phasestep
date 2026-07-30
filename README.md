@@ -1,114 +1,114 @@
 # Phasestep
 
-**Phase-step agentic delivery with Behavior delta intent gates.**
+**Build software in small steps. Review what should change before you dig through the code.**
 
-Framework-agnostic workflow for AI-assisted development. Review **intent** (a short SHALL-based behavior diff with **WHEN/THEN** scenarios) before deep code reading or manual verification — then prove it with Owner UAT and phase audits.
+Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep product intent in the repo. Your coding agent plans and builds one step at a time. After each build you accept or reject a short **Behavior delta** — then verify, refine, and audit. Specs stay in Markdown, so context survives chat sessions.
 
-**Author:** [Fahmidur010](https://github.com/Fahmidur010)
+Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
+
+**Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.7.4**
+
+---
+
+## How it works
+
+```text
+1. /setup          → product, flow, stack, architecture, design, build plan
+2. /plan-phase N   → break phase N into verifiable steps
+3. /build-phase N S → implement one step + Behavior delta (SHALL + WHEN/THEN)
+4. You Accept      → intent gate (or reject → /refine-phase)
+5. /verify-phase   → you prove it (manual UAT; optional browser/native evidence)
+6. Repeat 3–5      → until the phase is done
+7. /audit-phase    → phase quality check → /complete-phase
+8. Optional        → /pr-step for GitHub PR (Owner-gated)
+```
+
+**Behavior delta** = ADDED / CHANGED / REMOVED `SHALL` lines, each with at least one **WHEN → THEN** scenario. You review that contract before deep code review.
+
+Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the number.
+
+---
 
 ## Quick start
 
 ```bash
-# scaffold into the current project — prompts for Cursor / Claude Code / Codex / All
 npx phasestep init
-
-# or a specific directory / non-interactive choice
-npx phasestep init ./my-app
-npx phasestep init --adapters=cursor
-npx phasestep init --yes   # all adapters, no prompt
-
-# refresh package templates later (keeps Owner docs)
-npx phasestep upgrade
-
-# validate required artifacts
-npx phasestep check
 ```
 
-Optional global install:
+Pick adapters when prompted (Cursor / Claude Code / Codex / all), then:
+
+1. Open the project in your agent  
+2. Run **`/setup`** (greenfield or mid-project — it asks)  
+3. Run **`/plan-phase 1`**
+
+Later:
 
 ```bash
-npm install -g phasestep
-phasestep init
-phasestep check
-phasestep upgrade
+npx phasestep upgrade   # refresh commands & catalogs; keeps your product docs
+npx phasestep check     # validate required artifacts exist
 ```
 
-Then run `/setup` (or fill `docs/product.md` + `docs/BUILD_PLAN.md`), open in your coding agent, run `/plan-phase 1`. Mid-project: `/setup` documents what exists and plans remaining work.
+---
 
-## Adopting alongside an existing workflow
+## Commands (day to day)
 
-Phasestep **installs additively** (foreign slash commands are not deleted). For the **best outcome**, make Phasestep the **sole delivery workflow**.
+| Command | Role |
+|---------|------|
+| `/setup` | One-time (or resume) project wiring |
+| `/plan-phase N` | Plan phase N |
+| `/build-phase N [S]` | Build step S (or next step) |
+| `/verify-phase N [S]` | Owner verification |
+| `/refine-phase …` | Fix after reject / failed verify |
+| `/audit-phase N` | Delivery audit after the phase |
+| `/complete-phase N` | Mark phase done |
+| `/map-project` | Optional repo map for the agent |
+| `/github-connect` | Optional: link `gh` + remote |
+| `/pr-step N [S]` | Optional: commit → PR → merge (gated) |
 
-| Path | What happens |
-|------|----------------|
-| **`/setup` → Sole (recommended)** | Agent lists competing workflow candidates → Owner Accepts an **archive** plan → files move to `.phasestep/archived-workflow/YYYY-MM-DD/` (not deleted) → continue setup as the only plan/build/verify/audit loop |
-| **`/setup` → Alongside (opt-in)** | Keep your commands; use Phasestep additively. Full results are not guaranteed if both loops stay in use |
-| Custom file with a **Phasestep name** at `init` | `init` **skips** it (keeps yours) unless `--force`. Sole archive + `upgrade` restores Phasestep bodies |
-| Existing `AGENTS.md` | Phasestep **appends** a marker-delimited block; Sole may archive outside content with Owner Accept |
-| `upgrade` | Refreshes Phasestep commands/catalogs/constitution; foreign commands untouched; Owner docs sacred unless `--force-docs` |
+Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/audit-ds` / `/refine-audit` / `/complete-audit` as needed. Details live in the installed command files and [constitution](./constitution/PHASESTEP.md).
 
-`init` prints an **Alongside** summary and points you to `/setup` for Sole vs Alongside. Never silent archives.
+---
 
-**Practice:** land with `init` → run `/setup` → choose Sole when ready → archive competing delivery-loop files → proceed. Niche one-off commands can remain if they are not a second full agentic workflow.
-
-## What you get
+## What gets installed
 
 | Path | Purpose |
 |------|---------|
-| `docs/PHASESTEP.md` | Constitution |
-| `phasestep.json` | Paths + build command + adapters |
-| `.cursor/commands/*` | Cursor adapter |
-| `.claude/commands/*` | Claude Code adapter |
-| `AGENTS.md` | Codex / AGENTS adapter (managed Phasestep block) |
-| `docs/*.md` stubs | Product, user flow, architecture, decisions, build plan, audit plan, project map, progress, design system |
-| `.phasestep/stack-catalog.json` | Official stack enrichment starting points |
-| `.phasestep/design-catalog.json` | Design libraries (pick one) + guidelines |
+| `docs/PHASESTEP.md` | Constitution (the rules) |
+| `phasestep.json` | Paths, `buildCommand`, adapters |
+| `.cursor/commands/*` | Cursor slash commands |
+| `.claude/commands/*` | Claude Code slash commands |
+| `AGENTS.md` | Codex / AGENTS guidance (managed block) |
+| `docs/*.md` | Product, flow, architecture, plans, progress, … |
+| `.phasestep/*-catalog.json` | Stack & design enrichment catalogs |
 
-## Core loop
+---
 
-```text
-/setup (once) → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
-plan-phase → build-phase → Behavior delta (WHEN/THEN) → intent gate → verify-phase
-           → refine as needed → audit-phase (+ optional audit-ds) → complete-phase
-```
+## Already have another agent workflow?
 
-Also installed: `session-log`, `audit-ds` (UI), `map-project` (agent navigation map), `github-connect` + `pr-step` (Owner-gated GitHub handoff via `gh`).
+`init` does **not** delete your existing slash commands.
 
-## Project audit (audit-only or health check)
+- **Sole (recommended)** in `/setup` — archive competing delivery-loop files (Owner Accept); Phasestep becomes the only plan → build → verify loop  
+- **Alongside** — keep both; results may be weaker if two full loops stay active  
 
-```text
-/setup (product → flow → architecture → DS if UI)
-  → /map-project (if codebase is non-trivial)
-  → /audit-project         draft AUDIT_PLAN (feature-listed phases) → Owner accept
-  → /audit-campaign 1…N    read-only report per phase → Owner decides fixes
-  → /refine-audit N        fix only approved findings → /audit-campaign N reaudit
-  → /complete-audit        AUDIT_SUMMARY; optionally promote findings to build plan
-```
+`upgrade` refreshes Phasestep files only. Your product docs stay unless you pass `--force-docs`.
 
-Delivery (`/audit-phase`) and campaign (`/audit-campaign`) are **separate commands** so build phase N and audit plan phase N never share one slash command.
+---
 
-Reports live in `docs/audit-reports/` as plain Markdown with stable finding IDs, each citing its ground (spec / universal checklist / stack rules + tool evidence).
+## Optional extras
 
-Optional **verification by surface:** web UI → Playwright (CLI preferred); Flutter/RN → analyzer/tests + Owner device UAT; backend/CLI → `buildCommand` / lint / tests. Never Playwright for native or pure APIs. Mid-flight Playwright offer only applies to web UI if Stage 4 was skipped.
-
-## GitHub (optional)
+**GitHub** — after setup, connect once, then hand off verified work:
 
 ```text
-/github-connect [repo]     → gh auth + origin (no commit)
-/pr-step N [step?]         → Gate A commit → Gate B push+PR → Gate C merge if checks green
+/github-connect [repo]
+/pr-step N [step?]     → Gate A commit → Gate B push+PR → Gate C merge if checks green
 ```
 
-Requires local `git` + [GitHub CLI](https://cli.github.com/) (`gh auth login`). Owner Accepts each irreversible step — never silent push/merge. Offered as a numbered STOP at `/setup` Finish (Connect now / Skip); not during `npx init`.
+Needs local `git` + [GitHub CLI](https://cli.github.com/). No silent push/merge.
 
-## Version
+**Evidence by surface** — web UI can use Playwright; Flutter/RN use analyzer + device UAT; backend uses `buildCommand` / tests. Never Playwright for native-only or pure APIs.
 
-**0.7.3** — see [constitution/PHASESTEP.md](./constitution/PHASESTEP.md) evolution log.
-
-## Links
-
-- Source: [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)
-- npm: **`phasestep`**
+---
 
 ## License
 
-MIT
+MIT · [github.com/Fahmidur010/phasestep](https://github.com/Fahmidur010/phasestep)

@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.7.3  
+**Version:** 0.7.4  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-07-30  
 **Product:** Phasestep  
@@ -245,76 +245,21 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 ## 11. Evolution log
 
-### v0.1.0 — Phase-step agentic delivery (baseline)
+Newest first. Product changelog only.
 
-Pre–Behavior delta. Plan → build → verify → refine → audit → complete.
-
-### v0.2.0 — Behavior delta (intent gate)
-
-Required post-build behavior contract; Owner intent gate before verify. Portable constitution seed.
-
-### v0.3.0 — Phasestep product
-
-**Date:** 2026-07-25  
-
-- Product brand / npm package: **`phasestep`** (working name was briefly “Phasegate”; unscoped `phasegate` was taken on npm)
-- Generic Cursor command templates (stack-agnostic paths)  
-- Minimal CLI: `init`, `check`  
-- Default doc layout under `docs/` + `phasestep.json`  
-- Single `init` — full command set including `audit-ds-phase` and design-system doc  
-- `session-log` retained as optional mid-phase / post-complete logging  
-
-### v0.4.0 — Setup, enrichment, multi-adapter, upgrade
-
-**Date:** 2026-07-25  
-
-- **`/setup`** — progressive Owner-gated stub fill (greenfield **or** mid-project: document current + plan remaining)  
-- **`docs/USER_FLOW.md`** — interaction map; bidirectional **Product sync delta**; dual-lock before architecture  
-- **Stack / design enrichment catalogs** under `.phasestep/` (`stacks`+`community`; libraries pick-one + guidelines)  
-- Architecture → product/flow impact gate; Decisions resolve→sync / TBD stays Open  
-- Setup order: … → decisions → design → build plan → `buildCommand`  
-- **`phasestep upgrade`** — refresh commands/catalogs/constitution; merge config keys; Owner docs safe unless `--force-docs`  
-- **Multi-adapter:** Cursor (`.cursor/commands/`), Claude Code (`.claude/commands/`), Codex (`AGENTS.md` managed block); interactive `init` menu (1–4) or `--adapters=` / `--yes`  
-- Setup contract smoke (`npm run smoke`) beyond init/check  
-
-### v0.4.1 — Docs cleanup
-
-**Date:** 2026-07-26  
-
-- Remove external-project references from README  
-
-### v0.4.3 — Project audit campaign
-
-**Date:** 2026-07-26  
-
-- **`/audit-project`** — audit-only entry: requires accepted product/flow/architecture (+DS if UI); drafts `docs/AUDIT_PLAN.md` (feature-listed audit phases, fixed dimension checklist); Owner accept gate  
-- **`/audit-phase N`** campaign mode — read-only per-phase audit against three grounds (spec / universal dimensions / stack rules + tool evidence); preview-first report in `docs/audit-reports/audit-phase-N.md` with stable finding IDs; 4-option Owner gate; `reaudit` verifies fixes  
-- **`/refine-audit N`** — fixes only Owner-approved findings; STOP-gated fix plan; statuses Fixed / Partially fixed / Blocked; requires re-audit  
-- **`/complete-audit`** — `AUDIT_SUMMARY.md` + optional promotion of findings into `BUILD_PLAN`  
-- `phasestep.json` keys `auditPlan`, `auditReportsDir`; new stubs installed by init/upgrade  
-- `upgrade` adds missing Owner stubs without overwriting existing docs  
-
-### v0.4.4 — Audit campaign consistency
-
-**Date:** 2026-07-26  
-
-- **`/audit-ds-phase`** — Build / Campaign / all modes; campaign findings fold into the audit phase report (not a separate file); fix path is `/refine-audit` in campaign mode  
-- **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
-
-### v0.4.5–v0.4.11 — Playwright, coexistence, sole workflow, surface evidence
-
-**Date:** 2026-07-27  
-
-- Verification lane + mid-flight Playwright offer for web UI  
-- Alongside CLI; `/setup` Sole vs Alongside workflow mode  
-- Flutter / React Native / backend evidence by surface (never Playwright for native or pure APIs)  
-
-### v0.7.3 — Public product surface — *current*
+### v0.7.4 — README clarity + evolution log order — *current*
 
 **Date:** 2026-07-30  
 
-- Public docs describe the product only (constitution + README)  
-- Maintainer engineering notes kept out of the published repository  
+- README rewritten for first-time users (how it works → quick start → commands)  
+- Evolution log ordered newest-first  
+
+### v0.7.3 — Public product surface
+
+**Date:** 2026-07-30  
+
+- README and constitution framed for end users (install → loop → commands)  
+- Author credited on the constitution; LICENSE copyright Fahmidur010  
 
 ### v0.7.2 — GitHub handoff polish
 
@@ -371,6 +316,70 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 - Breaking for consumers who used `/audit-phase` for campaign — run `npx phasestep upgrade` and switch invokes to `/audit-campaign`  
 - **Owner gate format:** every STOP choice list is numbered (`1.` `2.` `3.` …); Owner may reply with the number alone  
 
+### v0.4.5–v0.4.11 — Playwright, coexistence, sole workflow, surface evidence
+
+**Date:** 2026-07-27  
+
+- Verification lane + mid-flight Playwright offer for web UI  
+- Alongside CLI; `/setup` Sole vs Alongside workflow mode  
+- Flutter / React Native / backend evidence by surface (never Playwright for native or pure APIs)  
+
+### v0.4.4 — Audit campaign consistency
+
+**Date:** 2026-07-26  
+
+- **`/audit-ds-phase`** — Build / Campaign / all modes; campaign findings fold into the audit phase report (not a separate file); fix path is `/refine-audit` in campaign mode  
+- **`/refine-phase`** — explicitly disclaims project-audit findings; redirects to `/refine-audit`  
+
+### v0.4.3 — Project audit campaign
+
+**Date:** 2026-07-26  
+
+- **`/audit-project`** — audit-only entry: requires accepted product/flow/architecture (+DS if UI); drafts `docs/AUDIT_PLAN.md` (feature-listed audit phases, fixed dimension checklist); Owner accept gate  
+- Campaign-mode phase audits (later split into `/audit-campaign` in v0.5.0)  
+- **`/refine-audit N`** — fixes only Owner-approved findings; STOP-gated fix plan; requires re-audit  
+- **`/complete-audit`** — `AUDIT_SUMMARY.md` + optional promotion of findings into `BUILD_PLAN`  
+- `phasestep.json` keys `auditPlan`, `auditReportsDir`; new stubs installed by init/upgrade  
+- `upgrade` adds missing Owner stubs without overwriting existing docs  
+
+### v0.4.1 — Docs cleanup
+
+**Date:** 2026-07-26  
+
+- Remove external-project references from README  
+
+### v0.4.0 — Setup, enrichment, multi-adapter, upgrade
+
+**Date:** 2026-07-25  
+
+- **`/setup`** — progressive Owner-gated stub fill (greenfield **or** mid-project: document current + plan remaining)  
+- **`docs/USER_FLOW.md`** — interaction map; bidirectional **Product sync delta**; dual-lock before architecture  
+- **Stack / design enrichment catalogs** under `.phasestep/` (`stacks`+`community`; libraries pick-one + guidelines)  
+- Architecture → product/flow impact gate; Decisions resolve→sync / TBD stays Open  
+- Setup order: … → decisions → design → build plan → `buildCommand`  
+- **`phasestep upgrade`** — refresh commands/catalogs/constitution; merge config keys; Owner docs safe unless `--force-docs`  
+- **Multi-adapter:** Cursor (`.cursor/commands/`), Claude Code (`.claude/commands/`), Codex (`AGENTS.md` managed block); interactive `init` menu (1–4) or `--adapters=` / `--yes`  
+- Setup contract smoke (`npm run smoke`) beyond init/check  
+
+### v0.3.0 — Phasestep product
+
+**Date:** 2026-07-25  
+
+- Product brand / npm package: **`phasestep`** (working name was briefly “Phasegate”; unscoped `phasegate` was taken on npm)  
+- Generic Cursor command templates (stack-agnostic paths)  
+- Minimal CLI: `init`, `check`  
+- Default doc layout under `docs/` + `phasestep.json`  
+- Single `init` — full command set including design-system audit commands and design-system doc  
+- `session-log` retained as optional mid-phase / post-complete logging  
+
+### v0.2.0 — Behavior delta (intent gate)
+
+Required post-build behavior contract; Owner intent gate before verify. Portable constitution seed.
+
+### v0.1.0 — Phase-step agentic delivery (baseline)
+
+Pre–Behavior delta. Plan → build → verify → refine → audit → complete.
+
 ### Planned
 
 - Phasestep marketing / docs site (domain) — explain what it is and how it works  
@@ -412,4 +421,4 @@ Required post-build behavior contract; Owner intent gate before verify. Portable
 
 ---
 
-*End of constitution — Phasestep v0.7.3*
+*End of constitution — Phasestep v0.7.4*
