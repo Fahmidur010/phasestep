@@ -28,10 +28,43 @@ If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first.
 4. Read [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}})
 5. Read [`{{USER_FLOW}}`](../../{{USER_FLOW}}) if present
 6. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — stop on blockers
-7. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — prior phases
+7. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) — prior phases + **Phase health (resume)** if present
 8. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}})
 9. For UI steps: if [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) exists, follow it
-10. If Owner chat asks to change a **core principle** or behavior that **cascades to other features/phases** → **do not code yet**. Follow the **Cross-cutting STOP** in [`refine-phase`](./refine-phase.md) (decision → product/flow sync → re-scope), then return to this step with an updated plan/delta. Local step work only after that gate (or Owner picks scoped/defer).
+10. If [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) Status is `current`, use modules/hubs/seams as context for Files / seams. If stale and this step touches structure → prefer `/map-project refresh` first (agent aid; no Owner gate). Skip if empty/unused.
+11. If Owner chat asks to change a **core principle** or behavior that **cascades to other features/phases** → **do not code yet**. Follow the **Cross-cutting STOP** in [`refine-phase`](./refine-phase.md) (decision → product/flow sync → re-scope), then return to this step with an updated plan/delta. Local step work only after that gate (or Owner picks scoped/defer).
+12. Run **Pre-build consistency** (below) before writing application code.
+
+## Pre-build consistency (fail-soft)
+
+Quick cross-check for **this step** only: phase plan step (task / done-when / files) ↔ [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}}) ↔ [`{{USER_FLOW}}`](../../{{USER_FLOW}}) (if present) ↔ BUILD_PLAN Phase PHASE ↔ [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) when Status is `current`.
+
+Look for: contradictions, missing product/flow coverage for the done-when, files/paths that conflict with accepted architecture or map hubs, clarify answers ignored, blocker decisions still open that this step assumes resolved.
+
+Present a short table (or `No material inconsistencies.`):
+
+```markdown
+**Pre-build consistency** — Phase PHASE Step STEP
+| Severity | Finding | Docs involved | Suggested fix |
+|----------|---------|---------------|---------------|
+| blocking | … | … | … |
+| soft | … | … | … |
+```
+
+**Severity:**
+- **blocking** — implementing now would violate accepted product/flow, ignore a blocker decision, or clearly contradict the phase plan done-when
+- **soft** — stale map, minor naming drift, incomplete map seams, advisory gaps — note and continue
+
+**If any blocking rows** → **do not code yet.** STOP:
+
+```text
+Pre-build consistency — blocking issues:
+1. Fix docs / re-plan (`/plan-phase PHASE` or product/flow/decisions sync) → then re-run /build-phase
+2. Owner override — proceed anyway (record override + risks in the step Behavior delta Risks)
+3. Abort this build
+```
+
+**If only soft (or none)** → show the table (or the clean line), then proceed to implement. Do not invent a STOP for soft-only findings.
 
 ## Implementation rules
 
@@ -78,13 +111,45 @@ Rules:
 - Context may live in WHEN or the phase plan — no required GIVEN block.
 - Product behavior language; align with product spec + done-when; surface unintended adds; not proof of correct code.
 - **Before the intent gate:** if any ADDED/CHANGED `SHALL` lacks a scenario → **STOP** and complete the delta (do not offer Accept/Reject yet).
+- After the delta is complete, write the **Trace** table (below) under the same step — required before the intent gate.
+
+## Trace (SHALL → WHEN/THEN → verify)
+
+Persist under the step in the phase plan (after Behavior delta) **and** show in chat. One row per scenario (ADDED/CHANGED; include REMOVED scenarios if present).
+
+```markdown
+**Trace** — Phase PHASE Step STEP
+| # | Kind | SHALL (short) | Scenario | WHEN (short) | THEN (Expected) | Verify # |
+|---|------|---------------|----------|--------------|-----------------|----------|
+| 1 | ADDED | … | … | … | … | V1 |
+| 2 | CHANGED | … | … | … | … | V2 |
+```
+
+Rules:
+- **THEN (Expected)** must match what `/verify-phase` will put in checklist **Expected**
+- **Verify #** = checklist item id the Owner will run (`V1`, `V2`, …) — same ids `/verify-phase` must use
+- Do **not** change WHEN/THEN scenario rules; this table only traces them
+- If Trace is missing or a scenario has no row → **STOP** and complete Trace before the intent gate
 
 ## After implementation
 
 1. Run `{{BUILD_COMMAND}}` — fix until pass
-2. Update [`{{PROGRESS}}`](../../{{PROGRESS}}) — mark phase in progress
+2. Update [`{{PROGRESS}}`](../../{{PROGRESS}}) — mark phase in progress; **overwrite Phase health (resume)**:
+
+```text
+Phase: PHASE — (title)
+Step: STEP — (title)
+Status: awaiting-intent
+Verified steps: (prior verified step ids this phase, or none)
+Open rejects / fails: none
+Evidence: none
+Next: after Accept → /verify-phase PHASE STEP
+Updated: YYYY-MM-DD
+```
+
+   On intent **1. Accept** (same session): set `Status: awaiting-verify` and `Next: /verify-phase PHASE STEP`. On **2. Reject**: set `Status: refining`, note the reject, `Next: /refine-phase PHASE STEP`.
 3. Short summary: what built, how to try, what’s out of scope
-4. **Lead with Behavior delta**
+4. **Lead with Behavior delta** + **Trace** table
 5. **STOP** — Intent gate (Owner replies with a number):
 
 ```text

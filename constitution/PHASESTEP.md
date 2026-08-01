@@ -1,8 +1,8 @@
 # Phasestep — Constitution
 
-**Version:** 0.7.5  
+**Version:** 0.7.6  
 **Status:** Living constitution (portable framework)  
-**Last updated:** 2026-07-30  
+**Last updated:** 2026-08-01  
 **Product:** Phasestep  
 **Author:** Fahmidur010  
 
@@ -63,12 +63,22 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Project map** | `docs/PROJECT_MAP.md` | Agent navigation aid (modules, hubs, seams). Stub installed empty; filled by `/map-project`. Not Owner-gated; not product truth. |
 | **Audit reports** | `docs/audit-reports/` | One report per audit phase + `AUDIT_SUMMARY.md`; stable finding IDs; read-only evidence. |
 | **Phase execution plan** | `docs/phase-plans/phase-N.md` | Steps, done-when, verify checklist, Behavior delta. |
-| **Progress + session log** | `docs/PROGRESS.md` | Status + history (includes Setup checklist). |
+| **Progress + session log** | `docs/PROGRESS.md` | Status + history (Setup checklist + rolling **Phase health** resume block). |
 | **Tooling adapters** | `.cursor/commands/`, `.claude/commands/`, `AGENTS.md` | Commands / guidance implementing §5 (Cursor, Claude Code, Codex). |
 | **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds` / `audit-campaign-ds`. Leave unused for non-UI projects. |
-| **Config** | `phasestep.json` | Paths + `buildCommand` for this project. |
+| **Config** | `phasestep.json` | Paths + `buildCommand` + `adapters` for this project. |
 
 Paths are overridable in `phasestep.json`.
+
+### Agent adapters (install matrix)
+
+| Agent | Adapter id | Installs | Invoke |
+|-------|------------|----------|--------|
+| Cursor | `cursor` | `.cursor/commands/*.md` | Slash commands |
+| Claude Code | `claude` | `.claude/commands/*.md` | Slash commands (same names) |
+| Codex | `codex` | `AGENTS.md` managed block | Follow AGENTS / ask by name |
+
+`init` menu, `--adapters=`, or `--yes` (all). `phasestep check` requires only selected adapters; incomplete command installs → `npx phasestep upgrade`.
 
 ---
 
@@ -120,15 +130,15 @@ Paths are overridable in `phasestep.json`.
 
 | Command | Args | Actor | Must |
 |---------|------|-------|------|
-| **setup** | optional stage | Agent + Owner | Progressive stub fill. Product → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design (pick-one library)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
-| **plan-phase** | `N` | Agent | Write phase plan only. No application code. |
-| **build-phase** | `N` `[S]` | Agent | One step; build check; Behavior delta (WHEN/THEN per SHALL); stop for intent gate. |
-| **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist from step plan + Behavior delta THEN outcomes. No code changes. |
-| **refine-phase** | `N` `[S]` | Agent | Minimal fixes; **Cross-cutting STOP** if principle/multi-feature change; update delta if behavior changed. |
+| **setup** | optional stage | Agent + Owner | Progressive stub fill. Product (**Spec quality checklist** before accept) → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design (pick-one library)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
+| **plan-phase** | `N` | Agent | **Clarify STOP** (ambiguities) before write unless none / already answered; **Plan quality checklist**; then write phase plan only. No application code. |
+| **build-phase** | `N` `[S]` | Agent | **Pre-build consistency** (fail-soft; STOP only if blocking); one step; build check; Behavior delta (WHEN/THEN per SHALL); **Trace** table; update **Phase health**; stop for intent gate. |
+| **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist from Trace / Behavior delta THEN outcomes (Verify #); **UNCHANGED spot-check** when non-goals listed; update **Phase health**. No code changes. |
+| **refine-phase** | `N` `[S]` | Agent | Minimal fixes; **Cross-cutting STOP** if principle/multi-feature change; update delta if behavior changed; update **Phase health**. |
 | **audit-phase** | `N` | Agent | Read-only **build** acceptance audit after steps verified. Not for campaign. |
 | **audit-ds** | `N` \| `all` | Agent | Design-system audit for delivery (skip for non-UI). |
-| **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log. |
-| **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes. |
+| **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (still open / deferred / out of scope / carry into next + optional next-phase seeds). |
+| **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
 | **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; record in config/PROGRESS. No commit. |
 | **pr-step** | `N` `[S]` | Agent + Owner | Owner-gated branch → commit → push → PR → optional merge via `git`/`gh`. |
@@ -183,6 +193,7 @@ Rules:
 - Context (role, data, starting screen) may live in WHEN or the phase plan — **GIVEN is not required**.
 - Align with product spec + step done-when; surface unintended adds; not proof of correct code.
 - Persist under the step in the phase plan **and** show in chat.
+- After the delta, persist a **Trace** table (SHALL → Scenario → WHEN → THEN → Verify #) for `/verify-phase`; does not change WHEN/THEN rules.
 
 ---
 
@@ -247,7 +258,20 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.7.5 — Site homepage on public surface — *current*
+### v0.7.6 — Strengthening gates — *current*
+
+**Date:** 2026-08-01  
+
+- **`/plan-phase`** — numbered **Clarify STOP** before writing `phase-N.md`; **Plan quality checklist** (docs only; not Behavior delta WHEN/THEN)  
+- **`/complete-phase`** — **Phase remainder** table + optional next-phase seed bullets; no silent BUILD_PLAN edits; **Phase health** → complete  
+- **`/build-phase`** — **Pre-build consistency** (fail-soft; STOP only when **blocking**); **Trace** (SHALL → WHEN/THEN → Verify #) after Behavior delta; overwrite **Phase health**  
+- **`/verify-phase`** — prefer Trace Verify #; backfill Trace if missing; **UNCHANGED spot-check** when non-goals listed; overwrite **Phase health**  
+- **`/refine-phase`** / **`/session-log`** — refresh **Phase health** when refining or logging mid-phase  
+- **`PROGRESS.md`** — rolling **Phase health (resume)** block; `upgrade` soft-migrates if missing  
+- **Agent install matrix** — README + constitution adapter table; `init` “Installed for”; `check` groups by adapter and flags incomplete command installs  
+- **`/setup` Stage 1** — **Spec quality checklist** on product draft before Accept (Accept with known gaps allowed)  
+
+### v0.7.5 — Site homepage on public surface
 
 **Date:** 2026-07-30  
 
@@ -389,12 +413,22 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 ### Planned
 
-- Phasestep marketing / docs site (domain) — explain what it is and how it works  
+- ~~Phasestep marketing / docs site (domain)~~ → live at https://phasestep.vercel.app/ (private site repo; package `homepage` v0.7.5)  
+- ~~**TBD — Clarify before plan**~~ → `/plan-phase` Clarify STOP (numbered; skip if none / already answered)
+- ~~**TBD — Phase remainder at complete**~~ → `/complete-phase` Phase remainder table + optional next-phase seeds
+- ~~**TBD — Pre-build consistency**~~ → `/build-phase` fail-soft check; STOP only if blocking
+- ~~**TBD — Spec/plan quality checklist**~~ → `/setup` product checklist + `/plan-phase` plan checklist (not Behavior delta)
+- ~~**TBD — SHALL → WHEN/THEN → verify trace**~~ → `/build-phase` Trace table; `/verify-phase` uses Verify #
+- ~~**TBD — Stronger UNCHANGED spot-check**~~ → `/verify-phase` UNCHANGED spot-check (1–2 items)
+- ~~**TBD — Session / phase health snapshot**~~ → `PROGRESS` **Phase health (resume)**; updated by build/verify/refine/complete/session-log; upgrade soft-migrate  
+- ~~**TBD — Agent install matrix polish**~~ → README/constitution matrix; `init` install lines; `check` adapter-grouped diagnostics  
+- **TBD (later) — Opt-in evidence suites from WHEN/THEN** — Owner-gated only; not default  
+- **TBD (later) — Stack presets** — thin web / API / Flutter stub+catalog emphasis  
+- Better name for `/audit-campaign-ds` if a clearer two-word label appears  
 - ~~Optional `/pr-step` + GitHub adapters~~ → v0.7.0  
 - ~~WHEN/THEN scenarios on Behavior delta~~ → v0.5.1  
 - ~~Optional project-map enrichment~~ → v0.6.0  
 - ~~Cross-cutting / principle-change STOP on refine~~ → v0.6.0  
-- Better name for `/audit-campaign-ds` if a clearer two-word label appears  
 - ~~Multi-adapter (Claude Code, etc.)~~ → v0.4.0  
 - ~~`upgrade` command for template refreshes~~ → v0.4.0  
 - ~~Tag-triggered CI publish (OIDC Trusted Publishing)~~ → `.github/workflows/`  
@@ -428,4 +462,4 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 ---
 
-*End of constitution — Phasestep v0.7.5*
+*End of constitution — Phasestep v0.7.6*

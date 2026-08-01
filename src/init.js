@@ -42,10 +42,23 @@ async function init({ packageRoot, targetDir, force, adapters }) {
 
   const alongside = formatAlongsideReport(preScan, { context: 'init', force: !!force });
 
+  const matrixLines = [];
+  if (config.adapters.includes('cursor')) {
+    matrixLines.push('  cursor → .cursor/commands/  (slash commands)');
+  }
+  if (config.adapters.includes('claude')) {
+    matrixLines.push('  claude → .claude/commands/  (slash commands)');
+  }
+  if (config.adapters.includes('codex')) {
+    matrixLines.push('  codex  → AGENTS.md          (managed block)');
+  }
+
   console.log(`
 Done.
 
 Adapters: ${adapterNote}
+Installed for:
+${matrixLines.join('\n')}
 
 ${alongside}
 

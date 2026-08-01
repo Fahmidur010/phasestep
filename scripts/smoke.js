@@ -150,8 +150,13 @@ function main() {
   assert(verifyCmd.includes('this step only'), 'verify-phase option 2 scoped to step');
   assert(verifyCmd.includes('Scenarios → checklist'), 'verify-phase maps scenarios to checklist');
   assert(verifyCmd.includes('THEN'), 'verify-phase uses THEN outcomes');
+  assert(verifyCmd.includes('Trace'), 'verify-phase uses Trace table');
+  assert(verifyCmd.includes('Verify #'), 'verify-phase Verify # ids');
+  assert(verifyCmd.includes('UNCHANGED spot-check'), 'verify-phase UNCHANGED spot-check');
+  assert(verifyCmd.includes('No UNCHANGED non-goals'), 'verify-phase skip empty UNCHANGED');
   assert(verifyCmd.includes('lacks a WHEN/THEN scenario'), 'verify-phase blocks incomplete delta');
   assert(verifyCmd.includes('/pr-step'), 'verify-phase suggests pr-step');
+  assert(verifyCmd.includes('Phase health (resume)'), 'verify-phase updates Phase health');
 
   const auditPhaseCmdEarly = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmdEarly.includes('Behavior delta traceability'), 'audit-phase checks delta scenarios');
@@ -166,12 +171,23 @@ function main() {
   assert(setupCmd.includes('archived-workflow'), 'setup archive destination');
   assert(setupCmd.includes('Owner gate format'), 'setup documents numbered gates');
   assert(setupCmd.includes('1. Accept'), 'setup product gate numbered');
+  assert(setupCmd.includes('Spec quality checklist'), 'setup spec quality checklist');
+  assert(setupCmd.includes('Accept with known gaps'), 'setup accept with known gaps');
   assert(setupCmd.includes('1. Greenfield'), 'setup mode numbered');
   assert(!setupCmd.includes('Accept | Reject | Edit'), 'setup no word-only Accept|Reject|Edit');
 
   const cursorReadme = read(path.join('.cursor', 'commands', 'README.md'));
   assert(cursorReadme.includes('Your other slash commands stay'), 'cursor README coexistence');
   assert(cursorReadme.includes('Sole Phasestep'), 'cursor README sole workflow');
+
+  const rootReadme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  assert(rootReadme.includes('## Supported agents'), 'root README Supported agents section');
+  assert(rootReadme.includes('| `cursor` |'), 'root README cursor adapter row');
+  assert(rootReadme.includes('| `claude` |'), 'root README claude adapter row');
+  assert(rootReadme.includes('| `codex` |'), 'root README codex adapter row');
+
+  const constitution = fs.readFileSync(path.join(ROOT, 'constitution', 'PHASESTEP.md'), 'utf8');
+  assert(constitution.includes('Agent adapters (install matrix)'), 'constitution agent install matrix');
 
   const design = JSON.parse(read(path.join('.phasestep', 'design-catalog.json')));
   assert(
@@ -190,6 +206,8 @@ function main() {
   const progressStub = read(cfg.progress);
   assert(progressStub.includes('Workflow mode'), 'PROGRESS workflow mode checklist');
   assert(progressStub.includes('GitHub: connected'), 'PROGRESS GitHub section');
+  assert(progressStub.includes('Phase health (resume)'), 'PROGRESS Phase health section');
+  assert(progressStub.includes('awaiting-intent'), 'PROGRESS Phase health status values');
 
   // audit campaign artifacts
   assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'AUDIT_PLAN stub');
@@ -243,9 +261,22 @@ function main() {
   assert(completePhaseCmd.includes('Project map'), 'complete-phase updates project map');
   assert(completePhaseCmd.includes('/map-project refresh') || completePhaseCmd.includes('stale'), 'complete-phase stale or refresh');
   assert(completePhaseCmd.includes('/github-connect'), 'complete-phase soft-reminds github-connect');
+  assert(completePhaseCmd.includes('Phase remainder'), 'complete-phase phase remainder');
+  assert(completePhaseCmd.includes('Still open'), 'complete-phase remainder still open');
+  assert(completePhaseCmd.includes('Carry into next'), 'complete-phase remainder carry into next');
+  assert(completePhaseCmd.includes('Next-phase seeds') || completePhaseCmd.includes('next-phase seed'), 'complete-phase next-phase seeds');
+  assert(completePhaseCmd.includes('Phase health (resume)'), 'complete-phase updates Phase health');
 
   const planPhaseCmd = read(path.join('.cursor', 'commands', 'plan-phase.md'));
   assert(planPhaseCmd.includes('PROJECT_MAP') || planPhaseCmd.includes('project map') || planPhaseCmd.includes('/map-project'), 'plan-phase may use project map');
+  assert(planPhaseCmd.includes('Clarify STOP') || planPhaseCmd.includes('Clarify before plan'), 'plan-phase clarify STOP');
+  assert(planPhaseCmd.includes('1. Answer the questions'), 'plan-phase clarify option 1');
+  assert(planPhaseCmd.includes('2. Use suggested defaults'), 'plan-phase clarify option 2');
+  assert(planPhaseCmd.includes('4. Abort planning'), 'plan-phase clarify abort');
+  assert(planPhaseCmd.includes('Clarify answers'), 'plan-phase records clarify answers');
+  assert(planPhaseCmd.includes('Plan quality checklist'), 'plan-phase plan quality checklist');
+  assert(planPhaseCmd.includes('Steps are Owner-verifiable') || planPhaseCmd.includes('Steps Owner-verifiable'), 'plan-phase checklist verifiable steps');
+  assert(planPhaseCmd.includes('2. Write anyway'), 'plan-phase quality write anyway');
 
   const buildPhaseCmd = read(path.join('.cursor', 'commands', 'build-phase.md'));
   assert(buildPhaseCmd.includes('1. Accept →'), 'build-phase intent gate numbered');
@@ -253,6 +284,14 @@ function main() {
   assert(buildPhaseCmd.includes('THEN'), 'build-phase behavior delta THEN');
   assert(buildPhaseCmd.includes('≥1 scenario'), 'build-phase requires scenarios per SHALL');
   assert(buildPhaseCmd.includes('Before the intent gate'), 'build-phase blocks incomplete delta');
+  assert(buildPhaseCmd.includes('Pre-build consistency'), 'build-phase pre-build consistency');
+  assert(buildPhaseCmd.includes('fail-soft') || buildPhaseCmd.includes('soft'), 'build-phase consistency fail-soft');
+  assert(buildPhaseCmd.includes('blocking'), 'build-phase consistency blocking');
+  assert(buildPhaseCmd.includes('2. Owner override'), 'build-phase consistency override');
+  assert(buildPhaseCmd.includes('**Trace**') || buildPhaseCmd.includes('Trace (SHALL'), 'build-phase trace table');
+  assert(buildPhaseCmd.includes('Verify #'), 'build-phase trace Verify #');
+  assert(buildPhaseCmd.includes('Phase health (resume)'), 'build-phase updates Phase health');
+  assert(buildPhaseCmd.includes('awaiting-intent'), 'build-phase Phase health awaiting-intent');
 
   const completeAuditCmd = read(path.join('.cursor', 'commands', 'complete-audit.md'));
   assert(completeAuditCmd.includes('1. Promote selected'), 'complete-audit gate numbered');
@@ -268,6 +307,10 @@ function main() {
   assert(refinePhaseCmd.includes('2. Scoped only'), 'refine-phase cross-cutting option 2');
   assert(refinePhaseCmd.includes('3. Defer'), 'refine-phase cross-cutting defer');
   assert(refinePhaseCmd.includes('4. Not cross-cutting'), 'refine-phase local-refine escape');
+  assert(refinePhaseCmd.includes('Phase health'), 'refine-phase updates Phase health');
+
+  const sessionLogCmd = read(path.join('.cursor', 'commands', 'session-log.md'));
+  assert(sessionLogCmd.includes('Phase health (resume)'), 'session-log refreshes Phase health');
 
   assert(buildPhaseCmd.includes('Cross-cutting STOP') || buildPhaseCmd.includes('core principle'), 'build-phase points to cross-cutting');
   assert(buildPhaseCmd.includes('/pr-step'), 'build-phase points to pr-step for commits');
@@ -354,6 +397,18 @@ function main() {
   assert(read(cfg.progress).includes('### GitHub'), 'upgrade soft-migrates PROGRESS GitHub section');
   assert(read(cfg.productSpec).includes('KEEP_ME'), 'upgrade GitHub migrate preserves Owner docs');
 
+  // Soft-migrate Phase health into existing PROGRESS without --force-docs
+  progressBody = read(cfg.progress);
+  progressBody = progressBody.replace(
+    /## Phase health[\s\S]*?(?=\n---\n\n## |\n## Setup\b|\n## Build progress\b|$)/,
+    ''
+  );
+  fs.writeFileSync(progressPath, progressBody, 'utf8');
+  assert(!read(cfg.progress).includes('Phase health (resume)'), 'PROGRESS Phase health stripped for migrate test');
+  run(['upgrade', TMP]);
+  assert(read(cfg.progress).includes('Phase health (resume)'), 'upgrade soft-migrates PROGRESS Phase health');
+  assert(read(cfg.productSpec).includes('KEEP_ME'), 'upgrade Phase health migrate preserves Owner docs');
+
   // force-docs overwrites
   run(['upgrade', TMP, '--force-docs']);
   assert(!read(cfg.productSpec).includes('KEEP_ME'), 'upgrade --force-docs resets stubs');
@@ -361,11 +416,32 @@ function main() {
   // cursor-only init
   const TMP2 = path.join(ROOT, 'tmp-smoke-cursor');
   rmrf(TMP2);
-  run(['init', TMP2, '--adapters=cursor']);
+  const cursorInitOut = run(['init', TMP2, '--adapters=cursor']);
+  assert(cursorInitOut.includes('Installed for:'), 'init prints install matrix');
+  assert(cursorInitOut.includes('cursor → .cursor/commands/'), 'init matrix lists cursor path');
   assert(fs.existsSync(path.join(TMP2, '.cursor', 'commands', 'setup.md')), 'cursor-only setup');
   assert(!fs.existsSync(path.join(TMP2, '.claude', 'commands', 'setup.md')), 'no claude when cursor-only');
   assert(!fs.existsSync(path.join(TMP2, 'AGENTS.md')), 'no AGENTS when cursor-only');
-  run(['check', TMP2]);
+  const cursorCheckOk = run(['check', TMP2]);
+  assert(cursorCheckOk.includes('Supported agents'), 'check prints supported agents matrix');
+  assert(cursorCheckOk.includes('Adapter: cursor'), 'check groups cursor adapter');
+  assert(cursorCheckOk.includes('[x] cursor'), 'check marks selected cursor adapter');
+  assert(cursorCheckOk.includes('[ ] claude'), 'check marks unselected claude adapter');
+  assert(cursorCheckOk.includes('All required Phasestep artifacts present'), 'cursor-only check passes');
+
+  // Missing command file → incomplete adapter diagnostic
+  fs.unlinkSync(path.join(TMP2, '.cursor', 'commands', 'setup.md'));
+  let checkMissOut = '';
+  try {
+    run(['check', TMP2]);
+    throw new Error('expected check to fail when setup.md missing');
+  } catch (e) {
+    if (e.message === 'expected check to fail when setup.md missing') throw e;
+    checkMissOut = `${e.stdout || ''}${e.stderr || ''}`;
+  }
+  assert(checkMissOut.includes('MISS') && checkMissOut.includes('setup.md'), 'check reports missing setup.md');
+  assert(checkMissOut.includes('Incomplete adapter install: cursor'), 'check flags incomplete cursor adapter');
+  assert(checkMissOut.includes('npx phasestep upgrade'), 'check suggests upgrade for missing commands');
 
   // Non-TTY init without flags still installs all (no hang)
   const TMP3 = path.join(ROOT, 'tmp-smoke-nontty');

@@ -33,6 +33,7 @@ Or:
 
 - Progress doc last-updated date if present
 - Progress checkboxes if work completed this session
+- **Phase health (resume)** — refresh the fenced block from current phase/step/status/next (overwrite; do not invent history)
 
 ## Labels
 

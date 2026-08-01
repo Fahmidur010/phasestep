@@ -14,6 +14,7 @@ const {
   scanAlongside,
   formatAlongsideReport,
   ensureProgressGitHubSection,
+  ensureProgressPhaseHealthSection,
 } = require('./scaffold');
 
 /**
@@ -108,6 +109,7 @@ async function upgrade({
     console.log('  Adding missing Owner stubs (existing docs untouched)…');
     installOwnerStubs(packageRoot, targetDir, merged, { force: false });
     ensureProgressGitHubSection(targetDir, merged);
+    ensureProgressPhaseHealthSection(targetDir, merged);
   }
 
   if (existing.path.endsWith('phasegate.json')) {

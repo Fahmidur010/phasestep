@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const {
   DEFAULTS,
+  COMMAND_FILES,
   normalizeAdapters,
-  commandPathsForAdapters,
   CODEX_MARKER_START,
   scanAlongside,
   formatAlongsideReport,
@@ -13,6 +13,46 @@ const {
 
 function exists(p) {
   return fs.existsSync(p);
+}
+
+const ADAPTER_MATRIX = [
+  {
+    id: 'cursor',
+    label: 'Cursor',
+    installs: '.cursor/commands/*.md',
+    invoke: 'slash commands (/setup, …)',
+  },
+  {
+    id: 'claude',
+    label: 'Claude Code',
+    installs: '.claude/commands/*.md',
+    invoke: 'slash commands (same names)',
+  },
+  {
+    id: 'codex',
+    label: 'Codex',
+    installs: 'AGENTS.md managed block',
+    invoke: 'follow AGENTS / ask by command name',
+  },
+];
+
+function commandNames() {
+  return COMMAND_FILES.filter((name) => name !== 'README.md');
+}
+
+function checkPaths(targetDir, rels, lines) {
+  let missing = 0;
+  const misses = [];
+  for (const rel of rels) {
+    const full = path.join(targetDir, rel);
+    const ok = exists(full);
+    lines.push(`  ${ok ? 'ok  ' : 'MISS'}  ${rel}`);
+    if (!ok) {
+      missing += 1;
+      misses.push(rel);
+    }
+  }
+  return { missing, misses };
 }
 
 async function check({ targetDir }) {
@@ -33,8 +73,20 @@ async function check({ targetDir }) {
   }
 
   config.adapters = normalizeAdapters(config.adapters);
+  const lines = [];
 
-  const required = [
+  console.log(`\nphasestep check → ${targetDir}\n`);
+
+  console.log('Supported agents (selected adapters are required):');
+  for (const row of ADAPTER_MATRIX) {
+    const on = config.adapters.includes(row.id);
+    console.log(
+      `  ${on ? '[x]' : '[ ]'} ${row.id.padEnd(7)} ${row.label.padEnd(12)} → ${row.installs}`
+    );
+  }
+  console.log(`\n  adapters in config: ${config.adapters.join(', ')}\n`);
+
+  const docs = [
     config.constitutionPath || DEFAULTS.constitutionPath,
     config.productSpec,
     config.userFlow || DEFAULTS.userFlow,
@@ -50,29 +102,59 @@ async function check({ targetDir }) {
     config.designSystem,
   ];
 
-  const { paths: commandPaths } = commandPathsForAdapters(config.adapters, config);
-  required.push(...commandPaths);
-
-  if (config.adapters.includes('codex')) {
-    required.push('AGENTS.md');
-  }
-
-  console.log(`\nphasestep check → ${targetDir}\n`);
-  console.log(`  adapters: ${config.adapters.join(', ')}\n`);
-
+  console.log('Docs & catalogs');
   let missing = 0;
-  for (const rel of required) {
-    const full = path.join(targetDir, rel);
-    const ok = exists(full);
-    console.log(`  ${ok ? 'ok  ' : 'MISS'}  ${rel}`);
-    if (!ok) missing += 1;
+  const allMisses = [];
+  {
+    const r = checkPaths(targetDir, docs, lines);
+    missing += r.missing;
+    allMisses.push(...r.misses);
+    for (const line of lines.splice(0)) console.log(line);
   }
 
-  if (config.adapters.includes('codex') && exists(path.join(targetDir, 'AGENTS.md'))) {
-    const agents = fs.readFileSync(path.join(targetDir, 'AGENTS.md'), 'utf8');
-    const hasBlock = agents.includes(CODEX_MARKER_START);
-    console.log(`  ${hasBlock ? 'ok  ' : 'MISS'}  AGENTS.md phasestep block`);
-    if (!hasBlock) missing += 1;
+  const cmdNames = commandNames();
+  const incompleteAdapters = [];
+
+  for (const row of ADAPTER_MATRIX) {
+    if (!config.adapters.includes(row.id)) continue;
+
+    if (row.id === 'codex') {
+      console.log('\nAdapter: codex (Codex)');
+      const agentsRel = 'AGENTS.md';
+      const agentsFull = path.join(targetDir, agentsRel);
+      const agentsOk = exists(agentsFull);
+      console.log(`  ${agentsOk ? 'ok  ' : 'MISS'}  ${agentsRel}`);
+      if (!agentsOk) {
+        missing += 1;
+        allMisses.push(agentsRel);
+        incompleteAdapters.push('codex');
+      } else {
+        const agents = fs.readFileSync(agentsFull, 'utf8');
+        const hasBlock = agents.includes(CODEX_MARKER_START);
+        console.log(`  ${hasBlock ? 'ok  ' : 'MISS'}  AGENTS.md phasestep block`);
+        if (!hasBlock) {
+          missing += 1;
+          allMisses.push('AGENTS.md phasestep block');
+          incompleteAdapters.push('codex');
+        }
+      }
+      continue;
+    }
+
+    const dir =
+      row.id === 'cursor' ? path.join('.cursor', 'commands') : path.join('.claude', 'commands');
+    const rels = cmdNames.map((name) => path.join(dir, name));
+    console.log(`\nAdapter: ${row.id} (${row.label}) — ${rels.length} command files`);
+    const r = checkPaths(targetDir, rels, lines);
+    missing += r.missing;
+    allMisses.push(...r.misses);
+    for (const line of lines.splice(0)) console.log(line);
+    if (r.missing) {
+      incompleteAdapters.push(row.id);
+      console.log(
+        `  → ${r.missing} missing under ${dir}/ (expected ${cmdNames.length} Phasestep commands)`
+      );
+    }
   }
 
   // Soft note: legacy catalog dir without failing check if config points elsewhere
@@ -89,7 +171,17 @@ async function check({ targetDir }) {
   }
 
   if (missing) {
-    console.log(`\n${missing} missing artifact(s). Run: npx phasestep init  (or upgrade)`);
+    console.log(`\n${missing} missing artifact(s).`);
+    if (incompleteAdapters.length) {
+      console.log(
+        `Incomplete adapter install: ${incompleteAdapters.join(', ')} — run: npx phasestep upgrade`
+      );
+      console.log(
+        '(upgrade refreshes command files / AGENTS block for adapters listed in phasestep.json)'
+      );
+    } else {
+      console.log('Run: npx phasestep init  (or upgrade)');
+    }
     process.exitCode = 1;
   } else {
     console.log('\nAll required Phasestep artifacts present.');
@@ -103,4 +195,4 @@ async function check({ targetDir }) {
   }
 }
 
-module.exports = { check };
+module.exports = { check, ADAPTER_MATRIX };

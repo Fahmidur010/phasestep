@@ -19,8 +19,11 @@ Fix issues for **Build Phase** from **intent rejection**, **verification**, **au
 1. Read Owner’s issue list (delta rejection / verify failures / audit reports / chat notes)
 2. Read [`{{PHASE_PLANS_DIR}}/phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/) — stay in scope; read Behavior delta if present
 3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) Phase PHASE — do not start next phase
-4. Product decision gaps → [`{{DECISIONS}}`](../../{{DECISIONS}}) and ask Owner
-5. **Cross-cutting / principle change?** → run **Cross-cutting STOP** below **before any code**. Do not “just implement” a new core rule across the tree.
+4. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) **Phase health (resume)** if present — align with open rejects / fails
+5. Product decision gaps → [`{{DECISIONS}}`](../../{{DECISIONS}}) and ask Owner
+6. **Cross-cutting / principle change?** → run **Cross-cutting STOP** below **before any code**. Do not “just implement” a new core rule across the tree.
+
+At start of refine work (after Cross-cutting STOP if any), **overwrite Phase health**: `Status: refining`, keep open rejects/fails, `Next: /verify-phase PHASE STEP` (or re-audit command if audit-scoped).
 
 ## Cross-cutting STOP (principle or multi-feature change)
 

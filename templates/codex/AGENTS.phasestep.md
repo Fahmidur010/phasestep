@@ -9,13 +9,13 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | Invoke | Purpose |
 |--------|---------|
 | `/setup` or "run phasestep setup" | Progressive Owner-gated stub fill |
-| `/plan-phase N` | Write `{{PHASE_PLANS_DIR}}/phase-N.md` |
-| `/build-phase N [step]` | Implement; Behavior delta (WHEN/THEN); intent gate |
-| `/verify-phase N [step]` | Owner UAT from THEN outcomes + checks; optional Playwright (web UI) |
+| `/plan-phase N` | Clarify STOP if needed → write `{{PHASE_PLANS_DIR}}/phase-N.md` |
+| `/build-phase N [step]` | Pre-build consistency → implement; Behavior delta; intent gate |
+| `/verify-phase N [step]` | Owner UAT from Trace / THEN outcomes; UNCHANGED spot-check when listed; optional Playwright (web UI) |
 | `/refine-phase N [step]` | Fix after verify; Cross-cutting STOP if principle cascades |
 | `/audit-phase N` | Build-phase acceptance audit (delivery) |
 | `/audit-ds N\|all` | Design-system audit (delivery) |
-| `/complete-phase N` | Mark done + progress |
+| `/complete-phase N` | Mark done + progress + phase remainder / next seeds |
 | `/session-log` | Optional mid-phase notes |
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
 | `/github-connect [repo]` | Link GitHub remote + gh auth (no commit) |
@@ -36,7 +36,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 - Build plan: `{{BUILD_PLAN}}`
 - Audit plan: `{{AUDIT_PLAN}}` (reports in `{{AUDIT_REPORTS_DIR}}/`)
 - Project map: `{{PROJECT_MAP}}` (agent navigation; optional until filled)
-- Progress: `{{PROGRESS}}`
+- Progress: `{{PROGRESS}}` (includes rolling **Phase health** resume block)
 - Design system: `{{DESIGN_SYSTEM}}`
 - Stack catalog: `{{STACK_CATALOG}}`
 - Design catalog: `{{DESIGN_CATALOG}}`

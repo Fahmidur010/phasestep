@@ -30,14 +30,38 @@ Read the step’s **Behavior delta**.
 
 Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED **and** list each **Scenario** title with its **THEN** outcome.
 
+## UNCHANGED spot-check (required when present)
+
+Read the step’s Behavior delta **UNCHANGED (explicit non-goals for this step)**.
+
+- If UNCHANGED is empty / `none` / omitted → skip this section (note “No UNCHANGED non-goals”).
+- Otherwise pick **at least one** material UNCHANGED item (prefer the riskiest for silent regression) and add a checklist item the Owner can run quickly:
+
+```markdown
+**UNCHANGED spot-check**
+- **Non-goal:** …
+- **Steps:** … (concrete action that would reveal if the old/unwanted behavior crept in)
+- **Expected:** the non-goal still holds (old behavior absent / unrelated feature unchanged)
+- Pass / Fail (Owner)
+```
+
+Rules:
+- This is **regression guard**, not a new Behavior delta scenario — do not invent ADDED/CHANGED SHALLs here
+- Keep it short (usually **1** item; at most **2** if two unrelated non-goals are high risk)
+- On Fail → same path as other fails (`/refine-phase`), and call out that an UNCHANGED non-goal regressed
+- Include the spot-check in the numbered checklist (e.g. after Trace Verify # rows) so the End message Pass/Fail covers it
+
 ## Scenarios → checklist
 
 After reading the Behavior delta:
 
-1. For **each** scenario under ADDED/CHANGED (and REMOVED if present), add or update a checklist item whose **Expected** matches the scenario’s **THEN** (and **AND** lines if they are separate observable checks).
-2. Keep the phase plan **Step verification** block as the primary structure; **merge** scenario THEN outcomes — do not duplicate conflicting expectations. If plan and delta disagree → **STOP** and ask Owner which is correct before verify.
-3. **Steps** column = what the Owner does (from WHEN, made concrete: URLs, buttons, roles, test data).
-4. At least one checklist item per scenario; happy path + material edge cases from **Risks** when relevant.
+1. Prefer the step’s **Trace** table (SHALL → Scenario → WHEN → THEN → Verify #) when present. Each Trace row becomes (or updates) checklist item **Verify #** with **Expected** = THEN (and AND lines as separate checks if needed).
+2. If Trace is **missing** but scenarios exist → build the checklist from scenarios as today, then **write Trace** into the phase plan under the step (same shape as `/build-phase`) before Owner UAT.
+3. For **each** scenario under ADDED/CHANGED (and REMOVED if present), ensure a checklist item whose **Expected** matches the scenario’s **THEN**.
+4. Keep the phase plan **Step verification** block as the primary structure; **merge** scenario THEN outcomes — do not duplicate conflicting expectations. If plan, Trace, and delta disagree → **STOP** and ask Owner which is correct before verify.
+5. **Steps** column = what the Owner does (from WHEN / Trace WHEN, made concrete: URLs, buttons, roles, test data).
+6. At least one checklist item per scenario; happy path + material edge cases from **Risks** when relevant.
+7. When reporting results, reference **Verify #** from Trace so Owner can see SHALL ↔ scenario ↔ checklist in one place.
 
 ## Evidence by surface (before Playwright)
 
@@ -123,10 +147,13 @@ When Playwright is available (setup accept, mid-flight install, or already in `p
 ### Intent reminder
 - …
 
+### UNCHANGED spot-check
+- Non-goal + Steps → Expected → Pass / Fail — or `No UNCHANGED non-goals`
+
 ### Checklist (numbered)
 Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in) → Evidence (manual | playwright-cli | mcp | flutter-analyze | rn-tool | buildCommand | none)
 
-Keep short; call out regression risks to earlier verified steps only when relevant.
+Include Trace **Verify #** rows and the **UNCHANGED spot-check** when applicable. Keep short; call out regression risks to earlier verified steps only when relevant.
 
 ### Automated evidence (if Playwright available)
 - Commands run
@@ -143,6 +170,19 @@ Step verification result:
 2. Fail — /refine-phase PHASE STEP then re-verify
 ```
 
-- When **all** steps verified: optional `/audit-ds` (if present) then `/audit-phase`
+- After the Owner replies, **overwrite Phase health (resume)** in [`{{PROGRESS}}`](../../{{PROGRESS}}):
+
+```text
+Phase: PHASE — (title)
+Step: STEP — (title)
+Status: verified | refining
+Verified steps: (include this STEP on Pass)
+Open rejects / fails: none | (failed Verify # / UNCHANGED spot-check ids)
+Evidence: manual | playwright-cli | mcp | flutter-analyze | rn-tool | buildCommand | mixed | none
+Next: /build-phase PHASE <next> | /pr-step PHASE STEP | /refine-phase PHASE STEP | /audit-phase PHASE
+Updated: YYYY-MM-DD
+```
+
+- When **all** steps verified: optional `/audit-ds` (if present) then `/audit-phase` (set Status `auditing` if starting audit)
 - Do not suggest `/complete-phase` until audits are clean
 - Optional: `/pr-step PHASE STEP` after a verified step when the Owner wants a PR before the full phase completes

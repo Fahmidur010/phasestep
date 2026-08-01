@@ -306,6 +306,25 @@ GitHub PR: phase 1 step 2 — branch phasestep/phase-1-step-2 — PR https://…
 
 `;
 
+const PROGRESS_PHASE_HEALTH_SECTION = `## Phase health (resume)
+
+Rolling snapshot for mid-session resume. **Overwrite** the fenced block on each material gate (\`/build-phase\` → intent → \`/verify-phase\` → \`/refine-phase\` → \`/complete-phase\`). Do not append history here — use **Session log** for that.
+
+\`\`\`text
+Phase: —
+Step: —
+Status: idle
+Verified steps: none
+Open rejects / fails: none
+Evidence: none
+Next: /setup or /plan-phase 1
+Updated: —
+\`\`\`
+
+Status values: \`idle\` · \`building\` · \`awaiting-intent\` · \`awaiting-verify\` · \`verified\` · \`refining\` · \`auditing\` · \`complete\`
+
+`;
+
 /**
  * Soft-migrate: if PROGRESS exists but lacks a GitHub section, insert it
  * before Audit campaign (or append). Never overwrites Owner checklist content.
@@ -335,6 +354,39 @@ function ensureProgressGitHubSection(targetDir, config) {
   return true;
 }
 
+/**
+ * Soft-migrate: if PROGRESS exists but lacks Phase health, insert it
+ * before Build progress (or append). Never overwrites Owner content.
+ * @returns {boolean} whether the file was updated
+ */
+function ensureProgressPhaseHealthSection(targetDir, config) {
+  const rel = (config && config.progress) || DEFAULTS.progress;
+  const full = path.join(targetDir, rel);
+  if (!fs.existsSync(full)) return false;
+
+  const body = fs.readFileSync(full, 'utf8');
+  if (/##\s*Phase health/i.test(body) || /Phase health \(resume\)/i.test(body)) {
+    return false;
+  }
+
+  const block = `\n---\n\n${PROGRESS_PHASE_HEALTH_SECTION}`;
+  let next;
+  const buildIdx = body.search(/\n##\s+Build progress\b/);
+  if (buildIdx !== -1) {
+    next = `${body.slice(0, buildIdx).replace(/\s*$/, '')}${block}${body.slice(buildIdx)}`;
+  } else {
+    const setupIdx = body.search(/\n##\s+Setup\b/);
+    if (setupIdx !== -1) {
+      next = `${body.slice(0, setupIdx).replace(/\s*$/, '')}${block}${body.slice(setupIdx)}`;
+    } else {
+      next = `${body.replace(/\s*$/, '')}${block}`;
+    }
+  }
+
+  fs.writeFileSync(full, next, 'utf8');
+  console.log(`  update: ${rel} (added Phase health section)`);
+  return true;
+}
 function installCatalogs(packageRoot, targetDir, config, { force }) {
   const paths = resolveCatalogPaths(targetDir, config);
 
@@ -554,6 +606,7 @@ module.exports = {
   installCodexAgents,
   installOwnerStubs,
   ensureProgressGitHubSection,
+  ensureProgressPhaseHealthSection,
   installCatalogs,
   commandPathsForAdapters,
   resolveCatalogPaths,

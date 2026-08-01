@@ -6,7 +6,19 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.7.5**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.7.6**
+
+---
+
+## Supported agents
+
+| Agent | Adapter id | What `init` installs | How you invoke |
+|-------|------------|----------------------|----------------|
+| **Cursor** | `cursor` | `.cursor/commands/*.md` | Slash commands (`/setup`, …) |
+| **Claude Code** | `claude` | `.claude/commands/*.md` | Slash commands (same names) |
+| **Codex** | `codex` | `AGENTS.md` managed block | Follow AGENTS / ask by command name |
+
+Pick at `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three). Only selected adapters are required by `phasestep check`. Re-run `npx phasestep upgrade` if command files are missing after a partial install.
 
 ---
 
@@ -45,7 +57,7 @@ Later:
 
 ```bash
 npx phasestep upgrade   # refresh commands & catalogs; keeps your product docs
-npx phasestep check     # validate required artifacts exist
+npx phasestep check     # validate docs + selected-adapter command files
 ```
 
 ---
@@ -55,12 +67,12 @@ npx phasestep check     # validate required artifacts exist
 | Command | Role |
 |---------|------|
 | `/setup` | One-time (or resume) project wiring |
-| `/plan-phase N` | Plan phase N |
-| `/build-phase N [S]` | Build step S (or next step) |
+| `/plan-phase N` | Clarify ambiguities (Owner gate) → plan phase N |
+| `/build-phase N [S]` | Pre-build consistency → build step S (or next) |
 | `/verify-phase N [S]` | Owner verification |
 | `/refine-phase …` | Fix after reject / failed verify |
 | `/audit-phase N` | Delivery audit after the phase |
-| `/complete-phase N` | Mark phase done |
+| `/complete-phase N` | Mark phase done + phase remainder / next seeds |
 | `/map-project` | Optional repo map for the agent |
 | `/github-connect` | Optional: link `gh` + remote |
 | `/pr-step N [S]` | Optional: commit → PR → merge (gated) |
@@ -75,9 +87,9 @@ Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/au
 |------|---------|
 | `docs/PHASESTEP.md` | Constitution (the rules) |
 | `phasestep.json` | Paths, `buildCommand`, adapters |
-| `.cursor/commands/*` | Cursor slash commands |
-| `.claude/commands/*` | Claude Code slash commands |
-| `AGENTS.md` | Codex / AGENTS guidance (managed block) |
+| `.cursor/commands/*` | Cursor slash commands (if `cursor` adapter) |
+| `.claude/commands/*` | Claude Code slash commands (if `claude` adapter) |
+| `AGENTS.md` | Codex guidance managed block (if `codex` adapter) |
 | `docs/*.md` | Product, flow, architecture, plans, progress, … |
 | `.phasestep/*-catalog.json` | Stack & design enrichment catalogs |
 

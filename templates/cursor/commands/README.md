@@ -6,13 +6,13 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 
 ```text
 /setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
-/plan-phase <n>            → write phase-N.md
-/build-phase <n> [step]    → implement step(s); Behavior delta (WHEN/THEN); intent gate
+/plan-phase <n>            → clarify STOP if needed → write phase-N.md
+/build-phase <n> [step]    → pre-build consistency → implement; Behavior delta; intent gate
 /verify-phase <n> [step]   → Owner UAT from THEN outcomes + automated checks
 /refine-phase <n> [step]   → fix after verify (Cross-cutting STOP if principle cascades)
 /audit-phase <n>           → build-phase acceptance audit (delivery)
 /audit-ds <n|all>          → design-system audit (delivery)
-/complete-phase <n>        → mark done + progress
+/complete-phase <n>        → mark done + progress + phase remainder
 /session-log …             → optional mid-phase notes
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 /github-connect [repo]     → link GitHub remote + gh auth (no commit)

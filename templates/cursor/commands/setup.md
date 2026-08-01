@@ -155,17 +155,32 @@ Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if gates or roles are unclear.
    - **interview** — short clarifying questions (who, problem, core journeys, out of scope)
    - **repo** — (mid-project) derive draft from codebase + Owner corrections
 4. Draft / rewrite `{{PRODUCT_SPEC}}` in the stub’s shape (Overview, Actors, Core flows, Out of scope). Prefer behavior language (“SHALL” where helpful).
-5. **STOP.** Show the draft summary and wait:
+5. Run **Spec quality checklist** on the draft (docs only — **not** a Behavior delta; WHEN/THEN scenarios come later at `/build-phase`). Show it with the summary:
+
+```markdown
+**Spec quality checklist** — product draft
+| Check | Status | Note |
+|-------|--------|------|
+| Ambiguous terms (“fast”, “easy”, “etc.”) | pass / gap | … |
+| Actors / who is clear | pass / gap | … |
+| Core flows are observable (could verify later) | pass / gap | … |
+| Error / empty / cancel paths mentioned or explicit N/A | pass / gap | … |
+| Out of scope stated | pass / gap | … |
+| Mushy SHALLs (untestable as written) | pass / gap | … |
+```
+
+6. **STOP.** Show the draft summary + checklist and wait:
 
 ```text
 Product draft ready:
-1. Accept
+1. Accept → Stage 2
 2. Reject
-3. Edit (notes)
+3. Edit (notes) — preferred when checklist has gaps
+4. Accept with known gaps (record gaps in product Open questions / chat)
 ```
 
-- **1. Accept** → Stage 2  
-- **2. Reject / 3. Edit** → revise product, stop again  
+- **1. Accept** or **4. Accept with known gaps** → Stage 2 (on **4**, keep gap notes in `{{PRODUCT_SPEC}}` or `{{DECISIONS}}`)  
+- **2. Reject / 3. Edit** → revise product, re-run checklist, stop again  
 
 Do **not** draft the user flow until product is accepted.
 
