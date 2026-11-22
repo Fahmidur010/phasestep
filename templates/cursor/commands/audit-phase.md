@@ -1,11 +1,15 @@
 ---
-description: Read-only build-phase acceptance audit (delivery loop)
-argument-hint: [phase-id]
+description: Read-only named build-phase acceptance audit (delivery loop)
+argument-hint: [phase-slug]
 ---
 
-Perform a **read-only build audit** for **Build Phase $ARGUMENTS**. **Do not modify files.**
+Perform a **read-only build audit** for one **named build phase**. **Do not modify files.**
 
 **This command is delivery-only.** For project audit-plan phases use `/audit-campaign N` (not this command).
+
+## Resolve phase id
+
+`$ARGUMENTS` is **PHASE_RAW**. Prefer a **slug** from [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}). Soft compat: integer `N` → existing `phase-N.md` or BUILD_PLAN order → slug. Resolve **title**. Plan file: `phase-<id>.md`. Below, **PHASE** = resolved id.
 
 **When:** only after **all** steps of this build phase are Owner-**verified** (unless Owner explicitly wants an early audit).
 
@@ -41,7 +45,7 @@ When the phase touches a **browser UI** (UI steps / checkpoints):
 Check `{{PROGRESS}}` for:
 
 ```text
-Playwright mid-flight: declined — build phase N
+Playwright mid-flight: declined — build phase PHASE
 ```
 
 If present → note “Playwright not configured”; do not offer again. Continue Owner-only.
@@ -52,12 +56,12 @@ Otherwise **STOP once**:
 Playwright is not configured, but this build audit includes web UI.
 1. Install now — playwright-cli (+ recommended companions) | optional MCP
 2. Continue this audit Owner-only — no browser evidence
-3. Don't ask again for build phase N — record decline in PROGRESS
+3. Don't ask again for build phase PHASE — record decline in PROGRESS
 ```
 
 - **Install now** → same catalog recipes as `/setup` Stage 4 section C; Owner selects; log in PROGRESS; re-run browser evidence.
 - **Continue Owner-only** → proceed without browser evidence.
-- **Don't ask again** → append `Playwright mid-flight: declined — build phase N` to `{{PROGRESS}}`.
+- **Don't ask again** → append `Playwright mid-flight: declined — build phase PHASE` to `{{PROGRESS}}`.
 
 Never install silently. Never block the audit if Owner chooses 2 or 3.
 
@@ -65,16 +69,16 @@ Never install silently. Never block the audit if Owner chooses 2 or 3.
 
 ## Audit steps
 
-1. Read `{{PHASE_PLANS_DIR}}/phase-$ARGUMENTS.md`; use **Audit checkpoints** and **Files checklist** as scope.
+1. Read `{{PHASE_PLANS_DIR}}/phase-PHASE.md`; use **Audit checkpoints** and **Files checklist** as scope (includes paths added via mid-phase absorbed side-work).
 2. Audit files created/changed for this phase (`git diff`, plan list) against:
    - [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}})
    - [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}})
    - [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) if present
    - Stack practice docs the project defines
 3. Check: steps reflected in code; layering/forbidden imports; auth/role guards; migrations present when claimed; every audit checkpoint evaluated; short SOLID pass on changed surfaces.
-4. **Behavior delta traceability:** for each verified step in the phase plan, read its Behavior delta scenarios — confirm implemented behavior matches each **THEN** (and REMOVED scenarios if present). Flag mismatches as findings.
+4. **Behavior delta traceability:** for each verified step in the phase plan, read its Behavior delta scenarios — confirm implemented behavior matches each **THEN** (and REMOVED scenarios if present), including refinements absorbed mid-phase. Flag mismatches as findings.
 5. If this phase has a **web UI** surface → follow **Browser evidence** above. If **native** or **backend-only** → follow Native / Backend tool evidence above.
-6. If UI in scope and `{{DESIGN_SYSTEM}}` exists → run `/audit-ds $ARGUMENTS` (or note as a separate step).
+6. If UI in scope and `{{DESIGN_SYSTEM}}` exists → run `/audit-ds PHASE` (or note as a separate step).
 7. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
-   - Issues → `/refine-phase $ARGUMENTS` then re-run `/audit-phase $ARGUMENTS`
-   - No C/M → ready for `/complete-phase $ARGUMENTS` after Owner confirmation
+   - Issues → `/refine-phase PHASE` then re-run `/audit-phase PHASE`
+   - No C/M → ready for `/complete-phase PHASE` after Owner confirmation

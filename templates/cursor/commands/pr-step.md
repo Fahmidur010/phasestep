@@ -85,7 +85,7 @@ Trunk-style: land current work onto the **default branch** (`main`/`master`).
 ## Procedure: `update`
 
 1. Detect default branch (`main`/`master`).
-2. If on default already with dirty tree → commit + push on default (still no force). Prefer a short-lived branch when Phase health suggests a phase/step name: `phasestep/phase-N-step-S` or `phasestep/phase-N` or `phasestep/update-YYYYMMDD`.
+2. If on default already with dirty tree → commit + push on default (still no force). Prefer a short-lived branch when Phase health suggests a phase/step name: `phasestep/<slug>-step-S` or `phasestep/<slug>` (legacy `phase-N` ok) or `phasestep/update-YYYYMMDD`.
 3. Run **Shared: ensure committed + pushed** on the working branch.
 4. Checkout default; pull; `git merge --no-ff <working-branch>`; push default.
 5. Optionally delete the working branch locally + remote after successful merge (ask once only if unclear whether to keep it).

@@ -5,7 +5,7 @@ argument-hint: [phase-id] [reaudit?]
 
 Perform a **read-only campaign audit** for **Audit Phase $ARGUMENTS**. **Do not modify files.**
 
-**This command is campaign-only** (project audit track via `/audit-project`). For delivery build-phase acceptance use `/audit-phase N` (not this command).
+**This command is campaign-only** (project audit track via `/audit-project`). For delivery build-phase acceptance use `/audit-phase <slug>` (not this command).
 
 **Precondition:** `{{AUDIT_PLAN}}` accepted and defines Audit Phase $ARGUMENTS. Otherwise → run `/audit-project` first.
 

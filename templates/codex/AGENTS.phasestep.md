@@ -9,14 +9,14 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | Invoke | Purpose |
 |--------|---------|
 | `/setup` or "run phasestep setup" | Progressive Owner-gated stub fill |
-| `/plan-phase N` | Clarify STOP if needed → write `{{PHASE_PLANS_DIR}}/phase-N.md` |
-| `/build-phase N [step]` | Pre-build consistency → implement; Behavior delta; intent gate |
-| `/verify-phase N [step]` | Owner UAT from Trace / THEN outcomes; UNCHANGED spot-check when listed; optional Playwright (web UI) |
-| `/refine-phase N [step]` | Fix after verify; Cross-cutting STOP if principle cascades |
-| `/audit-phase N` | Build-phase acceptance audit (delivery) |
-| `/audit-ds N\|all` | Design-system audit (delivery) |
-| `/complete-phase N` | Mark done + progress + phase remainder / next seeds |
-| `/session-log` | Optional mid-phase notes |
+| `/plan-phase <slug>` | Named phase; classic or **progressive**; may add to BUILD_PLAN; write `phase-<slug>.md` |
+| `/build-phase <slug> [step]` | Build one step; progressive capture wires Owner description into the plan; Behavior delta; intent gate |
+| `/verify-phase <slug> [step]` | Owner UAT from Trace / THEN outcomes; UNCHANGED spot-check when listed; optional Playwright (web UI) |
+| `/refine-phase <slug> [step]` | Fix after verify; mid-phase side-work absorb / size STOP; Cross-cutting if principle cascades |
+| `/audit-phase <slug>` | Build-phase acceptance audit (delivery) |
+| `/audit-ds <slug>\|all` | Design-system audit (delivery) |
+| `/complete-phase <slug>` | Mark done + progress + phase remainder / next seeds |
+| `/session-log` | Optional mid-phase notes (`<slug>`) |
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
 | `/github-connect [repo]` | Link GitHub + choose Simple PR or GitFlow (no app commit) |
 | `/pr-step` / `update` | Land current work (empty args = update). Simple→main · GitFlow→develop. Invoke authorizes commit/push/merge |
@@ -54,7 +54,9 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 4. Design component libraries are pick-one; never mix kits.
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app. Prefer `{{PROJECT_MAP}}` when present; refresh via `/map-project` without Owner gate.
 6. Principle / multi-feature changes: follow Cross-cutting STOP in `/refine-phase` before coding (decision + product sync, or scoped/defer).
-7. Commit / push / merge only via `/pr-step` (or explicit Owner ask that `/pr-step` executes) — invoke authorizes; never force-push; never silent from build/refine. Deploy stays project-local.
-8. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
+7. Mid-phase side-work: absorb local Owner refinements into the current step’s plan + Behavior delta / Trace (no new command); if too large → Side-work size STOP; verify/audit use updated artifacts.
+8. Progressive phases: `/plan-phase <slug>` → progressive → `/build-phase <slug> N` with Owner describing each step; plan grows for audit/complete.
+9. Commit / push / merge only via `/pr-step` (or explicit Owner ask that `/pr-step` executes) — invoke authorizes; never force-push; never silent from build/refine. Deploy stays project-local.
+10. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
 
 If command markdown files are missing, run `npx phasestep upgrade` or `npx phasestep init`.

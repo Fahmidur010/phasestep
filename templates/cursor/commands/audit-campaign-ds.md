@@ -5,7 +5,7 @@ argument-hint: [audit-phase-id]
 
 Perform a **read-only** design-system audit for **Campaign Audit Phase $ARGUMENTS**. **Do not modify files.**
 
-**Campaign-only.** For delivery build-phase DS checks use `/audit-ds N`.
+**Campaign-only.** For delivery build-phase DS checks use `/audit-ds <slug>`.
 
 ## Scope
 

@@ -6,7 +6,7 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.8.3**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.0.0**
 
 ---
 
@@ -25,17 +25,21 @@ Pick at `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all th
 ## How it works
 
 ```text
-1. /setup          → product, flow, stack, architecture, design, build plan
-2. /plan-phase N   → break phase N into verifiable steps
-3. /build-phase N S → implement one step + Behavior delta (SHALL + WHEN/THEN)
-4. You Accept      → intent gate (or reject → /refine-phase)
-5. /verify-phase   → you prove it (manual UAT; optional browser/native evidence)
-6. Repeat 3–5      → until the phase is done
-7. /audit-phase    → phase quality check → /complete-phase
-8. Optional        → /pr-step update (git handoff; Simple or GitFlow)
+1. /setup               → product, flow, stack, architecture, design, build plan (named phases)
+2. /plan-phase <slug>   → break that phase into numbered steps
+3. /build-phase <slug> S → implement one step + Behavior delta (SHALL + WHEN/THEN)
+4. You Accept           → intent gate (or reject → /refine-phase)
+5. /verify-phase <slug> → you prove it (manual UAT; optional browser/native evidence)
+6. Repeat 3–5           → until the phase is done
+7. /audit-phase <slug>  → phase quality check → /complete-phase <slug>
+8. Optional             → /pr-step update (git handoff; Simple or GitFlow)
 ```
 
 **Behavior delta** = ADDED / CHANGED / REMOVED `SHALL` lines, each with at least one **WHEN → THEN** scenario. You review that contract before deep code review.
+
+**Mid-phase refinements** (layout, components, small fixes while on a step) fold into the current phase plan + delta — no extra command — so verify and audit cover them. If an ask is too large for this phase, the agent stops and offers absorb / park for a new phase / re-plan.
+
+**New features mid-project:** `/plan-phase <slug>` (adds to the build plan if needed) → choose **progressive** → `/build-phase <slug> 1` (describe the step) → verify → step 2… → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows as you build.
 
 Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the number.
 
@@ -51,7 +55,7 @@ Pick adapters when prompted (Cursor / Claude Code / Codex / all), then:
 
 1. Open the project in your agent  
 2. Run **`/setup`** (greenfield or mid-project — it asks)  
-3. Run **`/plan-phase 1`**
+3. Run **`/plan-phase <first-slug>`** (from your BUILD_PLAN; steps stay numeric)
 
 Later:
 
@@ -67,12 +71,12 @@ npx phasestep check     # validate docs + selected-adapter command files
 | Command | Role |
 |---------|------|
 | `/setup` | One-time (or resume) project wiring |
-| `/plan-phase N` | Clarify ambiguities (Owner gate) → plan phase N |
-| `/build-phase N [S]` | Pre-build consistency → build step S (or next) |
-| `/verify-phase N [S]` | Owner verification |
-| `/refine-phase …` | Fix after reject / failed verify |
-| `/audit-phase N` | Delivery audit after the phase |
-| `/complete-phase N` | Mark phase done + phase remainder / next seeds |
+| `/plan-phase <slug>` | Named phase; classic full plan or **progressive**; may add slug to BUILD_PLAN |
+| `/build-phase <slug> [S]` | Build step S (or next); progressive mode wires Owner-described steps into the plan |
+| `/verify-phase <slug> [S]` | Owner verification |
+| `/refine-phase <slug> [S]` | Fix after reject / failed verify |
+| `/audit-phase <slug>` | Delivery audit after the phase |
+| `/complete-phase <slug>` | Mark phase done + phase remainder / next seeds |
 | `/map-project` | Optional repo map for the agent |
 | `/github-connect` | Optional: link `gh` + remote; choose Simple or GitFlow |
 | `/pr-step update` | Optional: land current work (Simple→main · GitFlow→develop); invoke authorizes commit/push/merge |

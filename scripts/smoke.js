@@ -52,6 +52,10 @@ function main() {
   const initAllOut = run(['init', TMP, '--yes']);
   assert(initAllOut.includes('all adapters') || initAllOut.includes('Adapters:'), 'init --yes runs');
   assert(initAllOut.includes('github-connect') || initAllOut.includes('/github-connect'), 'init hints Setup Finish github-connect');
+  assert(
+    initAllOut.includes('first-slug') || initAllOut.includes('/plan-phase <'),
+    'init Next hints plan-phase slug'
+  );
 
   assert(fs.existsSync(path.join(TMP, 'phasestep.json')), 'phasestep.json written');
   assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', 'setup.md')), 'cursor /setup');
@@ -277,6 +281,26 @@ function main() {
   assert(planPhaseCmd.includes('Plan quality checklist'), 'plan-phase plan quality checklist');
   assert(planPhaseCmd.includes('Steps are Owner-verifiable') || planPhaseCmd.includes('Steps Owner-verifiable'), 'plan-phase checklist verifiable steps');
   assert(planPhaseCmd.includes('2. Write anyway'), 'plan-phase quality write anyway');
+  assert(planPhaseCmd.includes('Resolve phase id'), 'plan-phase resolves named phase id');
+  assert(planPhaseCmd.includes('Soft compat') || planPhaseCmd.includes('soft compat'), 'plan-phase soft-compat numeric');
+  assert(planPhaseCmd.includes('slug') || planPhaseCmd.includes('kebab-case'), 'plan-phase prefers slug');
+  assert(planPhaseCmd.includes('Steps stay numeric') || planPhaseCmd.includes('Step numbers stay integers'), 'plan-phase steps stay numeric');
+  assert(planPhaseCmd.includes('Planning mode STOP') || planPhaseCmd.includes('How to plan'), 'plan-phase planning mode STOP');
+  assert(planPhaseCmd.includes('Progressive'), 'plan-phase progressive mode');
+  assert(
+    planPhaseCmd.includes('not in BUILD_PLAN') || planPhaseCmd.includes('New phase STOP'),
+    'plan-phase can add new BUILD_PLAN phase'
+  );
+  assert(planPhaseCmd.includes('1. Add it'), 'plan-phase new phase Add option');
+  assert(
+    planPhaseCmd.includes('Status:** `planned`') || planPhaseCmd.includes('Status:** planned'),
+    'plan-phase progressive uses Status planned lifecycle'
+  );
+
+  const buildPlanStub = read(cfg.buildPlan || 'docs/BUILD_PLAN.md');
+  assert(buildPlanStub.includes('Phase: auth') || buildPlanStub.includes('auth — Authentication'), 'BUILD_PLAN named phase example');
+  assert(buildPlanStub.includes('slug') || buildPlanStub.includes('Phase ids'), 'BUILD_PLAN documents phase ids');
+  assert(progressStub.includes('plan-phase <slug>') || progressStub.includes('/plan-phase <slug>'), 'PROGRESS Phase health next uses slug');
 
   const buildPhaseCmd = read(path.join('.cursor', 'commands', 'build-phase.md'));
   assert(buildPhaseCmd.includes('1. Accept →'), 'build-phase intent gate numbered');
@@ -292,6 +316,31 @@ function main() {
   assert(buildPhaseCmd.includes('Verify #'), 'build-phase trace Verify #');
   assert(buildPhaseCmd.includes('Phase health (resume)'), 'build-phase updates Phase health');
   assert(buildPhaseCmd.includes('awaiting-intent'), 'build-phase Phase health awaiting-intent');
+  assert(buildPhaseCmd.includes('Resolve phase id'), 'build-phase resolves named phase id');
+  assert(buildPhaseCmd.includes('phase-slug') || buildPhaseCmd.includes('[phase-slug]'), 'build-phase argument-hint slug');
+  assert(
+    buildPhaseCmd.includes('Progressive step capture') || buildPhaseCmd.includes('progressive step capture'),
+    'build-phase progressive step capture'
+  );
+
+  const verifyPhaseNamed = read(path.join('.cursor', 'commands', 'verify-phase.md'));
+  assert(verifyPhaseNamed.includes('Resolve phase id'), 'verify-phase resolves named phase id');
+  assert(completePhaseCmd.includes('Resolve phase id'), 'complete-phase resolves named phase id');
+  assert(setup.includes('slug') && setup.includes('Phase:'), 'setup Stage 8 drafts named Phase: slug sections');
+  const phasePlansReadme = read(path.join(cfg.phasePlansDir || 'docs/phase-plans', 'README.md'));
+  assert(
+    phasePlansReadme.includes('/plan-phase <slug>') || phasePlansReadme.includes('phase-<slug>'),
+    'phase-plans README uses slug'
+  );
+  assert(!phasePlansReadme.includes('/plan-phase N'), 'phase-plans README no bare /plan-phase N');
+  assert(
+    phasePlansReadme.includes('../PHASESTEP.md') || phasePlansReadme.includes('PHASESTEP.md'),
+    'phase-plans README constitution href casing'
+  );
+  assert(
+    phasePlansReadme.includes('Progressive') || phasePlansReadme.includes('progressive'),
+    'phase-plans README mentions progressive'
+  );
 
   const completeAuditCmd = read(path.join('.cursor', 'commands', 'complete-audit.md'));
   assert(completeAuditCmd.includes('1. Promote selected'), 'complete-audit gate numbered');
@@ -308,9 +357,45 @@ function main() {
   assert(refinePhaseCmd.includes('3. Defer'), 'refine-phase cross-cutting defer');
   assert(refinePhaseCmd.includes('4. Not cross-cutting'), 'refine-phase local-refine escape');
   assert(refinePhaseCmd.includes('Phase health'), 'refine-phase updates Phase health');
+  assert(refinePhaseCmd.includes('Resolve phase id'), 'refine-phase resolves named phase id');
+  assert(refinePhaseCmd.includes('Mid-phase side-work'), 'refine-phase mid-phase side-work section');
+  assert(
+    refinePhaseCmd.includes('Side-work size STOP') ||
+      refinePhaseCmd.includes('too large for this step/phase'),
+    'refine-phase side-work size STOP'
+  );
+  assert(refinePhaseCmd.includes('Park for a new'), 'refine-phase size STOP park option');
+  assert(refinePhaseCmd.includes('Absorb anyway'), 'refine-phase size STOP absorb option');
+  assert(
+    refinePhaseCmd.includes('Stop and re-plan') || refinePhaseCmd.includes('re-plan now'),
+    'refine-phase size STOP re-plan option'
+  );
+  assert(
+    refinePhaseCmd.includes('never chat-only') || refinePhaseCmd.includes('Never chat-only'),
+    'refine-phase forbids chat-only side-work'
+  );
+  assert(
+    buildPhaseCmd.includes('Mid-phase side-work') || buildPhaseCmd.includes('mid-phase side-work'),
+    'build-phase points to mid-phase side-work'
+  );
+  assert(
+    buildPhaseCmd.includes('chat-only') || buildPhaseCmd.includes('Do **not** leave Owner chat'),
+    'build-phase forbids chat-only refinements'
+  );
+  assert(
+    verifyPhaseNamed.includes('Mid-phase side-work') ||
+      verifyPhaseNamed.includes('absorbed into this step'),
+    'verify-phase covers absorbed side-work'
+  );
+  assert(
+    completePhaseCmd.includes('parked mid-phase') ||
+      completePhaseCmd.includes('Side-work size STOP'),
+    'complete-phase remainder includes parked side-work'
+  );
 
   const sessionLogCmd = read(path.join('.cursor', 'commands', 'session-log.md'));
   assert(sessionLogCmd.includes('Phase health (resume)'), 'session-log refreshes Phase health');
+  assert(sessionLogCmd.includes('Resolve phase id'), 'session-log resolves named phase id');
 
   assert(buildPhaseCmd.includes('Cross-cutting STOP') || buildPhaseCmd.includes('core principle'), 'build-phase points to cross-cutting');
   assert(buildPhaseCmd.includes('/pr-step'), 'build-phase points to pr-step for commits');
@@ -395,9 +480,27 @@ function main() {
   assert(agentsMd.includes('hotfix'), 'codex AGENTS mentions hotfix');
   assert(agentsMd.includes('bugfix'), 'codex AGENTS mentions bugfix');
   assert(agentsMd.includes('/pr-step main') || agentsMd.includes('`/pr-step main`'), 'codex AGENTS mentions pr-step main');
+  assert(
+    agentsMd.includes('Mid-phase side-work') || agentsMd.includes('Side-work size STOP'),
+    'codex AGENTS mentions mid-phase side-work'
+  );
+  assert(
+    agentsMd.includes('Progressive phases') || agentsMd.includes('progressive'),
+    'codex AGENTS mentions progressive phases'
+  );
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
-  assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');
+  assert(
+    auditPhaseCmd.includes('delivery-only') ||
+      auditPhaseCmd.includes('named build phase') ||
+      auditPhaseCmd.includes('Build Phase'),
+    'audit-phase delivery only'
+  );
+  assert(auditPhaseCmd.includes('Resolve phase id'), 'audit-phase resolves named phase id');
+  assert(
+    auditPhaseCmd.includes('absorbed mid-phase') || auditPhaseCmd.includes('mid-phase absorbed'),
+    'audit-phase covers absorbed side-work'
+  );
   assert(auditPhaseCmd.includes('Browser evidence'), 'audit-phase browser evidence');
   assert(auditPhaseCmd.includes('Native evidence'), 'audit-phase native evidence');
   assert(auditPhaseCmd.includes('/audit-campaign'), 'audit-phase points to audit-campaign');
@@ -409,6 +512,10 @@ function main() {
   assert(auditCampaignCmd.includes('Record findings; no fixes'), 'audit-campaign record option');
   assert(auditCampaignCmd.includes('reaudit'), 'audit-campaign reaudit');
   assert(auditCampaignCmd.includes('/audit-phase'), 'audit-campaign points to audit-phase for delivery');
+  assert(
+    auditCampaignCmd.includes('/audit-phase <slug>') || !auditCampaignCmd.includes('/audit-phase N'),
+    'audit-campaign delivery pointer uses slug not bare N'
+  );
   assert(auditCampaignCmd.includes('audit-campaign-ds'), 'audit-campaign invokes audit-campaign-ds');
   assert(auditCampaignCmd.includes('/audit-campaign N+1'), 'audit-campaign option 4 uses audit-campaign next');
   assert(!auditCampaignCmd.includes('Mode A'), 'audit-campaign has no delivery Mode A');
@@ -416,6 +523,11 @@ function main() {
   const auditDs = read(path.join('.cursor', 'commands', 'audit-ds.md'));
   assert(auditDs.includes('Delivery-only'), 'audit-ds delivery only');
   assert(auditDs.includes('/refine-phase'), 'audit-ds refine-phase path');
+  assert(auditDs.includes('Resolve phase id') || auditDs.includes('phase-slug'), 'audit-ds named phase slug');
+  assert(
+    auditDs.includes('mid-phase absorbed') || auditDs.includes('absorbed side-work'),
+    'audit-ds covers absorbed side-work'
+  );
 
   const auditCampaignDs = read(path.join('.cursor', 'commands', 'audit-campaign-ds.md'));
   assert(auditCampaignDs.includes('Campaign-only'), 'audit-campaign-ds campaign only');

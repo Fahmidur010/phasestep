@@ -570,20 +570,24 @@ Read before drafting:
 
 1. Propose **ordered phases** grounded in the inputs above. Prefer slicing by user-flow segments and architecture seams (not by random file folders).
 2. **Existing / mid-project:** do **not** re-plan already-shipped work as future build phases. Put shipped capability in earlier “done” notes or phase Out of scope; plan **remaining** milestones only. Update `{{PROGRESS}}` so completed areas are marked done where Owner agrees.
-3. Each phase: **title**, **in scope**, **out of scope**.
-4. Reflect **Resolved** decisions in scope. Call out Open items in phase boundaries / risks:
+3. Each phase needs:
+   - **slug** — filesystem-safe kebab-case id (`auth`, `checkout`) used in `/plan-phase <slug>` and `phase-<slug>.md`
+   - **title** — human name shown in chat / PROGRESS
+   - **in scope** / **out of scope**
+4. Write **Phase order** as `N. <slug> — <Title>`, then a `## Phase: <slug> — <Title>` section per phase. **Do not** invent new phases as bare numbers; soft compat for legacy `Phase 1` projects remains in command contracts.
+5. Reflect **Resolved** decisions in scope. Call out Open items in phase boundaries / risks:
    - **`tbd` (non-blocker)** → note as risk or “decide during phase”; do not invent the answer in the plan
    - **`deferred`** → keep out of early phases unless Owner overrides
    - **`tbd` + Blocker? = yes** → **do not** schedule work that assumes an answer. Mark the dependency prominently. Prefer stopping before `/plan-phase` until resolved, or get an explicit Owner override recorded in `{{DECISIONS}}` / chat
-5. If design was accepted, phases that ship UI should assume the **chosen library only** (no alternate kit).
-6. Do **not** write phase execution plans (`phase-N.md`) here — that is `/plan-phase N` after setup.
+6. If design was accepted, phases that ship UI should assume the **chosen library only** (no alternate kit).
+7. Do **not** write phase execution plans (`phase-<slug>.md`) here — that is `/plan-phase <slug>` after setup.
 
 ### 8c — Owner gate
 
-**STOP.** Present the phase order (short summary per phase) and wait:
+**STOP.** Present the phase order as **slug — title** (one line each) and wait:
 
 ```text
-BUILD_PLAN.md ready:
+BUILD_PLAN.md ready (named phases — invoke by slug; steps stay numeric):
 1. Accept
 2. Reject
 3. Edit (notes)
@@ -655,7 +659,7 @@ Setup complete — optional GitHub handoff:
 4. Tell Owner next step — do **not** run it unless asked:
 
 ```text
-Setup complete → run /plan-phase 1
+Setup complete → run /plan-phase <first-slug>
 ```
 
 Later (after verify/complete): `/pr-step update` (Simple→main · GitFlow→develop); GitFlow also `release` / `main`.

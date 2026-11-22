@@ -1,29 +1,73 @@
 ---
-description: Fix issues from audit or verification (phase or step)
-argument-hint: [phase] [step?]
+description: Fix issues from audit or verification (named phase or step)
+argument-hint: [phase-slug] [step?]
 ---
 
-Fix issues for **Build Phase** from **intent rejection**, **verification**, **audit**, and/or **design-system audit**.
+Fix issues for a **named build phase** from **intent rejection**, **verification**, **audit**, and/or **design-system audit**.
 
 **Not for project-audit findings.** If the issues come from an `/audit-project` campaign report (`{{AUDIT_REPORTS_DIR}}/audit-phase-N.md`), stop and use `/refine-audit N` instead — it enforces the Owner-approval gate. If it is unclear which the Owner means, ask once.
 
-## Parse arguments
+## Resolve phase id
 
-`$ARGUMENTS` is `PHASE` optionally followed by `STEP`.
+`$ARGUMENTS` is `PHASE_RAW` optionally followed by `STEP`.
 
-- With **STEP**: scope to that step
-- Without: use Owner’s full-phase issue list
+1. Prefer a **slug** from [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}). Soft compat: integer `N` → existing `phase-N.md` or BUILD_PLAN order → slug.
+2. Resolve **title**. Plan file: `phase-<id>.md`. With **STEP** (numeric): scope to that step; without: Owner’s full-phase issue list.
+3. Below, **PHASE** = resolved id. Show **PHASE — Title** in chat / Phase health.
 
 ## Before coding
 
 1. Read Owner’s issue list (delta rejection / verify failures / audit reports / chat notes)
 2. Read [`{{PHASE_PLANS_DIR}}/phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/) — stay in scope; read Behavior delta if present
-3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) Phase PHASE — do not start next phase
+3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) **Phase: PHASE** — do not start next phase
 4. Read [`{{PROGRESS}}`](../../{{PROGRESS}}) **Phase health (resume)** if present — align with open rejects / fails
 5. Product decision gaps → [`{{DECISIONS}}`](../../{{DECISIONS}}) and ask Owner
-6. **Cross-cutting / principle change?** → run **Cross-cutting STOP** below **before any code**. Do not “just implement” a new core rule across the tree.
+6. **Mid-phase side-work?** (Owner chat polish / extra ask while on this phase) → follow **Mid-phase side-work** below **before** coding oversized asks. Local absorbs update plan + delta (no new command).
+7. **Cross-cutting / principle change?** → run **Cross-cutting STOP** below **before any code**. Do not “just implement” a new core rule across the tree. (If both side-work-size and principle apply → Cross-cutting first, then size gate if still needed.)
 
-At start of refine work (after Cross-cutting STOP if any), **overwrite Phase health**: `Status: refining`, keep open rejects/fails, `Next: /verify-phase PHASE STEP` (or re-audit command if audit-scoped).
+At start of refine work (after side-work / Cross-cutting STOPs if any), **overwrite Phase health**: `Phase: PHASE — Title`, `Status: refining`, keep open rejects/fails, `Next: /verify-phase PHASE STEP` (or re-audit command if audit-scoped).
+
+## Mid-phase side-work (absorb into current workflow)
+
+**No new slash command.** While mid-phase / mid-step (build, refine, or chat on the current step), Owner refinements are part of the **same** delivery loop.
+
+### Absorb (default)
+
+Treat as **current step / current phase** when the ask is local polish on the same surface/feature (layout, component swap, copy, small bugfix, same done-when neighborhood) and does **not** invent a new BUILD_PLAN milestone or belong clearly in another phase.
+
+**Required after absorb** (so later build / verify / audit see it):
+
+1. Implement the change on the current step (do not open the next unbuilt step for this).
+2. Update [`phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/) for that step: Task / Done when / Files as needed.
+3. If behavior changed → update **Behavior delta** (WHEN/THEN) + **Trace** + **Step verification**; set Intent `pending_owner_review` and run the intent gate below.
+4. If new/changed paths → update **Files checklist** (and **Audit checkpoints** when material).
+5. Say briefly what was absorbed so Owner knows verify/audit will cover it.
+
+Purely structural/style with no behavior change → plan Files/checklist update if paths changed; say **Behavior unchanged**.
+
+### Too large → Side-work size STOP
+
+**Do not silently absorb** when the ask is too big for this step/phase, e.g.:
+
+- New feature or milestone not in this phase’s in-scope  
+- Clearly belongs in another BUILD_PLAN phase (earlier or later)  
+- Needs its own multi-step slice / new phase plan  
+- Would rewrite product/flow across surfaces (also trigger **Cross-cutting STOP**)
+
+Show a one-line why, then **STOP**:
+
+```text
+Mid-phase side-work — too large for this step/phase:
+1. Absorb anyway into current step — update plan + delta; then continue
+2. Park for a new / other phase — note seed (remainder / decisions / BUILD_PLAN); do not implement now; continue current step work
+3. Stop and re-plan now — Owner will edit BUILD_PLAN / run /plan-phase; pause this step until guided
+```
+
+- **1** → absorb path above (Owner accepts the blast radius).  
+- **2** → record a short seed (Phase remainder row, Open decision, or BUILD_PLAN out-of-scope note); **resume** the current step without coding the parked ask.  
+- **3** → stop coding this ask; wait for Owner’s plan guidance.
+
+If unsure size → prefer this STOP once over silent mega-scope.
 
 ## Cross-cutting STOP (principle or multi-feature change)
 
@@ -65,7 +109,8 @@ Never silently rewrite product truth while refining. Never cascade fixes across 
 
 ## Rules
 
-- Minimal fixes only (unless Owner chose Cross-cutting option **1** and scoped the work)
+- Minimal fixes only (unless Owner chose Cross-cutting option **1**, or Side-work size option **1**, and scoped the work)
+- Absorbed side-work **must** land in plan + delta/Trace (when behavior changes) — never chat-only
 - Do not implement the next unbuilt step
 - Run `{{BUILD_COMMAND}}` after fixes
 - Do not commit unless asked — use `/pr-step update` (invoke authorizes commit/push/merge)
@@ -73,7 +118,7 @@ Never silently rewrite product truth while refining. Never cascade fixes across 
 
 ## Behavior delta update
 
-If behavior changed (including after intent rejection or Cross-cutting option **1**/**2**): update the step’s Behavior delta (including **WHEN/THEN** scenarios under each changed `SHALL`); set **Intent status:** `pending_owner_review`; show revised delta in chat.
+If behavior changed (including after intent rejection, absorbed side-work, or Cross-cutting option **1**/**2**): update the step’s Behavior delta (including **WHEN/THEN** scenarios under each changed `SHALL`); set **Intent status:** `pending_owner_review`; show revised delta in chat.
 
 If purely structural/style with no behavior change: say **Behavior unchanged**.
 

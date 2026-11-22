@@ -1,17 +1,37 @@
 ---
-description: Generate step-by-step execution plan for a build phase
-argument-hint: [phase-id]
+description: Plan a named build phase (full ahead or progressive — steps filled as you build)
+argument-hint: [phase-slug]
 ---
 
-Generate the **execution plan** for **Build Phase $ARGUMENTS** and write it to:
+Open or write the **execution plan** for one **named build phase** at `{{PHASE_PLANS_DIR}}/phase-<id>.md`.
 
-**[`{{PHASE_PLANS_DIR}}/phase-$ARGUMENTS.md`](../../{{PHASE_PLANS_DIR}}/phase-$ARGUMENTS.md)**
+Supports **classic** (all steps planned now) and **progressive** (thin plan now; each `/build-phase <slug> N` records that step as the Owner describes it — common for new features after earlier phases).
 
-Use a filesystem-safe filename (e.g. `phase-6a.md`).
+## Resolve phase id
+
+`$ARGUMENTS` is **PHASE_RAW** (one token — prefer kebab-case slug, e.g. `ssl-commerce`).
+
+1. Normalize to a **slug** (lowercase kebab-case). Soft compat: integer `N` → existing `phase-N.md` or BUILD_PLAN order → slug; else STOP for slug.
+2. If BUILD_PLAN already has this slug → resolve **title** from `## Phase: <id> — <Title>` or order line.
+3. If BUILD_PLAN has **no** matching phase → **New phase STOP** (do not invent silently):
+
+```text
+Phase slug PHASE is not in BUILD_PLAN yet:
+1. Add it — title: … (suggest from slug); sketch in/out of scope → append Phase order + ## Phase: PHASE — Title → then continue
+2. Abort — use a different existing slug
+```
+
+- **1** → update [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) (Owner Accept implied by choosing 1); mark progress if useful; continue.  
+- **2** → stop.
+
+4. **Plan file:** [`{{PHASE_PLANS_DIR}}/phase-<id>.md`](../../{{PHASE_PLANS_DIR}}/phase-<id>.md)
+5. Show **`<id> — <Title>`** in chat. **Steps stay numeric.**
+
+Below, **PHASE** = resolved **id**.
 
 ## Before writing
 
-1. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — Phase $ARGUMENTS section only
+1. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — section **Phase: PHASE** (or legacy Phase PHASE) only
 2. Read [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}}) — matching product behavior
 3. Read [`{{USER_FLOW}}`](../../{{USER_FLOW}}) — interaction map (if present / accepted)
 4. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — list **decision gates** for this phase
@@ -22,9 +42,39 @@ Use a filesystem-safe filename (e.g. `phase-6a.md`).
 9. Read [`.cursor/commands/README.md`](./README.md) — step workflow
 10. Read [`{{CONSTITUTION}}`](../../{{CONSTITUTION}}) if unclear on gates
 
-## Clarify STOP (before writing the plan)
+## Planning mode STOP
 
-After the reads above, **do not write** `phase-$ARGUMENTS.md` yet. Scan product, user flow, decisions, and BUILD_PLAN Phase $ARGUMENTS for **ambiguities that would change the plan** if answered differently (actors, happy/error paths, scope edges, blocker TBDs, conflicting docs, missing acceptance criteria).
+Before Clarify / write, **STOP** once (skip if Owner already chose in this chat):
+
+```text
+How to plan PHASE — Title:
+1. Full plan now — draft all steps ahead (classic)
+2. Progressive — thin plan now; each /build-phase PHASE N records that step from Owner’s description
+```
+
+- **1** → classic path (Clarify + Plan quality + full Implementation steps).  
+- **2** → **Progressive path** below (lighter Clarify; thin file; Status `progressive`).
+
+## Progressive path (mode 2)
+
+Owner will discover steps one at a time. **Docs only** here — no application code.
+
+1. Light Clarify only if scope/title/product conflict is blocking (else skip).
+2. Write `phase-PHASE.md` with:
+   - **Status:** `planned` (lifecycle; moves to `in_progress` / `complete` with builds)
+   - **Mode:** `progressive`
+   - Scope boundaries (best-effort in/out)
+   - Empty or placeholder **Implementation steps** (do **not** invent a full step list)
+   - Step progress tracker ready for rows filled at build time
+   - Audit checkpoints / Files checklist stubs (filled as steps land)
+3. Soft Plan quality: note `progressive — steps filled at /build-phase`; do not require complete step coverage.
+4. Tell Owner next: **`/build-phase PHASE 1`** and describe what step 1 should do in chat. Then verify → `/build-phase PHASE 2` … When happy → `/audit-ds PHASE` → `/audit-phase PHASE` → `/complete-phase PHASE`.
+
+Skip the classic Clarify / full Plan quality STOPs when mode is progressive unless something is blocking.
+
+## Clarify STOP (before writing the plan) — classic mode 1 only
+
+After the reads above, **do not write** `phase-PHASE.md` yet. Scan product, user flow, decisions, and BUILD_PLAN for this phase for **ambiguities that would change the plan** if answered differently (actors, happy/error paths, scope edges, blocker TBDs, conflicting docs, missing acceptance criteria).
 
 **Skip the STOP** (write the plan immediately) only when:
 - No material ambiguities for this phase, **or**
@@ -33,7 +83,7 @@ After the reads above, **do not write** `phase-$ARGUMENTS.md` yet. Scan product,
 Otherwise present a short list (prefer **3–7** items; cap at **10**). Each item: one clear question + why it blocks a good plan + your recommended default if Owner says “use defaults.”
 
 ```markdown
-**Clarify before plan** — Phase $ARGUMENTS
+**Clarify before plan** — PHASE — Title
 | # | Ambiguity | Why it matters for this plan | Suggested default |
 |---|-----------|------------------------------|-------------------|
 | 1 | … | … | … |
@@ -42,7 +92,7 @@ Otherwise present a short list (prefer **3–7** items; cap at **10**). Each ite
 Then **STOP** — numbered Owner gate (reply with the number alone is enough):
 
 ```text
-Clarify before plan — Phase $ARGUMENTS:
+Clarify before plan — PHASE — Title:
 1. Answer the questions (reply inline or as "1a: … 2a: …") → then write the phase plan
 2. Use suggested defaults for all → then write the phase plan (record defaults in the plan)
 3. Answer some, defaults for the rest → then write the phase plan
@@ -52,15 +102,15 @@ Clarify before plan — Phase $ARGUMENTS:
 Rules:
 - **Docs only** after this gate — still no application code
 - Record Owner answers / defaults in the phase plan (**Decision gates** and/or a short **Clarify answers** section)
-- If option **4**, do **not** write `phase-$ARGUMENTS.md`
+- If option **4**, do **not** write `phase-PHASE.md`
 - Do **not** invent product behavior to avoid asking; prefer a short STOP over a wrong plan
 
-## Plan quality checklist (before / with the written plan)
+## Plan quality checklist (before / with the written plan) — classic mode 1
 
 After Clarify is resolved (or skipped), draft the phase plan, then run this checklist on the **plan draft** against product/flow (docs only — **not** Behavior delta WHEN/THEN; those are filled at `/build-phase`).
 
 ```markdown
-**Plan quality checklist** — Phase $ARGUMENTS
+**Plan quality checklist** — PHASE — Title
 | Check | Status | Note |
 |-------|--------|------|
 | Steps are Owner-verifiable (done-when is observable) | pass / gap | … |
@@ -76,29 +126,32 @@ After Clarify is resolved (or skipped), draft the phase plan, then run this chec
 
 ```text
 Plan quality checklist — gaps:
-1. Revise the plan draft (and clarify more if needed) → then write phase-$ARGUMENTS.md
+1. Revise the plan draft (and clarify more if needed) → then write phase-PHASE.md
 2. Write anyway — record gaps under Plan quality checklist in the file
 3. Abort planning
 ```
 
-**If all pass or only minor gaps** → write `phase-$ARGUMENTS.md` including the checklist section (Status `pass` / `gap` with notes). Do not invent a STOP for minor gaps alone.
+**If all pass or only minor gaps** → write `phase-PHASE.md` including the checklist section (Status `pass` / `gap` with notes). Do not invent a STOP for minor gaps alone.
 
 ## Guardrails
 
 - **Do not write application code** — planning only
-- **Do not start the next phase** — plan only Phase $ARGUMENTS
-- Follow phase order in `{{BUILD_PLAN}}`
-- If decision gates are **blockers**, list them prominently (and surface them in Clarify STOP when they block planning)
-- Support **build → intent (Behavior delta) → verify** per step; leave a **Behavior delta** placeholder under each step
+- **Do not start building** here — next is `/build-phase PHASE 1` (or next step)
+- New phases may be appended to `{{BUILD_PLAN}}` via New phase STOP (Owner choice **1**)
+- Progressive mode is first-class — do not force a fake full step list
+- If decision gates are **blockers**, list them prominently (classic Clarify; progressive only if blocking)
+- Support **build → intent (Behavior delta) → verify** per step
 
 ## Output file structure
 
 ```markdown
-# Phase $ARGUMENTS — [Title from BUILD_PLAN]
+# PHASE — Title
 
 **Generated:** [date]
-**Status:** planned
-**Source:** BUILD_PLAN Phase $ARGUMENTS
+**Status:** planned | in_progress | complete _(lifecycle)_
+**Mode:** classic | progressive _(how steps are authored — progressive keeps Mode until complete)_
+**Id:** PHASE
+**Source:** BUILD_PLAN Phase: PHASE
 
 ---
 
@@ -136,6 +189,8 @@ _(Omit this section only when Clarify STOP was skipped — no material ambiguiti
 
 ## Implementation steps
 
+_(Classic: list all steps. Progressive: leave empty or “Steps added at /build-phase as Owner describes them.”)_
+
 ### Step 1 — [title]
 - **Status:** pending | built | verified
 - **Task:** …
@@ -143,10 +198,10 @@ _(Omit this section only when Clarify STOP was skipped — no material ambiguiti
 - **Done when:** …
 - **Behavior delta:** _(filled by /build-phase — each SHALL with ≥1 WHEN/THEN scenario)_
 - **Trace:** _(filled by /build-phase — SHALL → Scenario → WHEN → THEN → Verify #)_
-- **Step verification** (for `/verify-phase $ARGUMENTS 1`):
+- **Step verification** (for `/verify-phase PHASE 1`):
   1. **Steps:** … → **Expected:** … _(align Expected with Behavior delta THEN / Trace after build; use Verify # ids)_
 
-(Continue for all steps. Prefer small Owner-verifiable steps.)
+(Continue for all steps in classic mode. **Step numbers stay integers.**)
 
 ## Schema / data / migrations (if applicable)
 - …
@@ -171,7 +226,7 @@ _(Omit this section only when Clarify STOP was skipped — no material ambiguiti
 Cross-step smoke only — do not duplicate every step item.
 
 ## Audit checkpoints
-Items for `/audit-phase $ARGUMENTS` after all steps verified.
+Items for `/audit-phase PHASE` after all steps verified.
 
 ## Files checklist
 | Action | Path | Step |
@@ -180,8 +235,9 @@ Items for `/audit-phase $ARGUMENTS` after all steps verified.
 ## After writing
 
 1. Ensure `{{PHASE_PLANS_DIR}}/` exists
-2. Write `phase-$ARGUMENTS.md`
-3. Tell Owner: path, clarify answers applied (or skipped), open gates, next = **`/build-phase $ARGUMENTS 1`**
-4. Remind: intent + verify per step; audits only after all steps pass
+2. Write `phase-PHASE.md`
+3. Tell Owner: path, **PHASE — Title**, mode (classic | progressive), next = **`/build-phase PHASE 1`**
+4. Progressive reminder: describe each step in chat when building; plan grows; when done → `/audit-ds PHASE` → `/audit-phase PHASE` → `/complete-phase PHASE`
+5. Classic reminder: intent + verify per step; audits only after all steps pass
 
 Do **not** implement code in this command.

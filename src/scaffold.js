@@ -320,13 +320,13 @@ const PROGRESS_PHASE_HEALTH_SECTION = `## Phase health (resume)
 Rolling snapshot for mid-session resume. **Overwrite** the fenced block on each material gate (\`/build-phase\` → intent → \`/verify-phase\` → \`/refine-phase\` → \`/complete-phase\`). Do not append history here — use **Session log** for that.
 
 \`\`\`text
-Phase: —
+Phase: — (slug — Title; legacy Phase N ok)
 Step: —
 Status: idle
 Verified steps: none
 Open rejects / fails: none
 Evidence: none
-Next: /setup or /plan-phase 1
+Next: /setup or /plan-phase <slug>
 Updated: —
 \`\`\`
 

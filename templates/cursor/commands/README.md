@@ -6,14 +6,14 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 
 ```text
 /setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
-/plan-phase <n>            → clarify STOP if needed → write phase-N.md
-/build-phase <n> [step]    → pre-build consistency → implement; Behavior delta; intent gate
-/verify-phase <n> [step]   → Owner UAT from THEN outcomes + automated checks
-/refine-phase <n> [step]   → fix after verify (Cross-cutting STOP if principle cascades)
-/audit-phase <n>           → build-phase acceptance audit (delivery)
-/audit-ds <n|all>          → design-system audit (delivery)
-/complete-phase <n>        → mark done + progress + phase remainder
-/session-log …             → optional mid-phase notes
+/plan-phase <slug>         → classic or progressive plan; may add slug to BUILD_PLAN
+/build-phase <slug> [step] → build step; progressive wires Owner description into plan + delta
+/verify-phase <slug> [step]→ Owner UAT from THEN outcomes + automated checks
+/refine-phase <slug> [step]→ fix after verify; mid-phase side-work absorb / size STOP; Cross-cutting if needed
+/audit-phase <slug>        → build-phase acceptance audit (delivery)
+/audit-ds <slug|all>       → design-system audit (delivery)
+/complete-phase <slug>     → mark done + progress + phase remainder
+/session-log … <slug>      → optional mid-phase notes
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 /github-connect [repo]     → link GitHub + choose Simple PR or GitFlow (no app commit)
 /pr-step [update|release|main|bugfix|hotfix …]
@@ -31,6 +31,6 @@ Delivery and campaign tracks use **different** audit commands so phase numbers n
 
 Audit-only projects: run `/setup` at least through product, user flow, architecture (+ design system if UI), then `/audit-project`.
 
-After `npx phasestep init`, run **`/setup`** before `/plan-phase 1` (or fill stubs manually). Mid-project: document current + plan remaining. Prefer **Sole** workflow mode in `/setup` for full results.
+After `npx phasestep init`, run **`/setup`** before `/plan-phase <first-slug>` (or fill stubs manually). Phases are **named** (slug + title); **steps stay numeric**. Legacy `/plan-phase 1` still resolves when `phase-1.md` or ordered BUILD_PLAN entries exist. Prefer **Sole** workflow mode in `/setup` for full results.
 
 Refresh later with `npx phasestep upgrade` (does not overwrite Owner docs). Stale `audit-ds-phase.md` from older installs may remain — safe to delete; use `/audit-ds` and `/audit-campaign-ds`.

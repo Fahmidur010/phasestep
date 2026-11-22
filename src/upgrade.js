@@ -132,7 +132,7 @@ Commands/catalogs refreshed. Re-open the agent or reload commands if needed.
 
 ${alongside}
 
-Next: /setup (resume) or /plan-phase N
+Next: /setup (resume) or /plan-phase <slug>
 `);
 }
 

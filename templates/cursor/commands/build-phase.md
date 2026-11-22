@@ -1,30 +1,51 @@
 ---
-description: Implement one step (or next unfinished step) of a build phase
-argument-hint: [phase] [step?]
+description: Implement one step (or next unfinished step) of a named build phase
+argument-hint: [phase-slug] [step?]
 ---
 
-Implement **one step** of **Build Phase** for this project (Phasestep).
+Implement **one step** of a **named build phase** for this project (Phasestep).
 
-## Parse arguments
+## Resolve phase id
 
-`$ARGUMENTS` is `PHASE` optionally followed by `STEP` (e.g. `4`, `4 1`, `4 2`).
+`$ARGUMENTS` is `PHASE_RAW` optionally followed by `STEP` (e.g. `auth`, `auth 1`, legacy `1 2`).
 
-- **PHASE** = first token
-- **STEP** = second token if present
-- If **STEP** is omitted: build the **next unfinished** step (first not `verified`). Do **not** build the entire phase.
-- Only build all remaining steps if Owner explicitly says so.
+1. Prefer a **slug** from [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) (e.g. `auth`).
+2. **Soft compat:** if PHASE_RAW is a positive integer `N` → use existing `phase-N.md` if present; else map order position `N` in BUILD_PLAN to its slug; else STOP for slug.
+3. Resolve **title** from BUILD_PLAN. Plan file: `phase-<id>.md`.
+4. **STEP** = second token if present — always a **positive integer**. If omitted: build the **next unfinished** step (first not `verified`). Do **not** build the entire phase.
+5. Only build all remaining steps if Owner explicitly says so.
+
+Below, **PHASE** = resolved id. Show **PHASE — Title** in chat / Phase health.
 
 ## Required: phase plan
 
 **Primary checklist:** [`{{PHASE_PLANS_DIR}}/phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/)
 
-If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first.
+If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first (progressive or classic).
+
+## Progressive step capture (wire step into the plan)
+
+When the phase **Mode** is `progressive`, **or** the target step is missing / TBD / empty Task:
+
+1. Take the Owner’s description of this step from **this chat** (and any STEP arg context). If unclear → ask once what Step STEP should accomplish (done-when observable).
+2. **Before coding**, write/update in `phase-PHASE.md`:
+   - `### Step STEP — [short title]`
+   - Status `pending` → then `built` after implement
+   - **Task**, **Files** (best effort), **Done when**
+   - Placeholders for Behavior delta / Trace / Step verification
+   - Row in **Step progress tracker**; append **Files checklist** / **Audit checkpoints** as paths become clear
+3. Set phase plan **Status** to `in_progress` (keep **Mode:** `progressive` until complete).
+4. Then implement that step only — same Behavior delta / Trace / intent gate as classic.
+
+Do **not** invent later steps. Owner starts the next with `/build-phase PHASE <n+1>` (or bare `/build-phase PHASE` for next unfinished).
+
+Classic mode with a fully written step → skip capture; use the existing step text.
 
 ## Before coding
 
-1. Read **`phase-PHASE.md`** — only the target step
-2. Confirm prior steps are **verified** (or Owner allows skip). If previous is `built`/unverified, **stop** and tell Owner to **`/verify-phase PHASE <prev>`**
-3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — Phase PHASE (reference)
+1. Read **`phase-PHASE.md`** — target step (after Progressive step capture if it ran)
+2. Confirm prior steps are **verified** (or Owner allows skip). If previous is `built`/unverified, **stop** and tell Owner to **`/verify-phase PHASE <prev>`**. Progressive: Step 1 has no prior.
+3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — **Phase: PHASE** (reference)
 4. Read [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}})
 5. Read [`{{USER_FLOW}}`](../../{{USER_FLOW}}) if present
 6. Read [`{{DECISIONS}}`](../../{{DECISIONS}}) — stop on blockers
@@ -32,8 +53,9 @@ If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first.
 8. Read [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}})
 9. For UI steps: if [`{{DESIGN_SYSTEM}}`](../../{{DESIGN_SYSTEM}}) exists, follow it
 10. If [`{{PROJECT_MAP}}`](../../{{PROJECT_MAP}}) Status is `current`, use modules/hubs/seams as context for Files / seams. If stale and this step touches structure → prefer `/map-project refresh` first (agent aid; no Owner gate). Skip if empty/unused.
-11. If Owner chat asks to change a **core principle** or behavior that **cascades to other features/phases** → **do not code yet**. Follow the **Cross-cutting STOP** in [`refine-phase`](./refine-phase.md) (decision → product/flow sync → re-scope), then return to this step with an updated plan/delta. Local step work only after that gate (or Owner picks scoped/defer).
-12. Run **Pre-build consistency** (below) before writing application code.
+11. **Mid-phase side-work** (Owner chat polish while on this step): follow **Mid-phase side-work** in [`refine-phase`](./refine-phase.md) — absorb local asks into this step’s plan + Behavior delta / Trace (no new command); if too large → Side-work size STOP; then continue per Owner. Later `/verify-phase` / audits use the updated artifacts.
+12. If Owner chat asks to change a **core principle** or behavior that **cascades to other features/phases** → **do not code yet**. Follow the **Cross-cutting STOP** in [`refine-phase`](./refine-phase.md) (decision → product/flow sync → re-scope), then return to this step with an updated plan/delta. Local step work only after that gate (or Owner picks scoped/defer).
+13. Run **Pre-build consistency** (below) before writing application code.
 
 ## Pre-build consistency (fail-soft)
 
@@ -52,7 +74,7 @@ Present a short table (or `No material inconsistencies.`):
 ```
 
 **Severity:**
-- **blocking** — implementing now would violate accepted product/flow, ignore a blocker decision, or clearly contradict the phase plan done-when
+- **blocking** — implementing now would violate accepted product/flow, ignore a blocker decision, or clearly contradict the phase plan done-when (for progressive steps just captured from Owner, treat the new done-when as the plan truth unless it fights product/flow)
 - **soft** — stale map, minor naming drift, incomplete map seams, advisory gaps — note and continue
 
 **If any blocking rows** → **do not code yet.** STOP:
@@ -68,10 +90,11 @@ Pre-build consistency — blocking issues:
 
 ## Implementation rules
 
-- Minimize scope to the step’s done-when
+- Minimize scope to the step’s done-when (plus **absorbed** mid-phase side-work recorded in the plan/delta)
 - Match existing project patterns
 - Do **not** commit unless Owner asks — standard path is `/pr-step update` (invoke authorizes git writes), not an implicit commit after build
 - Do **not** silently cascade principle changes across features during a single step build
+- Do **not** leave Owner chat refinements as chat-only — update plan + delta/Trace when behavior or files change
 
 ## Execute
 

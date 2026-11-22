@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.8.3  
+**Version:** 1.0.0  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-11-22  
 **Product:** Phasestep  
@@ -58,11 +58,11 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Design enrichment catalog** | `.phasestep/design-catalog.json` | Component libraries (**pick one**) + guidelines (cite any); agent MCP/skills/llms resources with `why`. |
 | **Architecture / conventions** | `docs/architecture.md` | How code is structured. |
 | **Open decisions** | `docs/decisions.md` | Unresolved choices; blockers stop build. |
-| **Master build plan** | `docs/BUILD_PLAN.md` | Ordered phases and scope boundaries. |
+| **Master build plan** | `docs/BUILD_PLAN.md` | Ordered **named** phases (slug + title) and scope boundaries. |
 | **Audit plan** | `docs/AUDIT_PLAN.md` | Feature-listed audit phases + dimensions; drafted by `/audit-project`; Owner-gated. |
 | **Project map** | `docs/PROJECT_MAP.md` | Agent navigation aid (modules, hubs, seams). Stub installed empty; filled by `/map-project`. Not Owner-gated; not product truth. |
 | **Audit reports** | `docs/audit-reports/` | One report per audit phase + `AUDIT_SUMMARY.md`; stable finding IDs; read-only evidence. |
-| **Phase execution plan** | `docs/phase-plans/phase-N.md` | Steps, done-when, verify checklist, Behavior delta. |
+| **Phase execution plan** | `docs/phase-plans/phase-<slug>.md` | Named phase plan; **numeric** steps, done-when, verify checklist, Behavior delta. Legacy `phase-N.md` soft-compat. |
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history (Setup checklist + rolling **Phase health** resume block). |
 | **Tooling adapters** | `.cursor/commands/`, `.claude/commands/`, `AGENTS.md` | Commands / guidance implementing §5 (Cursor, Claude Code, Codex). |
 | **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds` / `audit-campaign-ds`. Leave unused for non-UI projects. |
@@ -131,14 +131,14 @@ Paths are overridable in `phasestep.json`.
 | Command | Args | Actor | Must |
 |---------|------|-------|------|
 | **setup** | optional stage | Agent + Owner | Progressive stub fill. Product (**Spec quality checklist** before accept) → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design (pick-one library)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
-| **plan-phase** | `N` | Agent | **Clarify STOP** (ambiguities) before write unless none / already answered; **Plan quality checklist**; then write phase plan only. No application code. |
-| **build-phase** | `N` `[S]` | Agent | **Pre-build consistency** (fail-soft; STOP only if blocking); one step; build check; Behavior delta (WHEN/THEN per SHALL); **Trace** table; update **Phase health**; stop for intent gate. |
-| **verify-phase** | `N` `[S]` | Owner (+ Agent checklist) | Checklist from Trace / Behavior delta THEN outcomes (Verify #); **UNCHANGED spot-check** when non-goals listed; update **Phase health**. No code changes. |
-| **refine-phase** | `N` `[S]` | Agent | Minimal fixes; **Cross-cutting STOP** if principle/multi-feature change; update delta if behavior changed; update **Phase health**. |
-| **audit-phase** | `N` | Agent | Read-only **build** acceptance audit after steps verified. Not for campaign. |
-| **audit-ds** | `N` \| `all` | Agent | Design-system audit for delivery (skip for non-UI). |
-| **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (still open / deferred / out of scope / carry into next + optional next-phase seeds). |
-| **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
+| **plan-phase** | `<slug>` | Agent | Named phase; may **add** slug to BUILD_PLAN (Owner gate); **Planning mode** classic \| **progressive**; Clarify + quality for classic; thin plan for progressive. Docs only. |
+| **build-phase** | `<slug>` `[S]` | Agent | One **numeric** step; **progressive step capture** wires Owner-described steps into the plan; mid-phase side-work; Behavior delta + **Trace**; intent gate. |
+| **verify-phase** | `<slug>` `[S]` | Owner (+ Agent checklist) | Checklist from **current** Trace / delta (incl. absorbed mid-phase); **UNCHANGED spot-check**; update **Phase health**. No code changes. |
+| **refine-phase** | `<slug>` `[S]` | Agent | Minimal fixes; **mid-phase side-work** absorb into plan/delta (size STOP if too big); **Cross-cutting STOP** if principle/multi-feature; update **Phase health**. |
+| **audit-phase** | `<slug>` | Agent | Read-only **build** acceptance audit after steps verified (incl. absorbed mid-phase deltas / Files). Not for campaign. |
+| **audit-ds** | `<slug>` \| `all` | Agent | Design-system audit for delivery (incl. absorbed UI paths on Files checklist). |
+| **complete-phase** | `<slug>` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (incl. parked side-work seeds → deferred / carry into next). |
+| **session-log** | `label` `<slug>` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
 | **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; Owner picks **Simple PR** or **GitFlow** (`github.workflow`); optional GitFlow branch bootstrap. No app commit. |
 | **pr-step** | `update` · GitFlow: `release` \| `main` \| `hotfix` \| `bugfix` | Agent + Owner | Invoke **authorizes** commit/push/merge (`merge --no-ff`). Simple→`main`; GitFlow→`develop`. **`release` = live**; **`main` = baseline**. Hotfix from `release` → `release`+`develop`. Bugfix from `develop` → `develop` (live → hotfix). |
@@ -148,7 +148,7 @@ Paths are overridable in `phasestep.json`.
 | **refine-audit** | `N` | Agent | Fix **only Owner-approved** findings from an audit report; STOP-gated plan; re-audit verifies. |
 | **complete-audit** | — | Agent + Owner | All phases reported → `AUDIT_SUMMARY.md`; optionally promote findings into the build plan. |
 
-**Shorthand:** `build-phase N` with no step = next unfinished step only.
+**Shorthand:** `build-phase <slug>` with no step = next unfinished step only. **Phases are named (slug + title); steps stay numeric.** Soft compat: integer phase args still resolve when `phase-N.md` or BUILD_PLAN order maps them.
 
 **Owner gate format:** Every Owner STOP that presents choices must use a **numbered list** (`1.` `2.` `3.` …). Words are labels; the Owner may reply with the number alone. Never present word-only choice rows such as `Accept | Reject | Edit` without numbers.
 
@@ -209,9 +209,16 @@ Rules:
 8. No commit / push / merge unless Owner runs `/pr-step` (or an explicit Owner ask that `/pr-step` then executes) — invoking the verb is consent  
 9. Minimize scope  
 10. Run project build check after implement/refine (`buildCommand` in `phasestep.json`)
-11. Cross-cutting / principle changes: **STOP** before code — decision + product/flow sync (or scoped/defer); never silently cascade across features during refine/build
+11. Cross-cutting / principle changes: **STOP** before code — decision + product/flow sync (or scoped/defer); never silently cascade across features during refine/build  
+12. Mid-phase side-work: absorb local Owner refinements into the **current** step/phase (update plan + Behavior delta / Trace / Files) so verify and audit cover them — **no new command**; if too large → Side-work size STOP (absorb / park for new phase / re-plan now)  
+13. Progressive phases: `/plan-phase <slug>` may add a new BUILD_PLAN phase; **progressive** mode records each step at `/build-phase <slug> N` from Owner description so audit/complete have a full plan  
+14. Never invent installs or rule bodies — catalogs + Owner accept only; mid-flight verification offers are allowed when the surface needs evidence and nothing is configured yet  
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
+
+**Mid-phase side-work:** Chat refinements during build/refine fold into the current named phase step artifacts. Oversized asks use the Side-work size STOP — never silent mega-scope, never chat-only changes that skip delta/plan.
+
+**Progressive phases:** New or organic features use `/plan-phase <slug>` (add to BUILD_PLAN if needed) → `/build-phase <slug> N` with Owner describing each step → verify → … → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows with the work.
 
 **GitHub handoff:** `/github-connect` → Simple or GitFlow. Day-to-day: `/pr-step update`. GitFlow: **`release` is the live/deploy line**; **`main` is the stable baseline** (remind `/pr-step main` after release when stable). Live bugs: `/pr-step hotfix <issue>` (from `release` → land `release`+`develop`). Non-live: `/pr-step bugfix`. **Invoke authorizes** git writes (no Gate A/B/C). Never force-push. Deploy stays project-local.
 
@@ -248,7 +255,7 @@ npx phasestep check
 npx phasestep upgrade   # later: refresh commands/catalogs without wiping Owner docs
 ```
 
-Then run **`/setup`** (guided product → user flow → stack enrichment → architecture → decisions → design → build plan), or fill stubs manually, then `/plan-phase 1`.
+Then run **`/setup`** (guided product → user flow → stack enrichment → architecture → decisions → design → build plan with **named phases**), or fill stubs manually, then `/plan-phase <first-slug>`.
 
 **Mid-project:** `/setup` detects existing code, documents current behavior, and plans **remaining** work — it does not reinvent the app.
 
@@ -258,7 +265,16 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.8.3 — GitFlow docs/stub alignment — *current*
+### v1.0.0 — named phases · mid-phase side-work · progressive — *current*
+
+**Date:** 2026-11-22  
+
+- **Named build phases** — slug + title; `phase-<slug>.md`; invokes `/plan-phase <slug>`; **steps stay numeric**; soft compat for legacy `phase-N.md`  
+- **Mid-phase side-work** — absorb local refinements into current step (plan + delta/Trace/Files); Side-work size STOP if too big; verify/audit/complete cover absorbed work; no new slash command  
+- **Progressive phases** — `/plan-phase` classic \| progressive; New phase STOP adds to BUILD_PLAN; `/build-phase` progressive step capture wires Owner-described steps into the plan for audit/complete  
+- Constitution §5/§7/glossary; adapters; smoke; site flow hints  
+
+### v0.8.3 — GitFlow docs/stub alignment
 
 **Date:** 2026-11-22  
 
@@ -294,7 +310,7 @@ Newest first. Product changelog only.
 
 **Date:** 2026-08-01  
 
-- **`/plan-phase`** — numbered **Clarify STOP** before writing `phase-N.md`; **Plan quality checklist** (docs only; not Behavior delta WHEN/THEN)  
+- **`/plan-phase`** — numbered **Clarify STOP** before writing `phase-<slug>.md` (historical note; named phases unreleased); **Plan quality checklist** (docs only; not Behavior delta WHEN/THEN)  
 - **`/complete-phase`** — **Phase remainder** table + optional next-phase seed bullets; no silent BUILD_PLAN edits; **Phase health** → complete  
 - **`/build-phase`** — **Pre-build consistency** (fail-soft; STOP only when **blocking**); **Trace** (SHALL → WHEN/THEN → Verify #) after Behavior delta; overwrite **Phase health**  
 - **`/verify-phase`** — prefer Trace Verify #; backfill Trace if missing; **UNCHANGED spot-check** when non-goals listed; overwrite **Phase health**  
@@ -478,8 +494,8 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | Term | Meaning |
 |------|---------|
 | **Phasestep** | This workflow product / constitution |
-| **Phase** | Milestone slice of the master build plan |
-| **Step** | Independently verifiable unit inside a phase |
+| **Phase** | Named milestone in the master build plan (**slug** + **title**); invoke by slug |
+| **Step** | Independently verifiable **numeric** unit inside a phase |
 | **User flow** | Interaction map (entry → paths → exits); setup overview surface |
 | **Stack catalog** | Curated official agentic resource pointers per framework |
 | **Design catalog** | Component libraries (pick one) + guidelines; agent MCP/skills/llms |
@@ -489,10 +505,12 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
+| **Mid-phase side-work** | Absorb local mid-phase refinements into current step artifacts; size STOP if too big for this phase |
+| **Progressive phase** | Thin `/plan-phase <slug>`; steps recorded at each `/build-phase <slug> N` from Owner description; full plan ready for audit/complete |
 | **pr-step** | GitHub handoff — Simple or GitFlow; release=live; hotfix from release → release+develop; bugfix → develop |
 | **github-connect** | Link `gh` auth + remote; choose Simple PR or GitFlow; record in config/PROGRESS; no app commit |
 | **Adapter** | IDE-specific command implementation |
 
 ---
 
-*End of constitution — Phasestep v0.8.3*
+*End of constitution — Phasestep v1.0.0*

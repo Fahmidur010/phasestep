@@ -70,7 +70,7 @@ Next:
      Mid-project app → Existing (mid-project) in Setup mode
      Or fill ${config.productSpec}, ${config.userFlow}, ${config.buildPlan}, ${config.architecture} manually
      (Setup Finish offers optional /github-connect — not during init)
-  3. Then run /plan-phase 1
+  3. Then run /plan-phase <first-slug> (from BUILD_PLAN; steps stay numeric)
 
 Constitution: ${config.constitutionPath}
 Config:       phasestep.json

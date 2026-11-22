@@ -1,15 +1,17 @@
 ---
-description: Manual verification checklist for one phase step (owner)
-argument-hint: [phase] [step?]
+description: Manual verification checklist for one step of a named build phase
+argument-hint: [phase-slug] [step?]
 ---
 
 Prepare the **manual verification checklist** for one **step**. **Do not write or change code.**
 
-## Parse arguments
+## Resolve phase id
 
-`$ARGUMENTS` is `PHASE` optionally followed by `STEP`.
+`$ARGUMENTS` is `PHASE_RAW` optionally followed by `STEP`.
 
-- If **STEP** omitted: show built vs verified; checklist for latest built/unverified step (or ask)
+1. Prefer a **slug** from [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}). Soft compat: integer `N` → existing `phase-N.md` or BUILD_PLAN order position → slug.
+2. Resolve **title**. Plan file: `phase-<id>.md`. **STEP** stays numeric; if omitted → latest built/unverified step (or ask).
+3. Below, **PHASE** = resolved id. Show **PHASE — Title** in chat / Phase health.
 
 ## Required
 
@@ -62,6 +64,7 @@ After reading the Behavior delta:
 5. **Steps** column = what the Owner does (from WHEN / Trace WHEN, made concrete: URLs, buttons, roles, test data).
 6. At least one checklist item per scenario; happy path + material edge cases from **Risks** when relevant.
 7. When reporting results, reference **Verify #** from Trace so Owner can see SHALL ↔ scenario ↔ checklist in one place.
+8. **Mid-phase side-work:** the checklist must cover the **current** Behavior delta / Trace / Step verification — including refinements absorbed into this step earlier. Do not verify only the original pre-absorb plan if the delta was updated.
 
 ## Evidence by surface (before Playwright)
 
