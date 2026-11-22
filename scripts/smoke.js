@@ -322,7 +322,10 @@ function main() {
   assert(githubConnectCmd.includes('1. Simple PR'), 'github-connect Simple PR option');
   assert(githubConnectCmd.includes('2. GitFlow'), 'github-connect GitFlow option');
   assert(githubConnectCmd.includes('3. Decide later'), 'github-connect Decide later option');
-  assert(githubConnectCmd.includes('release = test'), 'github-connect explains release vs main');
+  assert(
+    githubConnectCmd.includes('release = live') || githubConnectCmd.includes('live / deploy'),
+    'github-connect explains release vs main'
+  );
   assert(githubConnectCmd.includes('GitFlow branches'), 'github-connect GitFlow bootstrap STOP');
   assert(githubConnectCmd.includes('Change git workflow'), 'github-connect change workflow option');
 
@@ -347,7 +350,13 @@ function main() {
   assert(prStepCmd.includes('bugfix'), 'pr-step bugfix verb');
   assert(prStepCmd.includes('hotfix'), 'pr-step hotfix verb');
   assert(prStepCmd.includes('develop'), 'pr-step develop / GitFlow develop');
+  assert(prStepCmd.includes('release (live') || prStepCmd.includes('Live / deploy'), 'pr-step release is live line');
+  assert(prStepCmd.includes('from `release`') || prStepCmd.includes('branch from `release`'), 'pr-step hotfix from release');
+  assert(prStepCmd.includes('release` and `develop`') || prStepCmd.includes('release` **and** `develop`') || prStepCmd.includes('release + develop'), 'pr-step hotfix lands release and develop');
+  assert(prStepCmd.includes('fully stable'), 'pr-step release reminds pr-step main when stable');
+  assert(githubConnectCmd.includes('release = live') || githubConnectCmd.includes('live / deploy'), 'github-connect release is live');
   assert(progressStub.includes('GitHub workflow:'), 'PROGRESS GitHub workflow example');
+  assert(progressStub.includes('hotfix'), 'PROGRESS hotfix example');
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');

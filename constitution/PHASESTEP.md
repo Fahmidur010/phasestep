@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.8.0  
+**Version:** 0.8.1  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-11-22  
 **Product:** Phasestep  
@@ -141,7 +141,7 @@ Paths are overridable in `phasestep.json`.
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
 | **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; Owner picks **Simple PR** or **GitFlow** (`github.workflow`); optional GitFlow branch bootstrap. No app commit. |
-| **pr-step** | `update` (primary) · GitFlow: `release` \| `main` \| … | Agent + Owner | Invoking the verb **authorizes** commit/push/merge. Land current work: Simple → `main`; GitFlow → `develop`. GitFlow also `release` / `main` (+ bugfix/hotfix). No Gate A/B/C. |
+| **pr-step** | `update` · GitFlow: `release` \| `main` \| `hotfix` \| `bugfix` | Agent + Owner | Invoke **authorizes** commit/push/merge. Simple→`main`; GitFlow→`develop`. **`release` = live**; **`main` = baseline**. Hotfix from `release` → `release`+`develop`. |
 | **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); prefer project map seams; Owner accept gate; docs only. |
 | **audit-campaign** | `N` `[reaudit]` | Agent | Read-only **campaign** audit against audit plan → report in `docs/audit-reports/`. |
 | **audit-campaign-ds** | `N` | Agent | Design-system checks for a campaign phase (fold into campaign report). |
@@ -213,7 +213,7 @@ Rules:
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
 
-**GitHub handoff:** `/github-connect` links the remote and Owner chooses **Simple PR** or **GitFlow**. Day-to-day both use `/pr-step update` (empty args = update): Simple lands on `main`; GitFlow lands on `develop`. GitFlow also `/pr-step release` and `/pr-step main`. **Invoking `/pr-step` authorizes** commit/push/merge for that verb (no Gate A/B/C). Still stop for secrets, conflicts, missing connect/tooling. Never force-push. Deploy/hosting stays project-local.
+**GitHub handoff:** `/github-connect` → Simple or GitFlow. Day-to-day: `/pr-step update`. GitFlow: **`release` is the live/deploy line**; **`main` is the stable baseline** (remind `/pr-step main` after release when stable). Live bugs: `/pr-step hotfix <issue>` (from `release` → land `release`+`develop`). Non-live: `/pr-step bugfix`. **Invoke authorizes** git writes (no Gate A/B/C). Never force-push. Deploy stays project-local.
 
 ---
 
@@ -258,7 +258,15 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.8.0 — GitFlow workflow mode — *current*
+### v0.8.1 — GitFlow release-as-live + hotfix — *current*
+
+**Date:** 2026-11-22  
+
+- GitFlow: **`release` = live/deploy line**; **`main` = stable baseline**; after `/pr-step release` soft-remind `/pr-step main` when stable  
+- **`/pr-step hotfix <issue>`** — from `release` → fix → land `release` + `develop` (one invoke; no extra update/release)  
+- **`/pr-step bugfix <issue>`** — from `develop` → fix → `develop`  
+
+### v0.8.0 — GitFlow workflow mode
 
 **Date:** 2026-11-22  
 
@@ -466,10 +474,10 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
-| **pr-step** | GitHub handoff — Simple or GitFlow verbs; invoke authorizes commit/push/merge |
+| **pr-step** | GitHub handoff — Simple or GitFlow; release=live; hotfix from release → release+develop |
 | **github-connect** | Link `gh` auth + remote; choose Simple PR or GitFlow; record in config/PROGRESS; no app commit |
 | **Adapter** | IDE-specific command implementation |
 
 ---
 
-*End of constitution — Phasestep v0.8.0*
+*End of constitution — Phasestep v0.8.1*

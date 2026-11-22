@@ -6,7 +6,7 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.8.0**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.8.1**
 
 ---
 
@@ -112,13 +112,15 @@ Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/au
 | Workflow | When | Day-to-day |
 |----------|------|------------|
 | **Simple PR** | Solo / small / trunk-style | `/pr-step update` → commit + merge into **main** |
-| **GitFlow** | Production apps with integration + promotion | `/pr-step update` → **develop**; then `release` → `main` |
+| **GitFlow** | Production apps (release = live) | `update` → **develop** → **`release` (live)** → **`main` (baseline)**; `hotfix` from release |
 
 ```text
 /github-connect [repo]     → auth + remote, then Simple vs GitFlow
 /pr-step update            → land current work (Simple→main · GitFlow→develop)
-/pr-step release           → GitFlow only: develop → release
-/pr-step main              → GitFlow only: release → main (+ optional tag)
+/pr-step release           → GitFlow: develop → release (live line); remind /pr-step main when stable
+/pr-step main              → GitFlow: release → main (baseline snapshot)
+/pr-step hotfix <issue>    → GitFlow: from release → fix → release + develop
+/pr-step bugfix <issue>   → GitFlow: from develop → fix → develop
 ```
 
 Needs local `git` + [GitHub CLI](https://cli.github.com/). Running `/pr-step` authorizes commit/push/merge for that verb (no Gate A/B/C). Deploy/hosting stays in your project — Phasestep owns branch topology only.

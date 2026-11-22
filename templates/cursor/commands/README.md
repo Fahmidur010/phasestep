@@ -16,7 +16,7 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 /session-log …             → optional mid-phase notes
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 /github-connect [repo]     → link GitHub + choose Simple PR or GitFlow (no app commit)
-/pr-step update            → land current work (Simple→main · GitFlow→develop); invoke = commit/push/merge
+/pr-step update            → land current work; GitFlow: release=live, hotfix from release → release+develop
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

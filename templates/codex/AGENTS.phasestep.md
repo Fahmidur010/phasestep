@@ -19,7 +19,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/session-log` | Optional mid-phase notes |
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
 | `/github-connect [repo]` | Link GitHub + choose Simple PR or GitFlow (no app commit) |
-| `/pr-step update` | Land current work (Simple→main · GitFlow→develop); invoke authorizes git writes; also `release` / `main` / … |
+| `/pr-step update` | Land current work; GitFlow: `release`=live, `hotfix` from release → release+develop; invoke authorizes writes |
 | `/audit-project` | Draft `{{AUDIT_PLAN}}` (Owner-gated audit phases) |
 | `/audit-campaign N [reaudit]` | Campaign audit against audit plan |
 | `/audit-campaign-ds N` | Design-system checks for a campaign phase |

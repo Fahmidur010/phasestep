@@ -90,15 +90,15 @@ Git workflow:
    Day-to-day: /pr-step update (or bare /pr-step) — commit + push + merge into main.
    Invoking /pr-step authorizes those git writes (no Gate A/B/C).
 
-2. GitFlow — feature/* → develop → release → main.
-   Common production pattern when you want daily integration on develop and a
-   promotion line before production.
-   - develop = ongoing integration (features land here)
-   - release = test / deploy candidate (what you cut and verify before live)
-   - main = production-ready baseline (not the daily dump of unfinished work)
-   Day-to-day: /pr-step update → land on develop (ask for next feature slug after)
-   Promote: /pr-step release then /pr-step main when the cut is stable.
-   Also: /pr-step bugfix … / /pr-step hotfix …
+2. GitFlow — feature/* → develop → release (live) → main (baseline).
+   Common production pattern with automated deploy from release.
+   - develop = ongoing integration
+   - release = live / deploy line (what production tracks)
+   - main = stable baseline — sync with /pr-step main when a cut is fully stable
+   Day-to-day: /pr-step update → land on develop
+   Promote live: /pr-step release (then remind /pr-step main when stable)
+   Live bug: /pr-step hotfix <issue> → fix → release + develop (one command)
+   Non-live bug: /pr-step bugfix <issue> → develop
    Invoking /pr-step authorizes those git writes (no Gate A/B/C).
 
 3. Decide later — leave workflow unset; /pr-step will ask again before git writes.
@@ -127,7 +127,7 @@ GitFlow branches:
    - On **2**: record only; do not invent missing branches.
    - On **3**: remove `github.workflow` (or leave unset); note in PROGRESS that GitFlow was cancelled.
 
-4. Remind verbs: `/pr-step update` (alias `develop`), `/pr-step release`, `/pr-step main` (alias `promote`), `/pr-step bugfix`, `/pr-step hotfix`.  
+4. Remind verbs: `/pr-step update`, `/pr-step release` (live line), `/pr-step main` (baseline when stable), `/pr-step hotfix <issue>` (live), `/pr-step bugfix <issue>` (non-live).  
    Deploy/hosting Actions stay project-local — Phasestep does not install deploy workflows.
 
 ### On 3. Decide later

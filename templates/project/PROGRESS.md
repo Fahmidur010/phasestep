@@ -88,6 +88,8 @@ GitHub PR: update [phase N step S] → main — branch … — PR https://… �
 GitHub PR: update feature/phase-slug → develop — PR https://… — status merged — date
 GitHub: release promoted — develop → release — date
 GitHub: main promoted — release → main — tag vX.Y.Z — date
+GitHub: hotfix login-timeout → release + develop — status merged — date
+GitHub: bugfix form-validation → develop — status merged — date
 ```
 
 ---
