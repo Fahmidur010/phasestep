@@ -627,7 +627,12 @@ buildCommand:
 1. On **1. Accept** / **2. Owner-specified**: update `phasestep.json` `buildCommand` only.
 2. Sync [`{{ARCHITECTURE}}`](../../{{ARCHITECTURE}}) “Build & quality” to the same command.
 3. Mark `buildCommand` confirmed in `{{PROGRESS}}`.
-4. Proceed to **Finish**.
+4. **Seed [`{{VERIFICATION_MAP}}`](../../{{VERIFICATION_MAP}})** (create from stub if missing):
+   - Ensure a row for the project **build/quality check** → command = confirmed `buildCommand`, Source `setup`
+   - If Stage 4 accepted a verification lane (Playwright / native / backend) → add one row per accepted surface with Prove how + tool id, Source `setup`
+   - Set map **Status:** `seeded`, **Last updated:** today
+   - Do **not** invent prove paths the Owner did not accept; leave placeholder `…` rows for later verify/audit
+5. Proceed to **Finish**.
 
 ---
 
@@ -646,6 +651,7 @@ buildCommand:
    - Design: library chosen / skipped + resources installed
    - Build plan phase order
    - Final `buildCommand`
+   - Verification map seeded (path + surfaces)
 3. **STOP — optional GitHub connect** (primary embed). Skip this STOP if `{{PROGRESS}}` already has a `GitHub: connected` line.
 
 ```text

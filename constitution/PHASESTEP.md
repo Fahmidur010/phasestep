@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-11-22  
 **Product:** Phasestep  
@@ -33,6 +33,15 @@ You steer with **written product intent**. An AI agent implements in **small ver
 
 Phasestep puts a short **Behavior delta** in front of deep code review: ADDED / CHANGED / REMOVED `SHALL` statements, each with **WHEN/THEN** scenarios (optional **AND**; GIVEN not required). Specs live as ordinary project documents. Proof is **Owner verification** (the gate) plus compile/build checks and phase audits. For web UI, optional **Playwright** evidence may strengthen verify/audit — it never replaces the Owner gate or auto-accepts intent.
 
+### Engineering constraints (quality armor)
+
+These tighten the loop without replacing Owner gates or product docs:
+
+1. **Prove on the matching surface** — web / native / backend evidence must match the step; **inconclusive is not pass**.
+2. **One verifiable unit per step** — smallest change that meets done-when; sequence build → contract → verify before the next step.
+3. **Refine fixes root cause** — after Reject / verify fail, name first failure + blast radius before patching; prefer fix at source over new guards unless the guarded state is legitimate.
+4. **Progressive playback** — when the Owner described the step in chat, restate Goal · Done-when · Out of scope before coding (Owner Proceed / Edit).
+
 ---
 
 ## 2. Roles
@@ -61,6 +70,7 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Master build plan** | `docs/BUILD_PLAN.md` | Ordered **named** phases (slug + title) and scope boundaries. |
 | **Audit plan** | `docs/AUDIT_PLAN.md` | Feature-listed audit phases + dimensions; drafted by `/audit-project`; Owner-gated. |
 | **Project map** | `docs/PROJECT_MAP.md` | Agent navigation aid (modules, hubs, seams). Stub installed empty; filled by `/map-project`. Not Owner-gated; not product truth. |
+| **Verification map** | `docs/VERIFICATION_MAP.md` | Durable prove-paths (feature/surface → how to prove). Seeded at setup; grown by verify/audit. Context only — never overrides Behavior delta or Owner gates. |
 | **Audit reports** | `docs/audit-reports/` | One report per audit phase + `AUDIT_SUMMARY.md`; stable finding IDs; read-only evidence. |
 | **Phase execution plan** | `docs/phase-plans/phase-<slug>.md` | Named phase plan; **numeric** steps, done-when, verify checklist, Behavior delta. Legacy `phase-N.md` soft-compat. |
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history (Setup checklist + rolling **Phase health** resume block). |
@@ -213,6 +223,11 @@ Rules:
 12. Mid-phase side-work: absorb local Owner refinements into the **current** step/phase (update plan + Behavior delta / Trace / Files) so verify and audit cover them — **no new command**; if too large → Side-work size STOP (absorb / park for new phase / re-plan now)  
 13. Progressive phases: `/plan-phase <slug>` may add a new BUILD_PLAN phase; **progressive** mode records each step at `/build-phase <slug> N` from Owner description so audit/complete have a full plan  
 14. Never invent installs or rule bodies — catalogs + Owner accept only; mid-flight verification offers are allowed when the surface needs evidence and nothing is configured yet  
+15. **Evidence bar:** `/verify-phase` must not PASS a step when ADDED/CHANGED Trace rows lack Owner Pass or matching-surface evidence; wrong-surface or inconclusive tool results are not pass  
+16. **Failure brief:** `/refine-phase` after Reject / verify fail records symptom → root cause → blast radius → fix shape before application code (after side-work / Cross-cutting STOPs if any)  
+17. **Step playback:** progressive (or vague classic done-when) → Goal · Done-when · Out of scope · Files likely STOP before code  
+18. **Encode lessons:** repeated Owner correction class → STOP once (rule / lint-test / doc-only / skip); prefer structure over more chat  
+19. **Verified on ship:** `/pr-step` records a Verified line; open Phase health fails block **code** landings unless Owner override; docs-only uses `n/a docs-only`  
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
 
@@ -220,7 +235,9 @@ Rules:
 
 **Progressive phases:** New or organic features use `/plan-phase <slug>` (add to BUILD_PLAN if needed) → `/build-phase <slug> N` with Owner describing each step → verify → … → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows with the work.
 
-**GitHub handoff:** `/github-connect` → Simple or GitFlow. Day-to-day: `/pr-step update`. GitFlow: **`release` is the live/deploy line**; **`main` is the stable baseline** (remind `/pr-step main` after release when stable). Live bugs: `/pr-step hotfix <issue>` (from `release` → land `release`+`develop`). Non-live: `/pr-step bugfix`. **Invoke authorizes** git writes (no Gate A/B/C). Never force-push. Deploy stays project-local.
+**GitHub handoff:** `/github-connect` → Simple or GitFlow. Day-to-day: `/pr-step update`. GitFlow: **`release` is the live/deploy line**; **`main` is the stable baseline** (remind `/pr-step main` after release when stable). Live bugs: `/pr-step hotfix <issue>` (from `release` → land `release`+`develop`). Non-live: `/pr-step bugfix`. **Invoke authorizes** git writes (no Gate A/B/C). **Verified** line required on ship; open fails block code unless override. Never force-push. Deploy stays project-local.
+
+**Encode lessons:** When the same correction repeats, `/refine-phase` offers promote to rule, lint/test, or doc-only — so the system learns instead of re-teaching in chat. `/complete-phase` may note unencoded lessons in Phase remainder without blocking complete.
 
 ---
 
@@ -230,9 +247,15 @@ Rules:
 |---------|--------------------------|
 | Right thing? | Behavior delta (intent gate) |
 | Actually works? | Owner manual verification (+ build check); optional surface evidence (Playwright for web UI; analyze/device for Flutter/RN; tools for backend) |
+| Evidence grade | Per checklist item: `agent_tool` \| `owner_uat` \| `not_run` — inconclusive / wrong surface ≠ pass |
+| How to prove again? | `VERIFICATION_MAP` — durable prove-paths; hints only |
 | Codebase healthy? | Phase audits (build + optional campaign); evidence by surface when in scope |
 
 Owner UAT remains the gate. Surface evidence (if accepted at setup or mid-flight for web) adds proof; it does not auto-pass verify or invent installs. Auto-generated test suites from specs remain optional / future — not required for compliance.
+
+**Pass rule:** A step may PASS only when every ADDED/CHANGED Trace **Verify #** has Owner Pass (or equivalent Owner judgment) and no required evidence item is left `not_run` without Owner Pass. Agent tool evidence on the **wrong surface** (e.g. Playwright on API-only) does not count.
+
+**Verification map:** Prefer [`docs/VERIFICATION_MAP.md`](VERIFICATION_MAP.md) (path overridable) when building verify checklists or repeating prove commands. Append new durable paths after verify/audit; never treat the map as a substitute for Trace / Owner Pass.
 
 ---
 
@@ -265,7 +288,20 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v1.0.0 — named phases · mid-phase side-work · progressive — *current*
+### v1.1.0 — evidence bar · playback · failure brief · verification map · encode · Verified ship — *current*
+
+**Date:** 2026-11-22  
+
+- **Engineering constraints** — prove matching surface; one verifiable unit; root-cause refine; progressive playback (§1)  
+- **Step playback** — `/build-phase` Goal · Done-when · Out of scope STOP before code (progressive / vague classic)  
+- **Evidence bar** — `/verify-phase` grades `agent_tool` \| `owner_uat` \| `not_run`; inconclusive / wrong surface ≠ pass  
+- **Failure brief** — `/refine-phase` symptom → root cause → blast radius before code  
+- **Verification map** — `docs/VERIFICATION_MAP.md`; seeded at `/setup`; append on verify/audit; context only  
+- **Encode lessons** — repeated corrections → STOP (rule / lint-test / doc-only / skip); complete remainder notes open lessons  
+- **Verified on `/pr-step`** — Verified line; open Phase health fails block code unless Owner override; docs-only soft  
+- Hard rules 15–19; §8 pass rule + map; Codex AGENTS; smoke  
+
+### v1.0.0 — named phases · mid-phase side-work · progressive
 
 **Date:** 2026-11-22  
 
@@ -507,6 +543,12 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
 | **Mid-phase side-work** | Absorb local mid-phase refinements into current step artifacts; size STOP if too big for this phase |
 | **Progressive phase** | Thin `/plan-phase <slug>`; steps recorded at each `/build-phase <slug> N` from Owner description; full plan ready for audit/complete |
+| **Step playback** | Pre-code restatement of Goal · Done-when · Out of scope (Owner Proceed / Edit) for progressive or vague steps |
+| **Evidence grade** | Per verify checklist item: `agent_tool` \| `owner_uat` \| `not_run`; inconclusive / wrong surface ≠ pass |
+| **Failure brief** | Refine pre-code note: symptom → root cause → blast radius → fix shape |
+| **Verification map** | Durable prove-paths (feature/surface → command/Owner path); context only |
+| **Encode lessons** | Promote repeated Owner corrections into rule, lint/test, or doc — not endless chat |
+| **Verified line** | `/pr-step` ship citation: phase/step PASS, Owner override, or `n/a docs-only` |
 | **pr-step** | GitHub handoff — Simple or GitFlow; release=live; hotfix from release → release+develop; bugfix → develop |
 | **github-connect** | Link `gh` auth + remote; choose Simple PR or GitFlow; record in config/PROGRESS; no app commit |
 | **Adapter** | IDE-specific command implementation |

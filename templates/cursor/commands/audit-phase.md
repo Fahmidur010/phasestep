@@ -3,7 +3,7 @@ description: Read-only named build-phase acceptance audit (delivery loop)
 argument-hint: [phase-slug]
 ---
 
-Perform a **read-only build audit** for one **named build phase**. **Do not modify files.**
+Perform a **read-only build audit** for one **named build phase**. **Do not modify application code** or phase-plan findings text except as noted for the verification map append.
 
 **This command is delivery-only.** For project audit-plan phases use `/audit-campaign N` (not this command).
 
@@ -79,6 +79,9 @@ Never install silently. Never block the audit if Owner chooses 2 or 3.
 4. **Behavior delta traceability:** for each verified step in the phase plan, read its Behavior delta scenarios — confirm implemented behavior matches each **THEN** (and REMOVED scenarios if present), including refinements absorbed mid-phase. Flag mismatches as findings.
 5. If this phase has a **web UI** surface → follow **Browser evidence** above. If **native** or **backend-only** → follow Native / Backend tool evidence above.
 6. If UI in scope and `{{DESIGN_SYSTEM}}` exists → run `/audit-ds PHASE` (or note as a separate step).
-7. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
+7. **Verification map:** read [`{{VERIFICATION_MAP}}`](../../{{VERIFICATION_MAP}}) when present for prove-path hints (context only). If this audit established a **new** durable prove command/path for a feature/surface, **append** a row (Source `audit`) after the report — still **read-only** for application code; map append is allowed docs-only. Do not override Trace / Owner gates.
+8. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
    - Issues → `/refine-phase PHASE` then re-run `/audit-phase PHASE`
    - No C/M → ready for `/complete-phase PHASE` after Owner confirmation
+
+Note: step 7 map append is a docs-only exception to “Do not modify files” for application code — do not change product code, phase plans, or findings via this path.

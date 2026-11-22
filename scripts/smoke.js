@@ -161,9 +161,18 @@ function main() {
   assert(verifyCmd.includes('lacks a WHEN/THEN scenario'), 'verify-phase blocks incomplete delta');
   assert(verifyCmd.includes('/pr-step'), 'verify-phase suggests pr-step');
   assert(verifyCmd.includes('Phase health (resume)'), 'verify-phase updates Phase health');
+  assert(
+    verifyCmd.includes('Verification map') || verifyCmd.includes('VERIFICATION_MAP'),
+    'verify-phase uses verification map'
+  );
 
   const auditPhaseCmdEarly = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmdEarly.includes('Behavior delta traceability'), 'audit-phase checks delta scenarios');
+  assert(
+    auditPhaseCmdEarly.includes('Verification map') ||
+      auditPhaseCmdEarly.includes('VERIFICATION_MAP'),
+    'audit-phase mentions verification map'
+  );
 
   const setupCmd = read(path.join('.cursor', 'commands', 'setup.md'));
   assert(setupCmd.includes('Accept matched surface evidence'), 'setup Stage 4 verification lane');
@@ -192,6 +201,26 @@ function main() {
 
   const constitution = fs.readFileSync(path.join(ROOT, 'constitution', 'PHASESTEP.md'), 'utf8');
   assert(constitution.includes('Agent adapters (install matrix)'), 'constitution agent install matrix');
+  assert(
+    constitution.includes('Engineering constraints') || constitution.includes('quality armor'),
+    'constitution engineering constraints'
+  );
+  assert(constitution.includes('Evidence bar'), 'constitution evidence bar hard rule');
+  assert(constitution.includes('Failure brief'), 'constitution failure brief hard rule');
+  assert(constitution.includes('Step playback'), 'constitution step playback hard rule');
+  assert(
+    constitution.includes('Encode lessons') || constitution.includes('encode lessons'),
+    'constitution encode lessons hard rule'
+  );
+  assert(
+    constitution.includes('Verified on ship') || constitution.includes('Verified line'),
+    'constitution Verified on ship hard rule'
+  );
+  assert(constitution.includes('v1.1.0'), 'constitution evolution log 1.1.0');
+  assert(
+    constitution.includes('Verification map') || constitution.includes('VERIFICATION_MAP'),
+    'constitution verification map artifact'
+  );
 
   const design = JSON.parse(read(path.join('.phasestep', 'design-catalog.json')));
   assert(
@@ -205,6 +234,7 @@ function main() {
   assert(cfg.userFlow && cfg.stackCatalog && cfg.designCatalog, 'config enrichment keys');
   assert(cfg.auditPlan && cfg.auditReportsDir, 'config audit keys');
   assert(cfg.projectMap, 'config projectMap key');
+  assert(cfg.verificationMap, 'config verificationMap key');
   assert(cfg.github && cfg.github.remote === 'origin', 'config github.remote default');
 
   const progressStub = read(cfg.progress);
@@ -216,6 +246,7 @@ function main() {
   // audit campaign artifacts
   assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'AUDIT_PLAN stub');
   assert(fs.existsSync(path.join(TMP, cfg.projectMap)), 'PROJECT_MAP stub');
+  assert(fs.existsSync(path.join(TMP, cfg.verificationMap)), 'VERIFICATION_MAP stub');
   assert(
     fs.existsSync(path.join(TMP, cfg.auditReportsDir, 'README.md')),
     'audit-reports README'
@@ -258,8 +289,30 @@ function main() {
   assert(projectMapStub.includes('Core hubs'), 'PROJECT_MAP stub hubs');
   assert(projectMapStub.includes('When Status is stale'), 'PROJECT_MAP defines stale');
 
+  const verificationMapStub = read(cfg.verificationMap);
+  assert(
+    verificationMapStub.includes('How to prove') ||
+      verificationMapStub.includes('Prove paths'),
+    'VERIFICATION_MAP stub prove paths'
+  );
+  assert(
+    verificationMapStub.includes('never overrides') ||
+      verificationMapStub.includes('Context only'),
+    'VERIFICATION_MAP is context only'
+  );
+  assert(
+    verificationMapStub.includes('buildCommand') ||
+      verificationMapStub.includes('BUILD_COMMAND') ||
+      verificationMapStub.includes('npm run build'),
+    'VERIFICATION_MAP seeds build command'
+  );
+
   assert(setupCmd.includes('/map-project'), 'setup mid-project uses map-project');
   assert(setupCmd.includes('Project map (agent aid)'), 'setup documents project map');
+  assert(
+    setupCmd.includes('VERIFICATION_MAP') || setupCmd.includes('Verification map'),
+    'setup seeds verification map'
+  );
 
   const completePhaseCmd = read(path.join('.cursor', 'commands', 'complete-phase.md'));
   assert(completePhaseCmd.includes('Project map'), 'complete-phase updates project map');
@@ -268,6 +321,10 @@ function main() {
   assert(completePhaseCmd.includes('Phase remainder'), 'complete-phase phase remainder');
   assert(completePhaseCmd.includes('Still open'), 'complete-phase remainder still open');
   assert(completePhaseCmd.includes('Carry into next'), 'complete-phase remainder carry into next');
+  assert(
+    completePhaseCmd.includes('Lessons encoded') || completePhaseCmd.includes('Encode lessons'),
+    'complete-phase remainder lessons encoded'
+  );
   assert(completePhaseCmd.includes('Next-phase seeds') || completePhaseCmd.includes('next-phase seed'), 'complete-phase next-phase seeds');
   assert(completePhaseCmd.includes('Phase health (resume)'), 'complete-phase updates Phase health');
 
@@ -322,9 +379,32 @@ function main() {
     buildPhaseCmd.includes('Progressive step capture') || buildPhaseCmd.includes('progressive step capture'),
     'build-phase progressive step capture'
   );
+  assert(buildPhaseCmd.includes('Step playback'), 'build-phase step playback STOP');
+  assert(buildPhaseCmd.includes('Done when'), 'build-phase playback Done when');
+  assert(
+    buildPhaseCmd.includes('1. Proceed') || buildPhaseCmd.includes('Proceed — implement'),
+    'build-phase playback Proceed option'
+  );
 
   const verifyPhaseNamed = read(path.join('.cursor', 'commands', 'verify-phase.md'));
   assert(verifyPhaseNamed.includes('Resolve phase id'), 'verify-phase resolves named phase id');
+  assert(verifyPhaseNamed.includes('Evidence bar'), 'verify-phase evidence bar');
+  assert(
+    verifyPhaseNamed.includes('Inconclusive') || verifyPhaseNamed.includes('inconclusive'),
+    'verify-phase inconclusive ≠ pass'
+  );
+  assert(verifyPhaseNamed.includes('agent_tool'), 'verify-phase evidence grade agent_tool');
+  assert(verifyPhaseNamed.includes('owner_uat'), 'verify-phase evidence grade owner_uat');
+  assert(verifyPhaseNamed.includes('not_run'), 'verify-phase evidence grade not_run');
+  assert(
+    verifyPhaseNamed.includes('Wrong surface') || verifyPhaseNamed.includes('wrong surface'),
+    'verify-phase wrong surface ≠ pass'
+  );
+  assert(
+    verifyPhaseNamed.includes('Incomplete evidence') ||
+      verifyPhaseNamed.includes('do not mark verified'),
+    'verify-phase incomplete evidence path'
+  );
   assert(completePhaseCmd.includes('Resolve phase id'), 'complete-phase resolves named phase id');
   assert(setup.includes('slug') && setup.includes('Phase:'), 'setup Stage 8 drafts named Phase: slug sections');
   const phasePlansReadme = read(path.join(cfg.phasePlansDir || 'docs/phase-plans', 'README.md'));
@@ -359,6 +439,21 @@ function main() {
   assert(refinePhaseCmd.includes('Phase health'), 'refine-phase updates Phase health');
   assert(refinePhaseCmd.includes('Resolve phase id'), 'refine-phase resolves named phase id');
   assert(refinePhaseCmd.includes('Mid-phase side-work'), 'refine-phase mid-phase side-work section');
+  assert(refinePhaseCmd.includes('Failure brief'), 'refine-phase failure brief');
+  assert(
+    refinePhaseCmd.includes('Root cause') || refinePhaseCmd.includes('root cause'),
+    'refine-phase root cause in failure brief'
+  );
+  assert(
+    refinePhaseCmd.includes('Blast radius') || refinePhaseCmd.includes('blast radius'),
+    'refine-phase blast radius in failure brief'
+  );
+  assert(refinePhaseCmd.includes('Encode lessons'), 'refine-phase encode lessons STOP');
+  assert(
+    refinePhaseCmd.includes('Promote to project rule') ||
+      refinePhaseCmd.includes('Encode in structure'),
+    'refine-phase encode lessons options'
+  );
   assert(
     refinePhaseCmd.includes('Side-work size STOP') ||
       refinePhaseCmd.includes('too large for this step/phase'),
@@ -416,6 +511,23 @@ function main() {
 
   const prStepCmd = read(path.join('.cursor', 'commands', 'pr-step.md'));
   assert(prStepCmd.includes('authorizes'), 'pr-step invoke authorizes git writes');
+  assert(prStepCmd.includes('Verified evidence'), 'pr-step Verified evidence section');
+  assert(
+    prStepCmd.includes('Verified:') || prStepCmd.includes('**Verified**'),
+    'pr-step Verified line'
+  );
+  assert(
+    prStepCmd.includes('n/a docs-only') || prStepCmd.includes('docs-only'),
+    'pr-step docs-only soft path'
+  );
+  assert(
+    prStepCmd.includes('Open verify fails') || prStepCmd.includes('open rejects'),
+    'pr-step open fails STOP for code'
+  );
+  assert(
+    prStepCmd.includes('Owner override') || prStepCmd.includes('land anyway'),
+    'pr-step Owner override option'
+  );
   assert(!prStepCmd.includes('Gate A —'), 'pr-step has no Gate A');
   assert(!prStepCmd.includes('Gate B —'), 'pr-step has no Gate B');
   assert(!prStepCmd.includes('Gate C —'), 'pr-step has no Gate C');
@@ -488,6 +600,31 @@ function main() {
     agentsMd.includes('Progressive phases') || agentsMd.includes('progressive'),
     'codex AGENTS mentions progressive phases'
   );
+  assert(
+    agentsMd.includes('Evidence bar') || agentsMd.includes('evidence bar'),
+    'codex AGENTS mentions evidence bar'
+  );
+  assert(
+    agentsMd.includes('Failure brief') || agentsMd.includes('failure brief'),
+    'codex AGENTS mentions failure brief'
+  );
+  assert(
+    agentsMd.includes('Step playback') || agentsMd.includes('step playback'),
+    'codex AGENTS mentions step playback'
+  );
+  assert(
+    agentsMd.includes('Verification map') || agentsMd.includes('VERIFICATION_MAP'),
+    'codex AGENTS mentions verification map'
+  );
+  assert(
+    agentsMd.includes('Encode lessons') || agentsMd.includes('encode lessons'),
+    'codex AGENTS mentions encode lessons'
+  );
+  assert(
+    agentsMd.includes('Verified') &&
+      (agentsMd.includes('open fails') || agentsMd.includes('Owner override')),
+    'codex AGENTS mentions Verified ship'
+  );
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(
@@ -553,9 +690,18 @@ function main() {
   const productPath = path.join(TMP, cfg.productSpec);
   fs.writeFileSync(productPath, '# Owner product\nKEEP_ME\n', 'utf8');
   fs.rmSync(path.join(TMP, cfg.auditPlan));
+  fs.rmSync(path.join(TMP, cfg.verificationMap));
   run(['upgrade', TMP]);
   assert(read(cfg.productSpec).includes('KEEP_ME'), 'upgrade preserves Owner docs');
   assert(fs.existsSync(path.join(TMP, cfg.auditPlan)), 'upgrade restores missing stubs');
+  assert(
+    fs.existsSync(path.join(TMP, cfg.verificationMap)),
+    'upgrade restores VERIFICATION_MAP stub'
+  );
+  assert(
+    JSON.parse(fs.readFileSync(path.join(TMP, 'phasestep.json'), 'utf8')).verificationMap,
+    'upgrade merges verificationMap config key'
+  );
   assert(
     read(path.join('.cursor', 'commands', 'setup.md')).includes('Greenfield vs existing'),
     'upgrade refreshed setup command'
@@ -607,6 +753,14 @@ function main() {
   assert(cursorCheckOk.includes('[x] cursor'), 'check marks selected cursor adapter');
   assert(cursorCheckOk.includes('[ ] claude'), 'check marks unselected claude adapter');
   assert(cursorCheckOk.includes('All required Phasestep artifacts present'), 'cursor-only check passes');
+  assert(
+    cursorCheckOk.includes('VERIFICATION_MAP') || cursorCheckOk.includes('verification'),
+    'check requires VERIFICATION_MAP'
+  );
+  assert(
+    cursorCheckOk.includes('PROJECT_MAP') || cursorCheckOk.includes('projectMap') || cursorCheckOk.includes('PROJECT_MAP.md'),
+    'check requires PROJECT_MAP'
+  );
 
   // Missing command file → incomplete adapter diagnostic
   fs.unlinkSync(path.join(TMP2, '.cursor', 'commands', 'setup.md'));

@@ -94,6 +94,8 @@ async function check({ targetDir }) {
     config.decisions,
     config.buildPlan,
     config.auditPlan || DEFAULTS.auditPlan,
+    config.projectMap || DEFAULTS.projectMap,
+    config.verificationMap || DEFAULTS.verificationMap,
     config.progress,
     path.join(config.phasePlansDir, 'README.md'),
     path.join(config.auditReportsDir || DEFAULTS.auditReportsDir, 'README.md'),

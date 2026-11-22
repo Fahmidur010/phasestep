@@ -27,9 +27,9 @@ Pick at `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all th
 ```text
 1. /setup               → product, flow, stack, architecture, design, build plan (named phases)
 2. /plan-phase <slug>   → break that phase into numbered steps
-3. /build-phase <slug> S → implement one step + Behavior delta (SHALL + WHEN/THEN)
+3. /build-phase <slug> S → (progressive: playback) implement + Behavior delta (SHALL + WHEN/THEN)
 4. You Accept           → intent gate (or reject → /refine-phase)
-5. /verify-phase <slug> → you prove it (manual UAT; optional browser/native evidence)
+5. /verify-phase <slug> → evidence bar + Owner UAT (inconclusive ≠ pass)
 6. Repeat 3–5           → until the phase is done
 7. /audit-phase <slug>  → phase quality check → /complete-phase <slug>
 8. Optional             → /pr-step update (git handoff; Simple or GitFlow)
@@ -39,7 +39,9 @@ Pick at `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all th
 
 **Mid-phase refinements** (layout, components, small fixes while on a step) fold into the current phase plan + delta — no extra command — so verify and audit cover them. If an ask is too large for this phase, the agent stops and offers absorb / park for a new phase / re-plan.
 
-**New features mid-project:** `/plan-phase <slug>` (adds to the build plan if needed) → choose **progressive** → `/build-phase <slug> 1` (describe the step) → verify → step 2… → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows as you build.
+**New features mid-project:** `/plan-phase <slug>` (adds to the build plan if needed) → choose **progressive** → `/build-phase <slug> 1` (describe the step; agent restates Goal / Done-when for Proceed/Edit) → verify → step 2… → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows as you build.
+
+**Quality armor:** verify uses an evidence bar (tool / Owner UAT / not run — wrong surface or inconclusive does not pass). After Reject or failed verify, refine starts with a short failure brief (root cause + blast radius) before coding. Repeated corrections get an **encode lessons** stop (rule / lint / test / doc). A **verification map** stores durable prove-paths. `/pr-step` records a **Verified** line and won’t land application code over open verify fails unless you override.
 
 Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the number.
 
@@ -72,14 +74,14 @@ npx phasestep check     # validate docs + selected-adapter command files
 |---------|------|
 | `/setup` | One-time (or resume) project wiring |
 | `/plan-phase <slug>` | Named phase; classic full plan or **progressive**; may add slug to BUILD_PLAN |
-| `/build-phase <slug> [S]` | Build step S (or next); progressive mode wires Owner-described steps into the plan |
-| `/verify-phase <slug> [S]` | Owner verification |
-| `/refine-phase <slug> [S]` | Fix after reject / failed verify |
+| `/build-phase <slug> [S]` | Build step S (or next); progressive capture + step playback; Behavior delta |
+| `/verify-phase <slug> [S]` | Owner verification + evidence bar (inconclusive ≠ pass) |
+| `/refine-phase <slug> [S]` | Fix after reject / fail; failure brief; encode lessons if repeating |
 | `/audit-phase <slug>` | Delivery audit after the phase |
 | `/complete-phase <slug>` | Mark phase done + phase remainder / next seeds |
 | `/map-project` | Optional repo map for the agent |
 | `/github-connect` | Optional: link `gh` + remote; choose Simple or GitFlow |
-| `/pr-step update` | Optional: land current work (Simple→main · GitFlow→develop); invoke authorizes commit/push/merge |
+| `/pr-step update` | Land current work; Verified line; open fails block code unless override |
 Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/audit-ds` / `/refine-audit` / `/complete-audit` as needed. Details live in the installed command files and [constitution](./constitution/PHASESTEP.md).
 
 ---

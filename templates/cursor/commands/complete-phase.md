@@ -67,6 +67,7 @@ Produce a short **Phase remainder** block in the chat report **and** paste it in
 | Deferred | … or `none` | Explicitly parked (decisions `deferred` / `tbd`, Owner defer, **Side-work size STOP** option 2 park seeds) |
 | Out of scope | … or `none` | Called out in the phase plan / BUILD_PLAN as not this phase |
 | Carry into next | … or `none` | Concrete seeds for the next BUILD_PLAN phase (incl. parked mid-phase side-work meant for another phase) |
+| Lessons encoded | … or `none` | Repeated corrections promoted this phase (rule / lint-test / doc-only) — or still open |
 ```
 
 **Next-phase seeds** (optional bullets under the table when **Carry into next** is not `none`):
@@ -74,6 +75,8 @@ Produce a short **Phase remainder** block in the chat report **and** paste it in
 - Include any **parked mid-phase side-work** seeds so they are not dropped at complete
 - Do **not** write the next `phase-<slug>.md` here
 - Do **not** auto-start the next phase
+
+**Encode lessons (soft):** If this phase had repeated Owner corrections that were never encoded (refine Encode lessons STOP skipped or option 4), note them under **Lessons encoded** as still open — do **not** block complete; Owner may encode later.
 
 If everything for this phase closed cleanly and nothing carries forward, say so explicitly (all `none` is fine).
 

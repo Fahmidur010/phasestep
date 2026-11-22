@@ -41,9 +41,36 @@ Do **not** invent later steps. Owner starts the next with `/build-phase PHASE <n
 
 Classic mode with a fully written step → skip capture; use the existing step text.
 
+## Step playback STOP (before coding)
+
+**When:** progressive step capture ran for this STEP, **or** classic step Task / Done when is missing / TBD / too vague to implement without guessing.
+
+**Skip when:** Owner’s message in this chat already states Goal, Done-when, and Out of scope clearly (or they already chose Proceed for this STEP in this chat).
+
+**Before Pre-build consistency / application code**, restate in chat:
+
+```markdown
+**Step playback** — Phase PHASE Step STEP
+- **Goal:** …
+- **Done when:** … (observable)
+- **Out of scope:** …
+- **Files likely:** … (best effort)
+```
+
+Then **STOP** once:
+
+```text
+Step playback:
+1. Proceed — implement this step
+2. Edit — Owner will correct Goal / Done-when / Out of scope (then restate and STOP again)
+```
+
+- **1** → write/update Task / Done when / Files in `phase-PHASE.md` if they changed during playback, then continue Before coding / Pre-build consistency.
+- **2** → wait for Owner edits; do not code yet.
+
 ## Before coding
 
-1. Read **`phase-PHASE.md`** — target step (after Progressive step capture if it ran)
+1. Read **`phase-PHASE.md`** — target step (after Progressive step capture if it ran; after Step playback if it ran)
 2. Confirm prior steps are **verified** (or Owner allows skip). If previous is `built`/unverified, **stop** and tell Owner to **`/verify-phase PHASE <prev>`**. Progressive: Step 1 has no prior.
 3. Read [`{{BUILD_PLAN}}`](../../{{BUILD_PLAN}}) — **Phase: PHASE** (reference)
 4. Read [`{{PRODUCT_SPEC}}`](../../{{PRODUCT_SPEC}})
@@ -90,7 +117,7 @@ Pre-build consistency — blocking issues:
 
 ## Implementation rules
 
-- Minimize scope to the step’s done-when (plus **absorbed** mid-phase side-work recorded in the plan/delta)
+- Minimize scope to the step’s done-when (plus **absorbed** mid-phase side-work recorded in the plan/delta) — **smallest change** that meets done-when; one verifiable unit this turn
 - Match existing project patterns
 - Do **not** commit unless Owner asks — standard path is `/pr-step update` (invoke authorizes git writes), not an implicit commit after build
 - Do **not** silently cascade principle changes across features during a single step build

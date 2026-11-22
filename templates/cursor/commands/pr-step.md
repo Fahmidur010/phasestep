@@ -40,15 +40,45 @@ GitHub tooling not ready:
 3. Use `git` / `gh` with network as needed for pull / push
 4. Never update git config; never `--no-verify` unless Owner explicitly asks in this chat
 5. Do **not** commit secrets (`.env`, credentials, keys). If such files are dirty → **stop** and warn
-6. After finishing, report: commit hash(es), branches touched, pushes, deletes, current checkout
+6. After finishing, report: commit hash(es), branches touched, pushes, deletes, current checkout, and the **Verified** line
 7. No deploy/hosting recipes here — branch topology only (project Actions may react to pushes)
+
+## Verified evidence (before git writes)
+
+Before **Shared: ensure committed + pushed** (or any commit/push/merge for this verb), classify the dirty set:
+
+| Kind | What |
+|------|------|
+| **docs-only** | Specs, phase plans, PROGRESS, VERIFICATION_MAP, constitution, command markdown — no application source |
+| **code** | App/source/test/config that changes runtime behavior (or mixed with docs) |
+
+**Always** record a **Verified** line in the chat report (and prefer as a commit body trailer when committing):
+
+```text
+Verified: <phase-slug> step <N> — PASS | Owner override: <reason> | n/a docs-only | n/a no Phase health
+```
+
+Rules:
+
+1. **docs-only** → use `Verified: n/a docs-only` — no evidence STOP; proceed.
+2. **code** (or mixed) → read [`{{PROGRESS}}`](../../{{PROGRESS}}) **Phase health**. Prefer citing verified phase/step PASS from health / phase plan.
+3. If Phase health shows **open rejects / fails** and the dirty set includes **code** → **STOP** once:
+
+```text
+Open verify fails / rejects in Phase health — landing application code:
+1. Finish verify/refine first — /verify-phase or /refine-phase, then re-run /pr-step
+2. Owner override — land anyway (record reason on Verified line)
+3. Cancel
+```
+
+4. Invoking `/pr-step` remains consent to ship after the Verified line is set (or Owner picks override). Do **not** invent a Pass — cite Phase health / Owner judgment.
 
 ## Shared: ensure committed + pushed on current branch
 
-Run **before** merge steps when the working tree is dirty **or** the branch is ahead of its remote.
+Run **before** merge steps when the working tree is dirty **or** the branch is ahead of its remote. Run **Verified evidence** first.
 
 1. Inspect in parallel: `git status`, `git diff` / staged, recent log, current branch
-2. If dirty → stage shippable files (exclude secrets); draft a short **why** commit message; `git commit`
+2. If dirty → stage shippable files (exclude secrets); draft a short **why** commit message; include **Verified:** trailer when committing code; `git commit`
 3. `git push -u <remote> HEAD` (default remote from `github.remote` / `origin`)
 4. If push rejected (remote ahead) → pull/rebase or merge, resolve, push again — **no** force-push on shared branches
 
@@ -58,7 +88,7 @@ Run **before** merge steps when the working tree is dirty **or** the branch is a
 2. Else current branch name  
 3. Else one-line Owner note if needed  
 
-Prefer verified / phase-complete work, but **do not** block the handoff with a verify gate — invoking `/pr-step` is consent to ship what’s on the branch.
+Prefer verified / phase-complete work. Open fails block **code** landings unless Owner override (see Verified evidence) — docs-only never blocked for that reason.
 
 ### Slugify helper
 
@@ -234,7 +264,8 @@ GitHub: hotfix <slug> → release + develop — status merged — date
 ## Hard rules
 
 1. Invoking the matching `/pr-step` verb authorizes the git writes for that verb — no Gate A/B/C.
-2. Still **STOP** for: not connected, tooling missing, workflow unset, secrets in the dirty set, merge conflicts, missing slug/issue when required.
+2. Still **STOP** for: not connected, tooling missing, workflow unset, secrets in the dirty set, merge conflicts, missing slug/issue when required, **open Phase health fails when landing code** (unless Owner override).
+3. Always report a **Verified:** line (PASS citation, override reason, or `n/a docs-only`).
 3. Fail soft without `gh`/auth — checklist, not fake success.
 4. No force-push; no token files; no GitHub Issues/Projects automation.
 5. No deploy/hosting install in this command.

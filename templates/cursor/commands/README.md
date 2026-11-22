@@ -7,9 +7,9 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 ```text
 /setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
 /plan-phase <slug>         → classic or progressive plan; may add slug to BUILD_PLAN
-/build-phase <slug> [step] → build step; progressive wires Owner description into plan + delta
-/verify-phase <slug> [step]→ Owner UAT from THEN outcomes + automated checks
-/refine-phase <slug> [step]→ fix after verify; mid-phase side-work absorb / size STOP; Cross-cutting if needed
+/build-phase <slug> [step] → build step; progressive capture + Step playback; delta + intent
+/verify-phase <slug> [step]→ Owner UAT + Evidence bar (inconclusive / wrong surface ≠ pass)
+/refine-phase <slug> [step]→ Failure brief; Encode lessons if repeating; mid-phase absorb / Cross-cutting
 /audit-phase <slug>        → build-phase acceptance audit (delivery)
 /audit-ds <slug|all>       → design-system audit (delivery)
 /complete-phase <slug>     → mark done + progress + phase remainder
@@ -17,8 +17,8 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 /github-connect [repo]     → link GitHub + choose Simple PR or GitFlow (no app commit)
 /pr-step [update|release|main|bugfix|hotfix …]
-                           → git handoff (empty=update); Simple→main · GitFlow→develop;
-                             release=live · main=baseline · hotfix from release → release+develop
+                           → git handoff + Verified line; open fails block code unless override;
+                             Simple→main · GitFlow→develop; release=live · hotfix from release
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

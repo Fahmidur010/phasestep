@@ -24,8 +24,46 @@ Fix issues for a **named build phase** from **intent rejection**, **verification
 5. Product decision gaps → [`{{DECISIONS}}`](../../{{DECISIONS}}) and ask Owner
 6. **Mid-phase side-work?** (Owner chat polish / extra ask while on this phase) → follow **Mid-phase side-work** below **before** coding oversized asks. Local absorbs update plan + delta (no new command).
 7. **Cross-cutting / principle change?** → run **Cross-cutting STOP** below **before any code**. Do not “just implement” a new core rule across the tree. (If both side-work-size and principle apply → Cross-cutting first, then size gate if still needed.)
+8. **Reject / verify fail?** → write **Failure brief** below **before application code** (after side-work / Cross-cutting STOPs if those fired).
 
-At start of refine work (after side-work / Cross-cutting STOPs if any), **overwrite Phase health**: `Phase: PHASE — Title`, `Status: refining`, keep open rejects/fails, `Next: /verify-phase PHASE STEP` (or re-audit command if audit-scoped).
+At start of refine work (after side-work / Cross-cutting / Failure brief as needed), **overwrite Phase health**: `Phase: PHASE — Title`, `Status: refining`, keep open rejects/fails, `Next: /verify-phase PHASE STEP` (or re-audit command if audit-scoped).
+
+## Failure brief (Reject / verify fail — before coding)
+
+When refining from **intent Reject** or **verify Fail**, show this once before application code (skip for pure absorb of local polish with no fail, or when Owner already accepted a brief this chat):
+
+```markdown
+**Failure brief** — Phase PHASE Step STEP
+- **Symptom:** what failed / what Owner rejected (Verify # / delta note)
+- **Root cause:** first place the system went wrong (not only the last symptom)
+- **Blast radius:** other steps / surfaces / files that may be affected
+- **Fix shape:** smallest change at the root (prefer fix source over new guards unless the guarded state is legitimate)
+```
+
+Then proceed under **Rules**. If root cause is unclear → say so and propose the smallest probe; do not spray unrelated patches.
+
+## Encode lessons STOP (repeated corrections)
+
+**When:** the same Owner correction class is repeating — e.g. Owner says “again” / “same issue”, or this is the **second+** refine for the same Verify # / Reject theme / Failure brief root cause in this phase (or the agent keeps reintroducing the same mistake).
+
+**Skip when:** first occurrence of this class, or Owner already chose an encode option for it this chat / it is already encoded in lint/test/constitution.
+
+Show a one-line pattern, then **STOP** once:
+
+```text
+Repeated correction — encode the lesson:
+1. Promote to project rule — add/update constitution or architecture convention (docs)
+2. Encode in structure — add/adjust lint, type, or test that fails if this recurs
+3. Doc-only note — short note in decisions / VERIFICATION_MAP / phase plan Risks; no new lint/test
+4. Skip encode — fix this instance only
+```
+
+- **1** → update the chosen doc, then continue the fix under **Rules**.  
+- **2** → add the smallest structural check with the fix (or immediately after); do not invent heavy frameworks.  
+- **3** → write the note, then fix.  
+- **4** → proceed under **Rules** without promotion.
+
+Prefer **2** when a cheap local assertion exists; prefer **1** for product/principle mistakes; never silently expand scope beyond the lesson.
 
 ## Mid-phase side-work (absorb into current workflow)
 
@@ -109,7 +147,8 @@ Never silently rewrite product truth while refining. Never cascade fixes across 
 
 ## Rules
 
-- Minimal fixes only (unless Owner chose Cross-cutting option **1**, or Side-work size option **1**, and scoped the work)
+- Minimal fixes only (unless Owner chose Cross-cutting option **1**, or Side-work size option **1**, and scoped the work) — **smallest change** that clears the fail / reject
+- Prefer **root-cause** fix from the Failure brief; avoid symptom-only guards unless Owner accepts them
 - Absorbed side-work **must** land in plan + delta/Trace (when behavior changes) — never chat-only
 - Do not implement the next unbuilt step
 - Run `{{BUILD_COMMAND}}` after fixes

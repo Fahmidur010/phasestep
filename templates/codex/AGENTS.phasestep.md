@@ -10,16 +10,16 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 |--------|---------|
 | `/setup` or "run phasestep setup" | Progressive Owner-gated stub fill |
 | `/plan-phase <slug>` | Named phase; classic or **progressive**; may add to BUILD_PLAN; write `phase-<slug>.md` |
-| `/build-phase <slug> [step]` | Build one step; progressive capture wires Owner description into the plan; Behavior delta; intent gate |
-| `/verify-phase <slug> [step]` | Owner UAT from Trace / THEN outcomes; UNCHANGED spot-check when listed; optional Playwright (web UI) |
-| `/refine-phase <slug> [step]` | Fix after verify; mid-phase side-work absorb / size STOP; Cross-cutting if principle cascades |
+| `/build-phase <slug> [step]` | Build one step; progressive capture + **Step playback** (Goal / Done-when / Out of scope); Behavior delta; intent gate |
+| `/verify-phase <slug> [step]` | Owner UAT from Trace; **Evidence bar** (agent_tool \| owner_uat \| not_run; inconclusive ≠ pass); optional Playwright / native / backend evidence |
+| `/refine-phase <slug> [step]` | Fix after verify; **Failure brief**; **Encode lessons** if correction repeats; mid-phase absorb / Cross-cutting |
 | `/audit-phase <slug>` | Build-phase acceptance audit (delivery) |
 | `/audit-ds <slug>\|all` | Design-system audit (delivery) |
 | `/complete-phase <slug>` | Mark done + progress + phase remainder / next seeds |
 | `/session-log` | Optional mid-phase notes (`<slug>`) |
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
 | `/github-connect [repo]` | Link GitHub + choose Simple PR or GitFlow (no app commit) |
-| `/pr-step` / `update` | Land current work (empty args = update). Simple→main · GitFlow→develop. Invoke authorizes commit/push/merge |
+| `/pr-step` / `update` | Land current work; **Verified** line; open fails block code unless override. Simple→main · GitFlow→develop |
 | `/pr-step release` | GitFlow: develop → **release** (live / deploy line); soft-remind `/pr-step main` when fully stable |
 | `/pr-step main` | GitFlow: release → **main** (stable baseline) |
 | `/pr-step bugfix …` | GitFlow non-live: from develop → fix → develop; soft-remind release; live bugs → hotfix |
@@ -40,6 +40,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 - Build plan: `{{BUILD_PLAN}}`
 - Audit plan: `{{AUDIT_PLAN}}` (reports in `{{AUDIT_REPORTS_DIR}}/`)
 - Project map: `{{PROJECT_MAP}}` (agent navigation; optional until filled)
+- Verification map: `{{VERIFICATION_MAP}}` (durable prove-paths; context only; seed at setup, grow on verify/audit)
 - Progress: `{{PROGRESS}}` (includes rolling **Phase health** resume block)
 - Design system: `{{DESIGN_SYSTEM}}`
 - Stack catalog: `{{STACK_CATALOG}}`
@@ -55,8 +56,11 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app. Prefer `{{PROJECT_MAP}}` when present; refresh via `/map-project` without Owner gate.
 6. Principle / multi-feature changes: follow Cross-cutting STOP in `/refine-phase` before coding (decision + product sync, or scoped/defer).
 7. Mid-phase side-work: absorb local Owner refinements into the current step’s plan + Behavior delta / Trace (no new command); if too large → Side-work size STOP; verify/audit use updated artifacts.
-8. Progressive phases: `/plan-phase <slug>` → progressive → `/build-phase <slug> N` with Owner describing each step; plan grows for audit/complete.
-9. Commit / push / merge only via `/pr-step` (or explicit Owner ask that `/pr-step` executes) — invoke authorizes; never force-push; never silent from build/refine. Deploy stays project-local.
-10. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
+8. Progressive phases: `/plan-phase <slug>` → progressive → `/build-phase <slug> N` with Owner describing each step; **Step playback** before code when progressive / vague; plan grows for audit/complete.
+9. Evidence bar: `/verify-phase` — matching surface; inconclusive / wrong surface ≠ pass; step PASS needs Owner Pass on ADDED/CHANGED Verify #.
+10. Refine after Reject / fail: **Failure brief** (symptom → root cause → blast radius → fix shape) before application code.
+11. Repeated Owner corrections: **Encode lessons** STOP (rule / lint-test / doc-only / skip) — prefer structure over re-teaching in chat.
+12. Commit / push / merge only via `/pr-step` — invoke authorizes; report **Verified:** line; open Phase health fails block **code** unless Owner override; docs-only soft; never force-push; never silent from build/refine. Deploy stays project-local.
+13. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
 
 If command markdown files are missing, run `npx phasestep upgrade` or `npx phasestep init`.

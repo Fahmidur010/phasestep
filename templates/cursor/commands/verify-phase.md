@@ -76,6 +76,36 @@ Decide the step’s surface from Behavior delta / product / stack:
 | **Flutter / React Native** | **Native evidence** — never Playwright mid-flight |
 | **Backend / CLI / API-only** | **Backend tool evidence** — never Playwright |
 
+## Evidence bar (pass / fail rules)
+
+Each checklist item carries an **Evidence grade**:
+
+| Grade | Meaning |
+|-------|---------|
+| `agent_tool` | Agent ran a matching-surface tool (Playwright / flutter analyze / buildCommand / HTTP smoke, etc.) and reported pass or fail |
+| `owner_uat` | Owner marked Pass or Fail from manual / device / API observation |
+| `not_run` | No tool run and Owner has not judged yet |
+
+**Rules:**
+
+1. **Inconclusive ≠ pass** — tool errors, wrong environment, flaky/unclear results → treat as fail or leave `not_run`; never claim Pass from inconclusive output.
+2. **Wrong surface ≠ pass** — e.g. Playwright on API-only, or browser path on Flutter/RN → do not count as `agent_tool` evidence for that item.
+3. **Step PASS** (End message option 1) only when:
+   - every ADDED/CHANGED Trace **Verify #** has Owner Pass (`owner_uat`), **and**
+   - no required Verify # is still `not_run` without Owner Pass, **and**
+   - Intent is accepted (or set accepted on this Pass).
+4. Owner remains the gate — `agent_tool` **strengthens**; it never auto-PASSes the step alone.
+5. If evidence is incomplete → **STOP** and ask Owner to complete UAT or re-run tools; do not mark the step verified.
+
+## Verification map (durable prove-paths)
+
+Read [`{{VERIFICATION_MAP}}`](../../{{VERIFICATION_MAP}}) when present (context only — **never** overrides Behavior delta / Trace / Owner Pass).
+
+1. Prefer existing map rows when choosing tool commands / Owner paths for this step’s surface.
+2. After a successful verify (End message **1. Pass**), **append** a row when this step established a **new** durable prove path not already listed (Feature/surface · Prove how · Command/tool · Source `verify` · Notes). Set map Status `current`, Last updated today.
+3. Do not rewrite Owner-edited rows; do not invent paths you did not run or the Owner did not perform.
+4. If the file is missing → create from the Phasestep stub shape (or note Owner should `npx phasestep upgrade`) then seed from this step’s evidence only.
+
 ### Native evidence (Flutter / React Native)
 
 1. Check [`{{STACK_CATALOG}}`](../../{{STACK_CATALOG}}) `verification` for `flutter-analyzer-evidence` / `react-native-device-evidence` and `{{PROGRESS}}` enrichment log.
@@ -154,9 +184,9 @@ When Playwright is available (setup accept, mid-flight install, or already in `p
 - Non-goal + Steps → Expected → Pass / Fail — or `No UNCHANGED non-goals`
 
 ### Checklist (numbered)
-Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in) → Evidence (manual | playwright-cli | mcp | flutter-analyze | rn-tool | buildCommand | none)
+Each item: **Steps** → **Expected** → Pass / Fail (Owner fills in) → Evidence grade (`agent_tool` \| `owner_uat` \| `not_run`) → tool note (manual | playwright-cli | mcp | flutter-analyze | rn-tool | buildCommand | none)
 
-Include Trace **Verify #** rows and the **UNCHANGED spot-check** when applicable. Keep short; call out regression risks to earlier verified steps only when relevant.
+Include Trace **Verify #** rows and the **UNCHANGED spot-check** when applicable. Keep short; call out regression risks to earlier verified steps only when relevant. Reminder: inconclusive / wrong surface → not Pass.
 
 ### Automated evidence (if Playwright available)
 - Commands run
@@ -169,8 +199,9 @@ Include Trace **Verify #** rows and the **UNCHANGED spot-check** when applicable
 
 ```text
 Step verification result:
-1. Pass — mark step verified + delta accepted → /build-phase PHASE <next> (or /pr-step update for GitHub handoff)
-2. Fail — /refine-phase PHASE STEP then re-verify
+1. Pass — only if Evidence bar met (all ADDED/CHANGED Verify # Owner Pass; no required not_run) → mark verified + delta accepted → /build-phase PHASE <next> (or /pr-step update)
+2. Fail — /refine-phase PHASE STEP then re-verify (include Failure brief)
+3. Incomplete evidence — finish Owner UAT / re-run matching-surface tools; do not mark verified yet
 ```
 
 - After the Owner replies, **overwrite Phase health (resume)** in [`{{PROGRESS}}`](../../{{PROGRESS}}):
