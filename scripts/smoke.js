@@ -317,19 +317,37 @@ function main() {
 
   const githubConnectCmd = read(path.join('.cursor', 'commands', 'github-connect.md'));
   assert(githubConnectCmd.includes('gh auth'), 'github-connect mentions gh auth');
-  assert(githubConnectCmd.includes('no commit'), 'github-connect no commit');
   assert(githubConnectCmd.includes('1. Connect'), 'github-connect numbered gate');
+  assert(githubConnectCmd.includes('Git workflow'), 'github-connect Git workflow STOP');
+  assert(githubConnectCmd.includes('1. Simple PR'), 'github-connect Simple PR option');
+  assert(githubConnectCmd.includes('2. GitFlow'), 'github-connect GitFlow option');
+  assert(githubConnectCmd.includes('3. Decide later'), 'github-connect Decide later option');
+  assert(githubConnectCmd.includes('release = test'), 'github-connect explains release vs main');
+  assert(githubConnectCmd.includes('GitFlow branches'), 'github-connect GitFlow bootstrap STOP');
+  assert(githubConnectCmd.includes('Change git workflow'), 'github-connect change workflow option');
 
   const prStepCmd = read(path.join('.cursor', 'commands', 'pr-step.md'));
-  assert(prStepCmd.includes('Gate A'), 'pr-step Gate A');
-  assert(prStepCmd.includes('Gate B'), 'pr-step Gate B');
-  assert(prStepCmd.includes('Gate C'), 'pr-step Gate C');
-  assert(prStepCmd.includes('Never** merge without Gate C'), 'pr-step no silent merge');
-  assert(prStepCmd.includes('Fail soft'), 'pr-step fail soft');
+  assert(prStepCmd.includes('authorizes'), 'pr-step invoke authorizes git writes');
+  assert(!prStepCmd.includes('Gate A —'), 'pr-step has no Gate A');
+  assert(!prStepCmd.includes('Gate B —'), 'pr-step has no Gate B');
+  assert(!prStepCmd.includes('Gate C —'), 'pr-step has no Gate C');
+  assert(prStepCmd.includes('merge --no-ff'), 'pr-step prefers merge --no-ff');
+  assert(prStepCmd.includes('Fail soft') || prStepCmd.includes('fail soft'), 'pr-step fail soft');
   assert(prStepCmd.includes('GitHub is not connected'), 'pr-step numbered not-connected STOP');
   assert(prStepCmd.includes('GitHub tooling not ready'), 'pr-step numbered tooling STOP');
   assert(prStepCmd.includes('1. Run /github-connect now'), 'pr-step connect-now option');
   assert(prStepCmd.includes('2. Continue with manual git/PR checklist'), 'pr-step manual checklist option');
+  assert(prStepCmd.includes('Mode: Simple PR'), 'pr-step Simple mode section');
+  assert(prStepCmd.includes('Mode: GitFlow'), 'pr-step GitFlow mode section');
+  assert(prStepCmd.includes('Phase health (resume)'), 'pr-step resolves current from Phase health');
+  assert(prStepCmd.includes('*(empty)* or `update`') || prStepCmd.includes('*(empty)* → `update`'), 'pr-step empty args means update');
+  assert(prStepCmd.includes('Verb: `update`') || prStepCmd.includes('| `update` |'), 'pr-step update verb');
+  assert(prStepCmd.includes('Verb: `release`') || prStepCmd.includes('| `release` |'), 'pr-step release verb');
+  assert(prStepCmd.includes('Verb: `main`') || prStepCmd.includes('| `main` |'), 'pr-step main verb');
+  assert(prStepCmd.includes('bugfix'), 'pr-step bugfix verb');
+  assert(prStepCmd.includes('hotfix'), 'pr-step hotfix verb');
+  assert(prStepCmd.includes('develop'), 'pr-step develop / GitFlow develop');
+  assert(progressStub.includes('GitHub workflow:'), 'PROGRESS GitHub workflow example');
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');

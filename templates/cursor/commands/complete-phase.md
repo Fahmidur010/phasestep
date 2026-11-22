@@ -33,7 +33,7 @@ Status: complete
 Verified steps: all (or list)
 Open rejects / fails: none
 Evidence: (last used, or none)
-Next: /plan-phase <next> (and/or /pr-step $ARGUMENTS)
+Next: /plan-phase <next> (and/or /pr-step update; GitFlow may then /pr-step release)
 Updated: YYYY-MM-DD
 ```
 
@@ -73,12 +73,12 @@ If everything for this phase closed cleanly and nothing carries forward, say so 
 ## Do not
 
 - Auto-start the next phase unless Owner asks
-- Commit/push/merge here — use `/pr-step $ARGUMENTS` (Owner-gated) instead
+- Commit/push/merge here — use `/pr-step update` (GitFlow also release/main) instead
 - Turn remainder into silent BUILD_PLAN edits — Owner must Accept any plan changes
 
 ## Report
 
 - Phase $ARGUMENTS: **complete**
 - Show the **Phase remainder** table (and next-phase seeds if any)
-- Suggest next: `/pr-step $ARGUMENTS` (optional GitHub PR) and/or `/plan-phase` for the next phase in `{{BUILD_PLAN}}` (mention seeds if present)
-- If `{{PROGRESS}}` has no `GitHub: connected` line and Owner wants PRs → soft remind `/github-connect` first (do not block complete)
+- Suggest next: optional `/pr-step update` (and GitFlow `/pr-step release` when promoting) and/or `/plan-phase` for the next phase in `{{BUILD_PLAN}}` (mention seeds if present)
+- If `{{PROGRESS}}` has no `GitHub: connected` line and Owner wants PRs → soft remind `/github-connect` first (do not block complete). Connect also chooses Simple vs GitFlow.

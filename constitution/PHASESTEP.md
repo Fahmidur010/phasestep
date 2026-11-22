@@ -1,8 +1,8 @@
 # Phasestep — Constitution
 
-**Version:** 0.7.6  
+**Version:** 0.8.0  
 **Status:** Living constitution (portable framework)  
-**Last updated:** 2026-08-01  
+**Last updated:** 2026-11-22  
 **Product:** Phasestep  
 **Author:** Fahmidur010  
 
@@ -39,8 +39,8 @@ Phasestep puts a short **Behavior delta** in front of deep code review: ADDED / 
 
 | Role | Responsibility |
 |------|----------------|
-| **Owner** | Product authority. Accepts/rejects Behavior deltas. Runs manual verification. Confirms phase complete. Accepts `/pr-step` gates for commit/PR/merge. |
-| **Agent** | Plans and implements within contracts. Writes Behavior deltas. Runs project build checks. Does not invent product decisions. Does not commit/push/merge unless Owner Accepts via `/pr-step` (or an explicit ask executed through that path). |
+| **Owner** | Product authority. Accepts/rejects Behavior deltas. Runs manual verification. Confirms phase complete. Runs `/pr-step` to authorize commit/push/merge. |
+| **Agent** | Plans and implements within contracts. Writes Behavior deltas. Runs project build checks. Does not invent product decisions. Does not commit/push/merge unless Owner runs `/pr-step` (or an explicit ask executed through that path). |
 | **Reviewer** (optional) | Human or automated review on PRs; does not replace Owner intent/UAT gates. |
 
 ---
@@ -140,8 +140,8 @@ Paths are overridable in `phasestep.json`.
 | **complete-phase** | `N` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (still open / deferred / out of scope / carry into next + optional next-phase seeds). |
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
-| **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; record in config/PROGRESS. No commit. |
-| **pr-step** | `N` `[S]` | Agent + Owner | Owner-gated branch → commit → push → PR → optional merge via `git`/`gh`. |
+| **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; Owner picks **Simple PR** or **GitFlow** (`github.workflow`); optional GitFlow branch bootstrap. No app commit. |
+| **pr-step** | `update` (primary) · GitFlow: `release` \| `main` \| … | Agent + Owner | Invoking the verb **authorizes** commit/push/merge. Land current work: Simple → `main`; GitFlow → `develop`. GitFlow also `release` / `main` (+ bugfix/hotfix). No Gate A/B/C. |
 | **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); prefer project map seams; Owner accept gate; docs only. |
 | **audit-campaign** | `N` `[reaudit]` | Agent | Read-only **campaign** audit against audit plan → report in `docs/audit-reports/`. |
 | **audit-campaign-ds** | `N` | Agent | Design-system checks for a campaign phase (fold into campaign report). |
@@ -206,14 +206,14 @@ Rules:
 5. Verify before next step  
 6. Audit only after all steps verified  
 7. Owner owns product decisions  
-8. No commit / push / merge unless Owner Accepts via `/pr-step` (or an explicit Owner ask that `/pr-step` then executes)  
+8. No commit / push / merge unless Owner runs `/pr-step` (or an explicit Owner ask that `/pr-step` then executes) — invoking the verb is consent  
 9. Minimize scope  
 10. Run project build check after implement/refine (`buildCommand` in `phasestep.json`)
 11. Cross-cutting / principle changes: **STOP** before code — decision + product/flow sync (or scoped/defer); never silently cascade across features during refine/build
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
 
-**GitHub handoff:** `/github-connect` links the remote; `/pr-step` runs Gates A (branch+commit), B (push+PR), C (merge if checks green)—each numbered. Missing `gh`/auth → fail soft with a checklist. Never force-push; never auto-merge without Gate C Accept.
+**GitHub handoff:** `/github-connect` links the remote and Owner chooses **Simple PR** or **GitFlow**. Day-to-day both use `/pr-step update` (empty args = update): Simple lands on `main`; GitFlow lands on `develop`. GitFlow also `/pr-step release` and `/pr-step main`. **Invoking `/pr-step` authorizes** commit/push/merge for that verb (no Gate A/B/C). Still stop for secrets, conflicts, missing connect/tooling. Never force-push. Deploy/hosting stays project-local.
 
 ---
 
@@ -258,7 +258,16 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.7.6 — Strengthening gates — *current*
+### v0.8.0 — GitFlow workflow mode — *current*
+
+**Date:** 2026-11-22  
+
+- **`/github-connect`** — after connect, numbered **Git workflow** STOP: Simple PR / GitFlow / Decide later; GitFlow bootstrap for `develop` + `release`; Change workflow only  
+- **`/pr-step update`** — land **current** work (Phase health); Simple → `main`; GitFlow → `develop`; also `release` / `main` / bugfix / hotfix  
+- **Invoke = authorize** commit/push/merge (no Gate A/B/C); prefer `merge --no-ff`; still STOP for connect/tooling/secrets/conflicts  
+- Config `github.workflow`; PROGRESS `GitHub workflow:`; deploy/hosting stays project-local  
+
+### v0.7.6 — Strengthening gates
 
 **Date:** 2026-08-01  
 
@@ -422,6 +431,7 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 - ~~**TBD — Stronger UNCHANGED spot-check**~~ → `/verify-phase` UNCHANGED spot-check (1–2 items)
 - ~~**TBD — Session / phase health snapshot**~~ → `PROGRESS` **Phase health (resume)**; updated by build/verify/refine/complete/session-log; upgrade soft-migrate  
 - ~~**TBD — Agent install matrix polish**~~ → README/constitution matrix; `init` install lines; `check` adapter-grouped diagnostics  
+- ~~**TBD — GitFlow workflow mode**~~ → v0.8.0 (`/github-connect` Simple vs GitFlow; `/pr-step update` invoke=authorize)  
 - **TBD (later) — Opt-in evidence suites from WHEN/THEN** — Owner-gated only; not default  
 - **TBD (later) — Stack presets** — thin web / API / Flutter stub+catalog emphasis  
 - Better name for `/audit-campaign-ds` if a clearer two-word label appears  
@@ -456,10 +466,10 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
-| **pr-step** | Owner-gated GitHub handoff (branch, commit, PR, optional merge via `gh`) |
-| **github-connect** | Link `gh` auth + git remote; record in config/PROGRESS; no commit |
+| **pr-step** | GitHub handoff — Simple or GitFlow verbs; invoke authorizes commit/push/merge |
+| **github-connect** | Link `gh` auth + remote; choose Simple PR or GitFlow; record in config/PROGRESS; no app commit |
 | **Adapter** | IDE-specific command implementation |
 
 ---
 
-*End of constitution — Phasestep v0.7.6*
+*End of constitution — Phasestep v0.8.0*

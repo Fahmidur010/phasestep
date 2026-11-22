@@ -6,7 +6,7 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.7.6**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.8.0**
 
 ---
 
@@ -32,7 +32,7 @@ Pick at `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all th
 5. /verify-phase   → you prove it (manual UAT; optional browser/native evidence)
 6. Repeat 3–5      → until the phase is done
 7. /audit-phase    → phase quality check → /complete-phase
-8. Optional        → /pr-step for GitHub PR (Owner-gated)
+8. Optional        → /pr-step update (git handoff; Simple or GitFlow)
 ```
 
 **Behavior delta** = ADDED / CHANGED / REMOVED `SHALL` lines, each with at least one **WHEN → THEN** scenario. You review that contract before deep code review.
@@ -74,9 +74,8 @@ npx phasestep check     # validate docs + selected-adapter command files
 | `/audit-phase N` | Delivery audit after the phase |
 | `/complete-phase N` | Mark phase done + phase remainder / next seeds |
 | `/map-project` | Optional repo map for the agent |
-| `/github-connect` | Optional: link `gh` + remote |
-| `/pr-step N [S]` | Optional: commit → PR → merge (gated) |
-
+| `/github-connect` | Optional: link `gh` + remote; choose Simple or GitFlow |
+| `/pr-step update` | Optional: land current work (Simple→main · GitFlow→develop); invoke authorizes commit/push/merge |
 Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/audit-ds` / `/refine-audit` / `/complete-audit` as needed. Details live in the installed command files and [constitution](./constitution/PHASESTEP.md).
 
 ---
@@ -108,14 +107,21 @@ Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/au
 
 ## Optional extras
 
-**GitHub** — after setup, connect once, then hand off verified work:
+**GitHub** — after setup, connect once and choose a workflow, then hand off verified work:
+
+| Workflow | When | Day-to-day |
+|----------|------|------------|
+| **Simple PR** | Solo / small / trunk-style | `/pr-step update` → commit + merge into **main** |
+| **GitFlow** | Production apps with integration + promotion | `/pr-step update` → **develop**; then `release` → `main` |
 
 ```text
-/github-connect [repo]
-/pr-step N [step?]     → Gate A commit → Gate B push+PR → Gate C merge if checks green
+/github-connect [repo]     → auth + remote, then Simple vs GitFlow
+/pr-step update            → land current work (Simple→main · GitFlow→develop)
+/pr-step release           → GitFlow only: develop → release
+/pr-step main              → GitFlow only: release → main (+ optional tag)
 ```
 
-Needs local `git` + [GitHub CLI](https://cli.github.com/). No silent push/merge.
+Needs local `git` + [GitHub CLI](https://cli.github.com/). Running `/pr-step` authorizes commit/push/merge for that verb (no Gate A/B/C). Deploy/hosting stays in your project — Phasestep owns branch topology only.
 
 **Evidence by surface** — web UI can use Playwright; Flutter/RN use analyzer + device UAT; backend uses `buildCommand` / tests. Never Playwright for native-only or pure APIs.
 

@@ -68,7 +68,7 @@ Never silently rewrite product truth while refining. Never cascade fixes across 
 - Minimal fixes only (unless Owner chose Cross-cutting option **1** and scoped the work)
 - Do not implement the next unbuilt step
 - Run `{{BUILD_COMMAND}}` after fixes
-- Do not commit unless asked — use `/pr-step` for Owner-gated commit/push/PR
+- Do not commit unless asked — use `/pr-step update` (invoke authorizes commit/push/merge)
 - After a principle change: each touched step needs an updated Behavior delta (WHEN/THEN) + intent gate before verify
 
 ## Behavior delta update

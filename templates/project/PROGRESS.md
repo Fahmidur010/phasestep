@@ -78,12 +78,16 @@ Do not re-offer for that phase after a decline is recorded.
 
 ### GitHub (optional — via `/github-connect` + `/pr-step`)
 
-Offered at `/setup` Finish (Connect now / Skip). Re-run `/github-connect` anytime if skipped or remote changes.
+Offered at `/setup` Finish (Connect now / Skip). Re-run `/github-connect` anytime if skipped or remote changes. After connect, Owner picks **Simple PR** or **GitFlow** (`github.workflow` in `phasestep.json`).
 
 ```text
 GitHub: connected — owner/repo (origin) — YYYY-MM-DD
+GitHub workflow: simple | gitflow — YYYY-MM-DD
 GitHub: skipped at setup — YYYY-MM-DD
-GitHub PR: phase 1 step 2 — branch phasestep/phase-1-step-2 — PR https://… — status open — date
+GitHub PR: update [phase N step S] → main — branch … — PR https://… — status open|merged — date
+GitHub PR: update feature/phase-slug → develop — PR https://… — status merged — date
+GitHub: release promoted — develop → release — date
+GitHub: main promoted — release → main — tag vX.Y.Z — date
 ```
 
 ---

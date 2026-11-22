@@ -70,7 +70,7 @@ Pre-build consistency — blocking issues:
 
 - Minimize scope to the step’s done-when
 - Match existing project patterns
-- Do **not** commit unless Owner asks — standard path is `/pr-step` (Owner-gated), not an implicit commit after build
+- Do **not** commit unless Owner asks — standard path is `/pr-step update` (invoke authorizes git writes), not an implicit commit after build
 - Do **not** silently cascade principle changes across features during a single step build
 
 ## Execute

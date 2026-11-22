@@ -650,7 +650,7 @@ Setup complete — optional GitHub handoff:
 2. Skip — continue without GitHub automation (manual git/PR OK; /pr-step will fail soft until connected)
 ```
 
-   - On **1. Connect now**: run `/github-connect` (same session or tell Owner to invoke it), then resume Finish step 4.
+   - On **1. Connect now**: run `/github-connect` (same session or tell Owner to invoke it). Connect will ask **Simple PR** vs **GitFlow** (or later). Then resume Finish step 4.
    - On **2. Skip**: record `GitHub: skipped at setup — YYYY-MM-DD` in `{{PROGRESS}}` (optional note); do not block delivery.
 4. Tell Owner next step — do **not** run it unless asked:
 
@@ -658,5 +658,5 @@ Setup complete — optional GitHub handoff:
 Setup complete → run /plan-phase 1
 ```
 
-Later (after verify/complete): `/pr-step` for Owner-gated PR.  
+Later (after verify/complete): `/pr-step update` (Simple→main · GitFlow→develop); GitFlow also `release` / `main`.
 Optional: `npx phasestep check` to confirm artifacts exist.

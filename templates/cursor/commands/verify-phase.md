@@ -166,7 +166,7 @@ Include Trace **Verify #** rows and the **UNCHANGED spot-check** when applicable
 
 ```text
 Step verification result:
-1. Pass — mark step verified + delta accepted → /build-phase PHASE <next> (or /pr-step PHASE STEP for GitHub handoff)
+1. Pass — mark step verified + delta accepted → /build-phase PHASE <next> (or /pr-step update for GitHub handoff)
 2. Fail — /refine-phase PHASE STEP then re-verify
 ```
 
@@ -179,10 +179,10 @@ Status: verified | refining
 Verified steps: (include this STEP on Pass)
 Open rejects / fails: none | (failed Verify # / UNCHANGED spot-check ids)
 Evidence: manual | playwright-cli | mcp | flutter-analyze | rn-tool | buildCommand | mixed | none
-Next: /build-phase PHASE <next> | /pr-step PHASE STEP | /refine-phase PHASE STEP | /audit-phase PHASE
+Next: /build-phase PHASE <next> | /pr-step … | /refine-phase PHASE STEP | /audit-phase PHASE
 Updated: YYYY-MM-DD
 ```
 
 - When **all** steps verified: optional `/audit-ds` (if present) then `/audit-phase` (set Status `auditing` if starting audit)
 - Do not suggest `/complete-phase` until audits are clean
-- Optional: `/pr-step PHASE STEP` after a verified step when the Owner wants a PR before the full phase completes
+- Optional GitHub after a verified step: `/pr-step update` (Simple→main · GitFlow→develop)

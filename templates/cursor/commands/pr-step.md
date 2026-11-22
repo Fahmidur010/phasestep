@@ -1,18 +1,17 @@
 ---
-description: Owner-gated branch, commit, PR, and optional merge via git + gh
-argument-hint: [phase] [step?]
+description: Git handoff — update current work (Simple→main / GitFlow→develop) + GitFlow release/main
+argument-hint: [update|release|main|bugfix|hotfix]
 ---
 
-Run the **GitHub delivery handoff** for Phasestep work: branch → commit → push → PR → optional merge. Agent runs `git` / `gh`; **Owner Accepts every irreversible step** (numbered gates). Never silent commit/push/merge.
+Automate Phasestep **git handoff** for the selected workflow (`phasestep.json` → `github.workflow`).
 
-## Parse arguments
+**Owner intent:** Running `/pr-step` **authorizes** the agent to `git add`, `git commit`, `git push`, and merge as needed for that verb. Do **not** ask the Owner to commit manually first, and do **not** insert Gate A/B/C Accept stops for each step.
 
-`$ARGUMENTS` is `PHASE` optionally followed by `STEP` (same as `/build-phase`).
+**Day-to-day (both modes):** `/pr-step update` (or bare `/pr-step`) — commit **current** work and land it on the integration branch (Simple → `main`/`master`; GitFlow → `develop`).
 
-- With **STEP** → scope to that step (branch `phasestep/phase-PHASE-step-STEP`)
-- Without **STEP** → phase-level handoff (branch `phasestep/phase-PHASE`), typically after `/complete-phase`
+`/build-phase` and `/refine-phase` still do **not** commit on their own — this command is the standard commit path.
 
-## Preconditions
+## Shared preconditions
 
 1. Prefer GitHub already linked via `/github-connect` (check `{{PROGRESS}}` for `GitHub: connected`, or `phasestep.json` `github.repo`). If **not** linked → **STOP**:
 
@@ -23,108 +22,159 @@ GitHub is not connected for this project:
 3. Cancel
 ```
 
-   On **1**: run `/github-connect` (or tell Owner to), then resume this command.  
-   On **2**: print a short manual checklist (branch → commit → push → PR → merge); do **not** run `git`/`gh` write actions; end.  
-   On **3**: stop.
-
-2. Read [`{{PHASE_PLANS_DIR}}/phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/) — step/phase status, Files checklist, Behavior delta.
-3. **Intent / verify:**
-   - Step handoff: step should be **verified** and Behavior delta **accepted**. If `pending_owner_review` or unverified → **STOP**:
-
-```text
-Work is not ready for a normal PR:
-1. Finish intent + /verify-phase first
-2. Open Draft WIP PR anyway (Owner accepts incomplete verify)
-3. Cancel
-```
-
-   - Phase handoff: phase should be **complete** (or Owner explicitly wants a PR for in-progress phase → same WIP options).
-
-## Preflight (tooling)
-
-1. `git` and `gh` available; `gh auth status` OK — else **STOP** (fail soft; no fake success):
+2. `git` and `gh` available; `gh auth status` OK — else **STOP** (fail soft):
 
 ```text
 GitHub tooling not ready:
-1. Install/auth checklist — point Owner to /github-connect (or install git + gh, then gh auth login), then re-run /pr-step
+1. Install/auth checklist — /github-connect (or install git + gh, then gh auth login), then re-run /pr-step
 2. Continue with manual git/PR checklist only (no automation)
 3. Cancel
 ```
 
-2. `git status` — list staged/unstaged/untracked. Propose **include set** from phase plan Files checklist + clearly related changes. If unrelated junk is present → ask which paths to include; never commit the whole tree blindly.
-3. Detect default branch (`main`/`master` via `gh repo view` or `origin/HEAD`).
-4. Never `--force`, never `--no-verify` unless Owner explicitly asked in this chat (record that ask).
+3. Read `github.workflow`. If **unset** → same **Git workflow** STOP as `/github-connect` (Simple / GitFlow / Decide later). After Simple or GitFlow, continue. If Decide later → stop.
 
-## Gate A — Branch + commit
+## Shared safety
 
-Propose:
-- **Branch name** (see Parse arguments; adjust if exists)
-- **Commit message** (short why: phase/step title + one-line Behavior delta headline)
-- **Paths to stage**
+1. **Do not** force-push `main`, `develop`, or `release` (or the default branch)
+2. Prefer `git merge --no-ff` when landing onto integration / promotion branches
+3. Use `git` / `gh` with network as needed for pull / push
+4. Never update git config; never `--no-verify` unless Owner explicitly asks in this chat
+5. Do **not** commit secrets (`.env`, credentials, keys). If such files are dirty → **stop** and warn
+6. After finishing, report: commit hash(es), branches touched, pushes, deletes, current checkout
+7. No deploy/hosting recipes here — branch topology only (project Actions may react to pushes)
 
-**STOP:**
+## Shared: ensure committed + pushed on current branch
 
-```text
-Gate A — branch + commit:
-1. Accept — create/switch branch, stage listed paths, commit
-2. Edit — message / branch / path list, then show Gate A again
-3. Cancel
-```
+Run **before** merge steps when the working tree is dirty **or** the branch is ahead of its remote.
 
-On **1**: create/switch branch; `git add` only agreed paths; commit with agreed message; show `git log -1` + status. Do **not** push yet.
+1. Inspect in parallel: `git status`, `git diff` / staged, recent log, current branch
+2. If dirty → stage shippable files (exclude secrets); draft a short **why** commit message; `git commit`
+3. `git push -u <remote> HEAD` (default remote from `github.remote` / `origin`)
+4. If push rejected (remote ahead) → pull/rebase or merge, resolve, push again — **no** force-push on shared branches
 
-## Gate B — Push + PR
+**Resolve “current work”** (for messages / branch naming / PROGRESS):
 
-Draft PR:
-- **Title:** `[Phase PHASE]` step title or phase title
-- **Body (Markdown):** summary; Behavior delta WHEN/THEN bullets (or “phase complete”); verify notes; links to phase plan / product if useful; checklist of out-of-scope
+1. [`{{PROGRESS}}`](../../{{PROGRESS}}) **Phase health (resume)** — Phase / Step / Status  
+2. Else current branch name  
+3. Else one-line Owner note if needed  
 
-**STOP:**
+Prefer verified / phase-complete work, but **do not** block the handoff with a verify gate — invoking `/pr-step` is consent to ship what’s on the branch.
 
-```text
-Gate B — push + PR:
-1. Accept — push branch + create PR
-2. Push only — no PR yet
-3. Cancel
-```
+---
 
-On **1**: `git push -u <remote> HEAD`; `gh pr create` (use `--draft` if Owner chose WIP earlier). Print PR URL.  
-On **2**: push only; print branch remote URL.  
-Never push unrelated local branches.
+# Mode: Simple PR (`github.workflow` = `simple`)
 
-## Gate C — Merge (optional)
+Trunk-style: land current work onto the **default branch** (`main`/`master`).  
+`/pr-step release` and `/pr-step main` are **GitFlow-only** — if invoked here, remind Owner and offer `/github-connect` to switch workflow.
 
-Only after a PR exists (this run or URL Owner provides).
+## Parse (Simple)
 
-1. `gh pr checks` (or status). If not green → report failures; **do not** merge; offer Wait / Cancel only (or re-run checks).
-2. If green (or no checks configured and Owner still wants merge) → **STOP:**
+| Args | Action |
+|------|--------|
+| *(empty)* or `update` | Commit + push current branch → merge into default → report |
+| anything else | Treat as `update` (ignore extras; no phase/step command shape) |
 
-```text
-Gate C — merge:
-1. Merge when ready (gh pr merge — follow repo default / squash if that is the remote default)
-2. Wait — leave PR open
-3. Cancel
-```
+## Procedure: `update`
 
-On **1**: merge via `gh`; confirm result; optionally note local default-branch pull as Owner’s next manual step (do not auto-delete forks/policies Owner didn’t ask for).  
-On **2**/**3**: stop.
-
-**Never** merge without Gate C option **1**.
-
-## After
-
-1. Append to [`{{PROGRESS}}`](../../{{PROGRESS}}) (session log or GitHub section):
+1. Detect default branch (`main`/`master`).
+2. If on default already with dirty tree → commit + push on default (still no force). Prefer a short-lived branch when Phase health suggests a phase/step name: `phasestep/phase-N-step-S` or `phasestep/phase-N` or `phasestep/update-YYYYMMDD`.
+3. Run **Shared: ensure committed + pushed** on the working branch.
+4. Checkout default; pull; `git merge --no-ff <working-branch>`; push default.
+5. Optionally delete the working branch locally + remote after successful merge (ask once only if unclear whether to keep it).
+6. PROGRESS:
 
 ```text
-GitHub PR: phase PHASE [step STEP] — branch … — PR <url> — status open|merged|pushed-only — date
+GitHub PR: update [phase N step S] → main — branch … — status merged — date
 ```
 
-2. Suggest next: continue `/build-phase` / `/plan-phase` / `/complete-phase` as appropriate.
-3. Do not start the next phase unless Owner asks.
+(Use “merged” even when merge was local `--no-ff` + push; note method in the report.)
+
+7. Suggest next Phasestep command as appropriate.
+
+---
+
+# Mode: GitFlow (`github.workflow` = `gitflow`)
+
+```text
+feature/* · bugfix/*
+        └─► develop ─► release ─► main
+                         ▲         │
+              hotfix/* ──┴─────────┘ (also merge hotfix → develop)
+```
+
+## Parse (GitFlow)
+
+| Verb | Aliases | Action |
+|------|---------|--------|
+| `update` | `develop` | Commit + push → merge into `develop` → delete old branch → open next feature branch |
+| `release` | — | Ensure on `develop` → merge `develop` → `release` and push |
+| `main` | `promote` | Merge `release` → `main` (+ optional tag) |
+| `bugfix` | — | Start `bugfix/<slug>` from `develop` (then later `update` to land) |
+| `hotfix` | — | Start `hotfix/<slug>` from `main`; after fix, merge to `main` **and** `develop` |
+
+*(empty)* → `update`. Unknown verb → stop and show this table.
+
+### Slugs
+
+- Next feature after `update`: ask for descriptive slug if missing → `feature/phase-<slug>`
+- `bugfix <slug>` → `bugfix/<slug>`
+- `hotfix <slug>` → `hotfix/<slug>`
+
+If `develop` / `release` missing → create from default **with Owner confirmation** (same idea as `/github-connect` bootstrap), then continue.
+
+---
+
+## Verb: `update` (alias `develop`)
+
+1. Current branch must be `feature/*` or `bugfix/*` (else stop — or create `feature/phase-<slug>` from `develop` if Owner is starting the handoff from develop with a named slug).
+2. Record `OLD_BRANCH`; run **Shared: ensure committed + pushed**.
+3. Resolve **next** branch: Owner slug / `feature/phase-<slug>` — if missing and current is already named, **ask** (do not invent).
+4. Checkout `develop`; pull; `git merge --no-ff OLD_BRANCH`; push `develop`.
+5. Delete `OLD_BRANCH` local + remote; checkout/create next feature branch; `git push -u`.
+6. On merge conflict → stop with conflict paths; do not force.
+7. PROGRESS: `GitHub PR: update <OLD_BRANCH> → develop — status merged — date`
+8. Soft-remind: `/pr-step release` when promoting a test/live candidate.
+
+---
+
+## Verb: `release`
+
+1. Invoking `/pr-step release` **is** consent to commit/push if needed and update `release`.
+2. If dirty or ahead → **Shared: ensure committed + pushed** on current branch; if still on `feature/*`, land via update steps onto `develop` first (or stop and tell Owner to `/pr-step update`).
+3. Checkout `develop`; pull; checkout `release`; pull; `git merge --no-ff develop`; push `release`.
+4. PROGRESS: `GitHub: release promoted — develop → release — date`
+5. Soft-remind: `/pr-step main` when the cut is stable. Do **not** run project deploy scripts unless Owner asks outside this contract (pushes may trigger their Actions).
+
+---
+
+## Verb: `main` (alias `promote`)
+
+1. Invoking `/pr-step main` **is** consent to merge `release` → production default (`main`/`master` — ask once if unclear).
+2. Checkout `release`; pull; checkout `main`; pull; `git merge --no-ff release`; push `main`.
+3. Optional tag: ask once for `vX.Y.Z` or skip.
+4. PROGRESS: `GitHub: main promoted — release → main — tag … — date`
+5. Never force-push.
+
+---
+
+## Verb: `bugfix [slug]`
+
+From `develop`: create/checkout `bugfix/<slug>`; push `-u`. Later `/pr-step update` lands it on `develop`.
+
+---
+
+## Verb: `hotfix [slug]`
+
+1. From `main`: create/checkout `hotfix/<slug>`; push `-u`.
+2. After fixes: ensure committed + pushed; merge into `main` and push; merge into `develop` and push.
+3. PROGRESS both merges.
+
+---
 
 ## Hard rules
 
-1. Owner gates A/B/C are mandatory for those actions — numbers only is fine.
-2. This command is the **standard** path for commit/push/PR/merge. `/build-phase` and `/refine-phase` still do not commit on their own.
+1. Invoking the matching `/pr-step` verb authorizes the git writes for that verb — no Gate A/B/C.
+2. Still **STOP** for: not connected, tooling missing, workflow unset, secrets in the dirty set, merge conflicts, missing next slug when required.
 3. Fail soft without `gh`/auth — checklist, not fake success.
-4. No force-push; no token files; no GitHub Issues/Projects automation in v1.
+4. No force-push; no token files; no GitHub Issues/Projects automation.
+5. No deploy/hosting install in this command.
