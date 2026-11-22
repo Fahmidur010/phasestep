@@ -14,7 +14,9 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /session-log …             → optional mid-phase notes
 /map-project [refresh]     → agent project map (navigation aid; no Owner gate)
 /github-connect [repo]     → link GitHub + choose Simple PR or GitFlow (no app commit)
-/pr-step update            → land current work; GitFlow: release=live, hotfix from release → release+develop
+/pr-step [update|release|main|bugfix|hotfix …]
+                           → git handoff (empty=update); Simple→main · GitFlow→develop;
+                             release=live · main=baseline · hotfix from release → release+develop
 
 /audit-project             → draft AUDIT_PLAN → Owner accept
 /audit-campaign <n> [reaudit] → campaign audit report per audit-plan phase

@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.8.2  
+**Version:** 0.8.3  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-11-22  
 **Product:** Phasestep  
@@ -141,7 +141,7 @@ Paths are overridable in `phasestep.json`.
 | **session-log** | `label` `N` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
 | **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; Owner picks **Simple PR** or **GitFlow** (`github.workflow`); optional GitFlow branch bootstrap. No app commit. |
-| **pr-step** | `update` · GitFlow: `release` \| `main` \| `hotfix` \| `bugfix` | Agent + Owner | Invoke **authorizes** commit/push/merge. Simple→`main`; GitFlow→`develop`. **`release` = live**; **`main` = baseline**. Hotfix from `release` → `release`+`develop`. |
+| **pr-step** | `update` · GitFlow: `release` \| `main` \| `hotfix` \| `bugfix` | Agent + Owner | Invoke **authorizes** commit/push/merge (`merge --no-ff`). Simple→`main`; GitFlow→`develop`. **`release` = live**; **`main` = baseline**. Hotfix from `release` → `release`+`develop`. Bugfix from `develop` → `develop` (live → hotfix). |
 | **audit-project** | — | Agent + Owner | Draft `AUDIT_PLAN.md` (feature-listed audit phases) from accepted product/flow/architecture (+DS); prefer project map seams; Owner accept gate; docs only. |
 | **audit-campaign** | `N` `[reaudit]` | Agent | Read-only **campaign** audit against audit plan → report in `docs/audit-reports/`. |
 | **audit-campaign-ds** | `N` | Agent | Design-system checks for a campaign phase (fold into campaign report). |
@@ -231,10 +231,10 @@ Owner UAT remains the gate. Surface evidence (if accepted at setup or mid-flight
 
 ## 9. Version control (recommended)
 
-- Protect default branch; use PRs  
-- Short-lived branches per step or chunk; optional phase integration branch  
-- Commit when Owner asks  
-- No force-push to protected branches  
+- Protect shared branches (`main` / `develop` / `release` as used)  
+- Day-to-day handoff via `/pr-step` — **invoke authorizes** commit / push / merge (prefer `merge --no-ff`); no Gate A/B/C  
+- Short-lived feature / bugfix / hotfix branches; Simple lands on default; GitFlow lands on `develop`, then `release` (live) → `main` (baseline)  
+- Never force-push shared branches; deploy/hosting stays project-local  
 
 ---
 
@@ -258,7 +258,16 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.8.2 — bugfix full-path parity — *current*
+### v0.8.3 — GitFlow docs/stub alignment — *current*
+
+**Date:** 2026-11-22  
+
+- Constitution §9 + §5 pr-step Must: invoke = authorize, `--no-ff`, bugfix path; never force-push; deploy project-local  
+- PROGRESS + soft-migrate: drop `PR https` examples; note local `merge --no-ff`  
+- Codex AGENTS + adapter command READMEs: full `/pr-step` verb list  
+- Smoke: soft-reminds, force-push/deploy, Cursor≡Claude bodies, Codex AGENTS, PROGRESS bugfix  
+
+### v0.8.2 — bugfix full-path parity
 
 **Date:** 2026-11-22  
 
@@ -480,10 +489,10 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **Product sync delta** | ADDED/CHANGED/REMOVED when flow refinements update the product spec |
 | **Architecture impact gate** | Owner Accept/Reject/Defer when architecture implies product/flow change |
 | **Cross-cutting STOP** | Numbered gate before code when a principle change cascades across features |
-| **pr-step** | GitHub handoff — Simple or GitFlow; release=live; hotfix from release → release+develop |
+| **pr-step** | GitHub handoff — Simple or GitFlow; release=live; hotfix from release → release+develop; bugfix → develop |
 | **github-connect** | Link `gh` auth + remote; choose Simple PR or GitFlow; record in config/PROGRESS; no app commit |
 | **Adapter** | IDE-specific command implementation |
 
 ---
 
-*End of constitution — Phasestep v0.8.2*
+*End of constitution — Phasestep v0.8.3*

@@ -356,9 +356,45 @@ function main() {
   assert(prStepCmd.includes('from `release`') || prStepCmd.includes('branch from `release`'), 'pr-step hotfix from release');
   assert(prStepCmd.includes('release` and `develop`') || prStepCmd.includes('release` **and** `develop`') || prStepCmd.includes('release + develop'), 'pr-step hotfix lands release and develop');
   assert(prStepCmd.includes('fully stable'), 'pr-step release reminds pr-step main when stable');
+  assert(
+    prStepCmd.includes('Soft-remind: when ready for live, `/pr-step release`') ||
+      prStepCmd.includes('Soft-remind: when ready for live'),
+    'pr-step bugfix soft-reminds release'
+  );
+  assert(
+    prStepCmd.includes('Soft-remind: when live is stable again, `/pr-step main`') ||
+      prStepCmd.includes('when live is stable again'),
+    'pr-step hotfix soft-reminds main'
+  );
+  assert(
+    prStepCmd.includes('Do not** force-push') ||
+      prStepCmd.includes('Do **not** force-push') ||
+      prStepCmd.includes('Never force-push') ||
+      prStepCmd.includes('No force-push'),
+    'pr-step never force-push'
+  );
+  assert(
+    prStepCmd.includes('No deploy/hosting') || prStepCmd.includes('no deploy/hosting'),
+    'pr-step no deploy recipes'
+  );
   assert(githubConnectCmd.includes('release = live') || githubConnectCmd.includes('live / deploy'), 'github-connect release is live');
   assert(progressStub.includes('GitHub workflow:'), 'PROGRESS GitHub workflow example');
   assert(progressStub.includes('hotfix'), 'PROGRESS hotfix example');
+  assert(progressStub.includes('bugfix'), 'PROGRESS bugfix example');
+  assert(!progressStub.includes('PR https://'), 'PROGRESS examples prefer local merge status not PR URL');
+  assert(progressStub.includes('merge --no-ff'), 'PROGRESS notes merge --no-ff');
+
+  const prStepClaude = read(path.join('.claude', 'commands', 'pr-step.md'));
+  const githubConnectClaude = read(path.join('.claude', 'commands', 'github-connect.md'));
+  assert(prStepClaude === prStepCmd, 'claude pr-step body matches cursor');
+  assert(githubConnectClaude === githubConnectCmd, 'claude github-connect body matches cursor');
+
+  const agentsMd = read('AGENTS.md');
+  assert(agentsMd.includes('authorizes') || agentsMd.includes('invoke authorizes'), 'codex AGENTS mentions authorize');
+  assert(agentsMd.includes('release') && agentsMd.includes('live'), 'codex AGENTS mentions release=live');
+  assert(agentsMd.includes('hotfix'), 'codex AGENTS mentions hotfix');
+  assert(agentsMd.includes('bugfix'), 'codex AGENTS mentions bugfix');
+  assert(agentsMd.includes('/pr-step main') || agentsMd.includes('`/pr-step main`'), 'codex AGENTS mentions pr-step main');
 
   const auditPhaseCmd = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmd.includes('delivery-only') || auditPhaseCmd.includes('Build Phase'), 'audit-phase delivery only');
@@ -424,6 +460,8 @@ function main() {
   assert(!read(cfg.progress).includes('### GitHub'), 'PROGRESS GitHub section stripped for migrate test');
   run(['upgrade', TMP]);
   assert(read(cfg.progress).includes('### GitHub'), 'upgrade soft-migrates PROGRESS GitHub section');
+  assert(read(cfg.progress).includes('bugfix form-validation'), 'upgrade soft-migrate includes bugfix example');
+  assert(!read(cfg.progress).includes('PR https://'), 'upgrade soft-migrate has no stale PR https example');
   assert(read(cfg.productSpec).includes('KEEP_ME'), 'upgrade GitHub migrate preserves Owner docs');
 
   // Soft-migrate Phase health into existing PROGRESS without --force-docs

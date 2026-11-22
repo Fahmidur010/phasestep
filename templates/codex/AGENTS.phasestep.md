@@ -19,7 +19,11 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/session-log` | Optional mid-phase notes |
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
 | `/github-connect [repo]` | Link GitHub + choose Simple PR or GitFlow (no app commit) |
-| `/pr-step update` | Land current work; GitFlow: `release`=live, `hotfix` from release → release+develop; invoke authorizes writes |
+| `/pr-step` / `update` | Land current work (empty args = update). Simple→main · GitFlow→develop. Invoke authorizes commit/push/merge |
+| `/pr-step release` | GitFlow: develop → **release** (live / deploy line); soft-remind `/pr-step main` when fully stable |
+| `/pr-step main` | GitFlow: release → **main** (stable baseline) |
+| `/pr-step bugfix …` | GitFlow non-live: from develop → fix → develop; soft-remind release; live bugs → hotfix |
+| `/pr-step hotfix …` | GitFlow live: from release → fix → release + develop; soft-remind main |
 | `/audit-project` | Draft `{{AUDIT_PLAN}}` (Owner-gated audit phases) |
 | `/audit-campaign N [reaudit]` | Campaign audit against audit plan |
 | `/audit-campaign-ds N` | Design-system checks for a campaign phase |
@@ -50,7 +54,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 4. Design component libraries are pick-one; never mix kits.
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app. Prefer `{{PROJECT_MAP}}` when present; refresh via `/map-project` without Owner gate.
 6. Principle / multi-feature changes: follow Cross-cutting STOP in `/refine-phase` before coding (decision + product sync, or scoped/defer).
-7. Commit / push / PR / merge only via `/pr-step` (or explicit Owner ask that `/pr-step` executes) — never silent from build/refine.
+7. Commit / push / merge only via `/pr-step` (or explicit Owner ask that `/pr-step` executes) — invoke authorizes; never force-push; never silent from build/refine. Deploy stays project-local.
 8. **Additive install, sole delivery (recommended):** content outside these markers is the project's own agent guidance. Prefer **Sole Phasestep** via `/setup` (Owner-gated archive) for full results; **Alongside** is an explicit opt-in. Do not invent a merged meta-workflow.
 
 If command markdown files are missing, run `npx phasestep upgrade` or `npx phasestep init`.

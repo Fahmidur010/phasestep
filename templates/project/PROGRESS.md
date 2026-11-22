@@ -84,13 +84,15 @@ Offered at `/setup` Finish (Connect now / Skip). Re-run `/github-connect` anytim
 GitHub: connected — owner/repo (origin) — YYYY-MM-DD
 GitHub workflow: simple | gitflow — YYYY-MM-DD
 GitHub: skipped at setup — YYYY-MM-DD
-GitHub PR: update [phase N step S] → main — branch … — PR https://… — status open|merged — date
-GitHub PR: update feature/phase-slug → develop — PR https://… — status merged — date
+GitHub PR: update [phase N step S] → main — branch … — status merged — date
+GitHub PR: update feature/phase-slug → develop — status merged — date
 GitHub: release promoted — develop → release — date
 GitHub: main promoted — release → main — tag vX.Y.Z — date
 GitHub: hotfix login-timeout → release + develop — status merged — date
 GitHub: bugfix form-validation → develop — status merged — date
 ```
+
+("merged" includes local `merge --no-ff` + push; `/pr-step` prefers that over `gh pr create`.)
 
 ---
 

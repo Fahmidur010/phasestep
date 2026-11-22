@@ -1,6 +1,6 @@
 {
   "name": "phasestep",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Phase-step agentic delivery with Behavior delta intent gates — portable workflow for AI-assisted development",
   "bin": {
     "phasestep": "bin/phasestep.js"
