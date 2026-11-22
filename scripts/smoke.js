@@ -348,6 +348,8 @@ function main() {
   assert(prStepCmd.includes('Verb: `release`') || prStepCmd.includes('| `release` |'), 'pr-step release verb');
   assert(prStepCmd.includes('Verb: `main`') || prStepCmd.includes('| `main` |'), 'pr-step main verb');
   assert(prStepCmd.includes('bugfix'), 'pr-step bugfix verb');
+  assert(prStepCmd.includes('authorizes the full path'), 'pr-step bugfix/hotfix full-path authorize');
+  assert(prStepCmd.includes('Mis-route') || prStepCmd.includes('switch to `/pr-step hotfix'), 'pr-step bugfix mis-route to hotfix');
   assert(prStepCmd.includes('hotfix'), 'pr-step hotfix verb');
   assert(prStepCmd.includes('develop'), 'pr-step develop / GitFlow develop');
   assert(prStepCmd.includes('release (live') || prStepCmd.includes('Live / deploy'), 'pr-step release is live line');

@@ -6,7 +6,7 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.8.1**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v0.8.2**
 
 ---
 
@@ -119,8 +119,8 @@ Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/au
 /pr-step update            → land current work (Simple→main · GitFlow→develop)
 /pr-step release           → GitFlow: develop → release (live line); remind /pr-step main when stable
 /pr-step main              → GitFlow: release → main (baseline snapshot)
-/pr-step hotfix <issue>    → GitFlow: from release → fix → release + develop
-/pr-step bugfix <issue>   → GitFlow: from develop → fix → develop
+/pr-step hotfix <issue>    → GitFlow live: from release → fix → release + develop (one invoke)
+/pr-step bugfix <issue>   → GitFlow non-live: from develop → fix → develop (one invoke)
 ```
 
 Needs local `git` + [GitHub CLI](https://cli.github.com/). Running `/pr-step` authorizes commit/push/merge for that verb (no Gate A/B/C). Deploy/hosting stays in your project — Phasestep owns branch topology only.

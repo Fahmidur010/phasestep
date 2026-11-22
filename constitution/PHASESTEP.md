@@ -1,6 +1,6 @@
 # Phasestep — Constitution
 
-**Version:** 0.8.1  
+**Version:** 0.8.2  
 **Status:** Living constitution (portable framework)  
 **Last updated:** 2026-11-22  
 **Product:** Phasestep  
@@ -258,13 +258,19 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 
 Newest first. Product changelog only.
 
-### v0.8.1 — GitFlow release-as-live + hotfix — *current*
+### v0.8.2 — bugfix full-path parity — *current*
+
+**Date:** 2026-11-22  
+
+- **`/pr-step bugfix`** — same structure as hotfix: authorize full path, conflict stop, resume, mis-route live → hotfix; soft-remind `/pr-step release` after land  
+
+### v0.8.1 — GitFlow release-as-live + hotfix
 
 **Date:** 2026-11-22  
 
 - GitFlow: **`release` = live/deploy line**; **`main` = stable baseline**; after `/pr-step release` soft-remind `/pr-step main` when stable  
-- **`/pr-step hotfix <issue>`** — from `release` → fix → land `release` + `develop` (one invoke; no extra update/release)  
-- **`/pr-step bugfix <issue>`** — from `develop` → fix → `develop`  
+- **`/pr-step hotfix <issue>`** — live: from `release` → fix → land `release` + `develop` (one invoke)  
+- **`/pr-step bugfix <issue>`** — non-live: from `develop` → fix → land `develop` (one invoke)  
 
 ### v0.8.0 — GitFlow workflow mode
 
@@ -480,4 +486,4 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 ---
 
-*End of constitution — Phasestep v0.8.1*
+*End of constitution — Phasestep v0.8.2*

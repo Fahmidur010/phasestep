@@ -98,7 +98,7 @@ Git workflow:
    Day-to-day: /pr-step update → land on develop
    Promote live: /pr-step release (then remind /pr-step main when stable)
    Live bug: /pr-step hotfix <issue> → fix → release + develop (one command)
-   Non-live bug: /pr-step bugfix <issue> → develop
+   Non-live bug: /pr-step bugfix <issue> → fix → develop (one command; not for live)
    Invoking /pr-step authorizes those git writes (no Gate A/B/C).
 
 3. Decide later — leave workflow unset; /pr-step will ask again before git writes.

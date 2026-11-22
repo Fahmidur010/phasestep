@@ -127,8 +127,8 @@ feature/* · bugfix/*
 | `update` | `develop` | Commit + push → merge into `develop` → delete old branch → open next feature branch |
 | `release` | — | Merge `develop` → `release` and push (promotes to live line) |
 | `main` | `promote` | Merge `release` → `main` (+ optional tag) — baseline sync, not the live firehose |
-| `bugfix` | — | Non-live: branch from `develop`, fix, land on `develop` (same session or finish later) |
-| `hotfix` | — | **Live issue:** branch from `release`, fix, land on `release` **and** `develop` — no extra `/pr-step` needed |
+| `bugfix` | — | **Non-live:** from `develop` → fix → land `develop` (one invoke; no extra `update`) |
+| `hotfix` | — | **Live:** from `release` → fix → land `release` **and** `develop` (one invoke) |
 
 *(empty)* → `update`. Unknown verb → stop and show this table.
 
@@ -178,14 +178,29 @@ If `develop` / `release` missing → create from default **with Owner confirmati
 
 ## Verb: `bugfix [issue…]`
 
-Non-live defect on work that is **not** on the live `release` line.
+**Non-live defect** — broken on `develop` / in-progress work, **not** what is already live on `release`.  
+(If the bug is on live → use **`hotfix`**, not bugfix.)
 
-1. Slugify remaining args → `bugfix/<slug>` (if missing, ask once for a short name + issue brief).
-2. From `develop`: create/checkout branch; push `-u`.
-3. Implement the fix from the Owner’s issue brief (minimal change). Prefer a quick Owner confirm if behavior is product-facing.
-4. When fixed: **Shared: ensure committed + pushed**; checkout `develop`; pull; `git merge --no-ff bugfix/<slug>`; push `develop`; delete bugfix branch local + remote.
-5. PROGRESS: `GitHub: bugfix <slug> → develop — status merged — date`
-6. No need for a second `/pr-step update` when the fix completes in this run. If the fix spills to another session, stay on the bugfix branch and re-run `/pr-step bugfix` (or `/pr-step update` while on that branch) to finish the land.
+Invoking `/pr-step bugfix …` **authorizes the full path**: create branch from `develop` → fix → merge into **`develop`**. Owner does **not** need a separate `/pr-step update` afterward for the same fix.
+
+1. Parse remaining args as **issue brief** + slugify → `bugfix/<slug>`. If no args → ask once: short name + what’s wrong (and confirm it is **not** a live/`release` issue).
+2. Checkout `develop`; pull.
+3. If not already on a matching `bugfix/*` branch → create/checkout `bugfix/<slug>` from `develop`; push `-u`.
+4. Implement the fix for the stated issue (minimal, targeted). Prefer Owner confirm if product-facing / UAT-sensitive.
+5. When the fix is done (same session):
+   - **Shared: ensure committed + pushed** on the bugfix branch
+   - Checkout `develop`; pull; `git merge --no-ff bugfix/<slug>`; push `develop`
+   - Delete `bugfix/<slug>` local + remote after the land succeeds
+6. On conflict → stop with paths; do not force; leave bugfix branch for resume.
+7. PROGRESS:
+
+```text
+GitHub: bugfix <slug> → develop — status merged — date
+```
+
+8. Soft-remind: when ready for live, `/pr-step release` (then `/pr-step main` when that cut is fully stable).
+9. **Resume:** if already on `bugfix/*` with a completed fix from a prior turn, re-running `/pr-step bugfix` (with or without args) finishes steps 5–8 only — do not reinvent the issue.
+10. **Mis-route:** if Owner describes a **live** production break → stop once and switch to `/pr-step hotfix …` (do not land only on `develop`).
 
 ---
 
@@ -223,4 +238,4 @@ GitHub: hotfix <slug> → release + develop — status merged — date
 3. Fail soft without `gh`/auth — checklist, not fake success.
 4. No force-push; no token files; no GitHub Issues/Projects automation.
 5. No deploy/hosting install in this command.
-6. GitFlow: **live = `release`**; **baseline = `main`**; hotfix from `release` → `release` + `develop`.
+6. GitFlow: **live = `release`**; **baseline = `main`**; hotfix from `release` → `release` + `develop`; bugfix from `develop` → `develop`.
