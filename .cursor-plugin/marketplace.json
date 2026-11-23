@@ -1,0 +1,16 @@
+{
+  "name": "phasestep",
+  "owner": {
+    "name": "Fahmidur010"
+  },
+  "metadata": {
+    "description": "Phasestep — phase-step agentic delivery for Cursor"
+  },
+  "plugins": [
+    {
+      "name": "phasestep",
+      "source": "plugins/cursor",
+      "description": "Phase-step agentic delivery with Behavior delta intent gates. /setup scaffolds the project — no separate terminal init."
+    }
+  ]
+}

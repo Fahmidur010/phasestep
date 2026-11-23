@@ -1,0 +1,985 @@
+{
+  "version": "1",
+  "updated": "2026-07-27",
+  "description": "Stack enrichment for /setup. stacks = official framework sources (each resource/recipe has why). community = non-official curated (why + appliesTo). verification = official cross-cutting verify/audit tools (e.g. Playwright) for web UI — Owner-gated, never vendored into phasestep. Pointers + recipes only - never vendor rule bodies. Verify URLs when web is available.",
+  "stacks": [
+    {
+      "id": "flutter",
+      "name": "Flutter",
+      "coverage": "full",
+      "detect": {
+        "filesAny": [
+          "pubspec.yaml"
+        ],
+        "fileContainsAny": [
+          {
+            "file": "pubspec.yaml",
+            "pattern": "flutter:"
+          }
+        ],
+        "dirsAny": [
+          "lib"
+        ]
+      },
+      "entryUrl": "https://docs.flutter.dev/ai/create-with-ai",
+      "resources": [
+        {
+          "kind": "ai-rules",
+          "label": "AI rules for Flutter and Dart",
+          "url": "https://docs.flutter.dev/ai/ai-rules",
+          "why": "First-party Flutter/Dart coding rules for agents. Adding them (e.g. into AGENTS.md / .cursor/rules) steers the agent toward idiomatic Flutter instead of generic Dart guesses."
+        },
+        {
+          "kind": "skills",
+          "label": "Agent skills for Flutter and Dart (docs)",
+          "url": "https://docs.flutter.dev/ai/agent-skills",
+          "why": "Official index of Flutter agent skills. Use this to discover which first-party skills to install for architecture, UI, and tooling."
+        },
+        {
+          "kind": "skills",
+          "label": "Flutter architecture best practices",
+          "url": "https://www.skills.sh/flutter/skills/flutter-apply-architecture-best-practices",
+          "why": "Official Flutter skill for layered architecture (UI / ViewModel / data). Helps the agent structure features correctly during architecture and later builds."
+        },
+        {
+          "kind": "skills",
+          "label": "Flutter responsive layout",
+          "url": "https://www.skills.sh/flutter/skills/flutter-build-responsive-layout",
+          "why": "Official Flutter skill for responsive layouts. Worth adding when the product has multi-size UI (phone/tablet/web)."
+        },
+        {
+          "kind": "mcp",
+          "label": "Dart and Flutter MCP server",
+          "url": "https://docs.flutter.dev/ai/mcp-server",
+          "why": "Official Dart/Flutter MCP. Gives the agent live analyze/fix, pub.dev search, tests, and (with setup) running-app tools — much stronger than docs-only context."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "cursor-mcp-dart",
+          "description": "Register Dart/Flutter MCP in Cursor (.cursor/mcp.json)",
+          "target": ".cursor/mcp.json",
+          "snippet": {
+            "mcpServers": {
+              "dart": {
+                "command": "dart",
+                "args": [
+                  "mcp-server"
+                ]
+              }
+            }
+          },
+          "why": "Wires the official Dart MCP into Cursor so analyze/fix and Flutter tooling are available during build/verify."
+        },
+        {
+          "id": "ai-rules-fetch",
+          "description": "Download official rules.md from Flutter AI rules page and adapt into AGENTS.md or .cursor/rules/ - never invent rules text",
+          "target": "AGENTS.md",
+          "why": "Installs first-party framework rules into AGENTS.md / .cursor/rules so every agent turn follows official conventions."
+        },
+        {
+          "id": "flutter-architecture-skill",
+          "description": "Install official Flutter architecture skill (Owner confirms)",
+          "target": "agent skills",
+          "command": "npx skills add https://github.com/flutter/skills --skill flutter-apply-architecture-best-practices",
+          "why": "Adds the official architecture skill so planning and builds follow Flutter layering (not ad-hoc folders)."
+        },
+        {
+          "id": "flutter-responsive-skill",
+          "description": "Install official Flutter responsive layout skill (Owner confirms)",
+          "target": "agent skills",
+          "command": "npx skills add https://github.com/flutter/skills --skill flutter-build-responsive-layout",
+          "why": "Adds the official responsive-layout skill when UI must adapt across breakpoints."
+        }
+      ],
+      "buildCommandHints": [
+        "flutter analyze",
+        "flutter test"
+      ],
+      "notes": "Prefer official Flutter AI docs and github.com/flutter/skills. Owner gate before writing MCP config or rules files."
+    },
+    {
+      "id": "angular",
+      "name": "Angular",
+      "coverage": "full",
+      "detect": {
+        "filesAny": [
+          "angular.json"
+        ],
+        "packageJsonDepsAny": [
+          "@angular/core",
+          "@angular/cli"
+        ]
+      },
+      "entryUrl": "https://angular.dev/ai/develop-with-ai",
+      "resources": [
+        {
+          "kind": "ai-rules",
+          "label": "LLM prompts and AI IDE setup",
+          "url": "https://angular.dev/ai/develop-with-ai",
+          "why": "Official Angular AI setup hub (rules + MCP guidance). Baseline for keeping generated Angular code modern (signals, standalone, etc.)."
+        },
+        {
+          "kind": "ai-rules",
+          "label": "Angular airules (context)",
+          "url": "https://angular.dev/assets/context/airules.md",
+          "why": "Official Angular rules file for IDEs. Drop into agent rules so the agent prefers current Angular patterns over outdated NgModule-era code."
+        },
+        {
+          "kind": "ai-rules",
+          "label": "Angular guidelines (context)",
+          "url": "https://angular.dev/assets/context/guidelines.md",
+          "why": "Official Angular guidelines companion to airules. Reinforces best practices the agent should follow when writing Angular."
+        },
+        {
+          "kind": "mcp",
+          "label": "Angular CLI MCP server (see AI / CLI docs)",
+          "url": "https://angular.dev/ai/develop-with-ai",
+          "why": "Official Angular AI setup hub (rules + MCP guidance). Baseline for keeping generated Angular code modern (signals, standalone, etc.)."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "ai-rules-fetch",
+          "description": "Fetch Angular context rules (airules/guidelines) and adapt for Cursor AGENTS.md or .cursor/rules/ — never invent",
+          "target": "AGENTS.md",
+          "why": "Installs first-party framework rules into AGENTS.md / .cursor/rules so every agent turn follows official conventions."
+        },
+        {
+          "id": "angular-cli-mcp",
+          "description": "Follow angular.dev AI docs to enable Angular CLI MCP for the Owner's agent",
+          "target": ".cursor/mcp.json",
+          "why": "Enables Angular CLI MCP so the agent can search docs and examples against your modern Angular version."
+        }
+      ],
+      "buildCommandHints": [
+        "ng build",
+        "npm run build"
+      ],
+      "notes": "Official angular.dev/ai is the source of truth."
+    },
+    {
+      "id": "nextjs",
+      "name": "Next.js",
+      "coverage": "full",
+      "detect": {
+        "filesAny": [
+          "next.config.js",
+          "next.config.mjs",
+          "next.config.ts"
+        ],
+        "packageJsonDepsAny": [
+          "next"
+        ]
+      },
+      "entryUrl": "https://nextjs.org/docs/app/guides/ai-agents",
+      "resources": [
+        {
+          "kind": "ai-rules",
+          "label": "Next.js AI agents guide (AGENTS.md + bundled docs)",
+          "url": "https://nextjs.org/docs/app/guides/ai-agents",
+          "why": "Official Next.js AI agents guide. Points agents at version-matched docs bundled in the next package so code matches your installed Next version."
+        },
+        {
+          "kind": "docs",
+          "label": "Next.js 16.2 AI improvements",
+          "url": "https://nextjs.org/blog/next-16-2-ai",
+          "why": "Explains Next 16.2 AGENTS.md / bundled-docs model. Useful context for why the agents-md recipe matters."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "next-agents-md",
+          "description": "On Next 16.2+: add AGENTS.md managed block pointing at node_modules/next/dist/docs/. On older versions: npx @next/codemod@latest agents-md",
+          "target": "AGENTS.md",
+          "command": "npx @next/codemod@latest agents-md",
+          "why": "Creates AGENTS.md that forces the agent to read version-matched Next docs from node_modules before coding."
+        }
+      ],
+      "buildCommandHints": [
+        "npm run build",
+        "npx next build"
+      ],
+      "notes": "Prefer bundled version-matched docs over training data. See community section for Vercel Labs skills."
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "coverage": "docs-only",
+      "detect": {
+        "packageJsonDepsAny": [
+          "react",
+          "react-dom"
+        ],
+        "packageJsonDepsNoneOf": [
+          "next",
+          "@angular/core",
+          "react-native",
+          "expo"
+        ]
+      },
+      "entryUrl": "https://react.dev/reference/rules",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Rules of React",
+          "url": "https://react.dev/reference/rules",
+          "why": "Canonical Rules of React. Cite in AGENTS.md / architecture so the agent does not violate hooks and purity rules."
+        },
+        {
+          "kind": "docs",
+          "label": "React learn hub",
+          "url": "https://react.dev/learn",
+          "why": "Official React learning hub. Reference for idiomatic React when drafting architecture and implementing UI."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "cite-rules-of-react",
+          "description": "Cite Rules of React in architecture / AGENTS.md",
+          "target": "AGENTS.md",
+          "why": "Records Rules of React as project agent guidance when no richer official AI kit exists."
+        }
+      ],
+      "buildCommandHints": [
+        "npm run build",
+        "npm test"
+      ],
+      "notes": "Official React has docs/rules only. See community for Vercel performance skills. If Next.js or React Native detected, prefer those stack entries."
+    },
+    {
+      "id": "react-native",
+      "name": "React Native",
+      "coverage": "docs-only",
+      "detect": {
+        "filesAny": [
+          "app.json",
+          "app.config.js",
+          "app.config.ts"
+        ],
+        "packageJsonDepsAny": [
+          "react-native",
+          "expo"
+        ]
+      },
+      "entryUrl": "https://reactnative.dev/docs/getting-started",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "React Native docs",
+          "url": "https://reactnative.dev/docs/getting-started",
+          "why": "Official React Native docs entry. Primary source of truth for RN APIs and project structure when no first-party AI kit exists."
+        },
+        {
+          "kind": "docs",
+          "label": "Expo docs",
+          "url": "https://docs.expo.dev/",
+          "why": "Official Expo docs. Prefer when the project uses Expo tooling, config, and modules."
+        }
+      ],
+      "installRecipes": [],
+      "buildCommandHints": [
+        "npx expo lint",
+        "npm test",
+        "npx tsc --noEmit"
+      ],
+      "notes": "Official docs only. See community for Vercel React Native skills."
+    },
+    {
+      "id": "nodejs",
+      "name": "Node.js",
+      "coverage": "docs-only",
+      "detect": {
+        "filesAny": [
+          "package.json"
+        ],
+        "packageJsonDepsNoneOf": [
+          "next",
+          "react",
+          "@angular/core",
+          "astro",
+          "svelte",
+          "@sveltejs/kit"
+        ]
+      },
+      "entryUrl": "https://nodejs.org/docs/latest/api/",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Node.js API docs",
+          "url": "https://nodejs.org/docs/latest/api/",
+          "why": "Official Node.js API reference. Anchor for server-side Node projects without a richer framework AI kit."
+        },
+        {
+          "kind": "docs",
+          "label": "Node.js learn",
+          "url": "https://nodejs.org/en/learn",
+          "why": "Official Node.js learn guides. Supplemental patterns when structuring a plain Node app."
+        }
+      ],
+      "installRecipes": [],
+      "buildCommandHints": [
+        "npm test",
+        "npm run build"
+      ],
+      "notes": "Generic Node detection is weak — prefer more specific stacks (Next, Nest, Express patterns) when present. Docs-only coverage."
+    },
+    {
+      "id": "laravel",
+      "name": "Laravel",
+      "coverage": "full",
+      "detect": {
+        "filesAny": [
+          "artisan",
+          "composer.json"
+        ],
+        "fileContainsAny": [
+          {
+            "file": "composer.json",
+            "pattern": "\"laravel/framework\""
+          }
+        ]
+      },
+      "entryUrl": "https://laravel.com/docs/13.x/boost",
+      "resources": [
+        {
+          "kind": "mcp",
+          "label": "Laravel Boost (AI coding agents)",
+          "url": "https://laravel.com/docs/13.x/boost",
+          "why": "Official Laravel Boost — MCP + guidelines so the agent understands this app (routes, schema, versioned docs). Default agent enrichment for Laravel."
+        },
+        {
+          "kind": "mcp",
+          "label": "Laravel MCP (build MCP servers in Laravel)",
+          "url": "https://laravel.com/docs/13.x/mcp",
+          "why": "Official guide to building MCP servers inside Laravel. Add when the product itself exposes MCP — not required for everyday agent coding (prefer Boost for that)."
+        },
+        {
+          "kind": "docs",
+          "label": "Laravel AI SDK",
+          "url": "https://laravel.com/docs/13.x/ai-sdk",
+          "why": "Official Laravel AI SDK for building AI features in the app. Relevant when the product uses LLM features; separate from Boost (which helps the coding agent)."
+        },
+        {
+          "kind": "docs",
+          "label": "Laravel Boost overview (marketing / install)",
+          "url": "https://laravel.com/ai/boost",
+          "why": "Boost install/overview page. Quick path to install and wire Boost into Cursor or other agents."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "laravel-boost",
+          "description": "composer require laravel/boost --dev && php artisan boost:install (Owner confirms) — primary agent enrichment",
+          "target": "composer.json",
+          "command": "composer require laravel/boost --dev",
+          "why": "Installs Boost (dev) and configures agent MCP/guidelines for this Laravel app — primary official enrichment."
+        }
+      ],
+      "buildCommandHints": [
+        "php artisan test",
+        "composer test"
+      ],
+      "notes": "Boost = AI coding agents for this app. MCP / AI SDK docs = building AI features or MCP servers in Laravel — propose when relevant; Boost is the default setup enrichment."
+    },
+    {
+      "id": "tanstack",
+      "name": "TanStack",
+      "coverage": "full",
+      "detect": {
+        "packageJsonDepsAny": [
+          "@tanstack/react-query",
+          "@tanstack/react-router",
+          "@tanstack/start",
+          "@tanstack/react-table",
+          "@tanstack/ai",
+          "@tanstack/intent"
+        ]
+      },
+      "entryUrl": "https://tanstack.com/blog/from-docs-to-agents",
+      "resources": [
+        {
+          "kind": "skills",
+          "label": "TanStack Intent — agent skills with packages",
+          "url": "https://tanstack.com/blog/from-docs-to-agents",
+          "why": "Official TanStack Intent story — skills ship with packages. Explains why running intent install keeps agent knowledge versioned with deps."
+        },
+        {
+          "kind": "skills",
+          "label": "TanStack AI agent skills docs",
+          "url": "https://tanstack.com/ai/latest/docs/getting-started/agent-skills",
+          "why": "Official TanStack agent-skills docs. How to load package-shipped skills for Query/Router/AI correctly."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "tanstack-intent-install",
+          "description": "npx @tanstack/intent@latest install — wires package-shipped skills into AGENTS.md",
+          "target": "AGENTS.md",
+          "command": "npx @tanstack/intent@latest install",
+          "why": "Wires TanStack package skills into AGENTS.md so agents load correct Query/Router/etc. patterns for installed versions."
+        }
+      ],
+      "buildCommandHints": [
+        "npm run build",
+        "npm test"
+      ],
+      "notes": "Often coexists with React/Next — propose as additive enrichment, not exclusive stack."
+    },
+    {
+      "id": "django",
+      "name": "Django",
+      "coverage": "docs-only",
+      "detect": {
+        "filesAny": [
+          "manage.py"
+        ],
+        "fileContainsAny": [
+          {
+            "file": "requirements.txt",
+            "pattern": "Django"
+          },
+          {
+            "file": "pyproject.toml",
+            "pattern": "django"
+          }
+        ]
+      },
+      "entryUrl": "https://docs.djangoproject.com/",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Django documentation",
+          "url": "https://docs.djangoproject.com/",
+          "why": "Official Django documentation. Primary conventions source when no first-party AI rules/MCP kit exists."
+        }
+      ],
+      "installRecipes": [],
+      "buildCommandHints": [
+        "python manage.py test",
+        "pytest"
+      ],
+      "notes": "No first-party official AI-rules/MCP kit at catalog time. Do not invent community rules unless Owner supplies a URL or file."
+    },
+    {
+      "id": "php",
+      "name": "PHP",
+      "coverage": "docs-only",
+      "detect": {
+        "filesAny": [
+          "composer.json"
+        ],
+        "fileContainsAny": [
+          {
+            "file": "composer.json",
+            "pattern": "\"php\""
+          }
+        ],
+        "packageExcludeIf": [
+          "laravel/framework"
+        ]
+      },
+      "entryUrl": "https://www.php.net/docs.php",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "PHP manual",
+          "url": "https://www.php.net/docs.php",
+          "why": "Official PHP manual. Language-level reference for PHP projects (prefer Laravel stack when Laravel is present)."
+        }
+      ],
+      "installRecipes": [],
+      "buildCommandHints": [
+        "composer test",
+        "vendor/bin/phpunit"
+      ],
+      "notes": "If Laravel is detected, prefer laravel stack entry. Docs-only."
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI",
+      "coverage": "docs-only",
+      "detect": {
+        "fileContainsAny": [
+          {
+            "file": "requirements.txt",
+            "pattern": "fastapi"
+          },
+          {
+            "file": "pyproject.toml",
+            "pattern": "fastapi"
+          },
+          {
+            "file": "main.py",
+            "pattern": "fastapi"
+          }
+        ]
+      },
+      "entryUrl": "https://fastapi.tiangolo.com/",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "FastAPI documentation",
+          "url": "https://fastapi.tiangolo.com/",
+          "why": "Official FastAPI docs. Primary API/framework reference when no first-party AI kit exists."
+        }
+      ],
+      "installRecipes": [],
+      "buildCommandHints": [
+        "pytest",
+        "uvicorn"
+      ],
+      "notes": "No first-party official AI-rules/MCP kit at catalog time. Owner may paste preferred resources."
+    },
+    {
+      "id": "astro",
+      "name": "Astro",
+      "coverage": "full",
+      "detect": {
+        "filesAny": [
+          "astro.config.mjs",
+          "astro.config.ts",
+          "astro.config.js"
+        ],
+        "packageJsonDepsAny": [
+          "astro"
+        ]
+      },
+      "entryUrl": "https://docs.astro.build/en/guides/build-with-ai/",
+      "resources": [
+        {
+          "kind": "mcp",
+          "label": "Building Astro sites with AI tools",
+          "url": "https://docs.astro.build/en/guides/build-with-ai/",
+          "why": "Official Astro AI guide. How to wire docs MCP so the agent uses current Astro APIs."
+        },
+        {
+          "kind": "mcp",
+          "label": "Astro Docs MCP endpoint",
+          "url": "https://mcp.docs.astro.build/mcp",
+          "why": "Official Astro Docs MCP endpoint. Adding it gives the agent live docs search instead of stale training data."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "cursor-mcp-astro",
+          "description": "Register Astro Docs MCP (streamable HTTP). If client lacks HTTP transport, use npx mcp-remote proxy per Astro docs.",
+          "target": ".cursor/mcp.json",
+          "snippet": {
+            "mcpServers": {
+              "astro-docs": {
+                "url": "https://mcp.docs.astro.build/mcp"
+              }
+            }
+          },
+          "why": "Registers Astro Docs MCP in Cursor for up-to-date Astro guidance during implementation."
+        }
+      ],
+      "buildCommandHints": [
+        "npm run build",
+        "npx astro check"
+      ],
+      "notes": "MCP is the preferred official enrichment path."
+    },
+    {
+      "id": "svelte",
+      "name": "Svelte",
+      "coverage": "full",
+      "detect": {
+        "filesAny": [
+          "svelte.config.js",
+          "svelte.config.ts"
+        ],
+        "packageJsonDepsAny": [
+          "svelte",
+          "@sveltejs/kit"
+        ]
+      },
+      "entryUrl": "https://svelte.dev/docs/ai/overview",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Svelte AI overview",
+          "url": "https://svelte.dev/docs/ai/overview",
+          "why": "Official Svelte AI toolkit overview (instructions, MCP, skills, subagents). Baseline for correct Svelte 5 agent setup."
+        },
+        {
+          "kind": "skills",
+          "label": "Svelte agent skills",
+          "url": "https://svelte.dev/docs/ai/skills",
+          "why": "Official Svelte agent skills list. Install these so the agent loads Svelte 5 best practices and autofixer tooling on demand."
+        },
+        {
+          "kind": "mcp",
+          "label": "Svelte MCP (see AI overview)",
+          "url": "https://svelte.dev/docs/ai/overview",
+          "why": "Official Svelte AI toolkit overview (instructions, MCP, skills, subagents). Baseline for correct Svelte 5 agent setup."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "svelte-ai-setup",
+          "description": "Follow svelte.dev/docs/ai to enable instructions, MCP, and skills for the Owner's agent — do not invent skill bodies",
+          "target": "AGENTS.md",
+          "why": "Follows official Svelte AI setup so instructions, MCP, and skills are available to the agent."
+        }
+      ],
+      "buildCommandHints": [
+        "npm run build",
+        "npm run check"
+      ],
+      "notes": "Official Svelte AI toolkit is the source of truth."
+    }
+  ],
+  "community": [
+    {
+      "id": "vercel-react-best-practices",
+      "appliesTo": [
+        "react",
+        "nextjs"
+      ],
+      "kind": "skills",
+      "label": "Vercel React best practices",
+      "url": "https://www.skills.sh/vercel-labs/agent-skills/vercel-react-best-practices",
+      "publisher": "vercel-labs",
+      "why": "Not React/Next core docs. High-signal performance rules (waterfalls, bundles, RSC patterns) maintained by Vercel Labs - useful after official Next AGENTS.md / Rules of React are in place.",
+      "installRecipe": {
+        "description": "Install Vercel React/Next performance skill (Owner confirms)",
+        "command": "npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices"
+      }
+    },
+    {
+      "id": "vercel-react-native-skills",
+      "appliesTo": [
+        "react-native"
+      ],
+      "kind": "skills",
+      "label": "Vercel React Native skills",
+      "url": "https://www.skills.sh/vercel-labs/agent-skills/vercel-react-native-skills",
+      "publisher": "vercel-labs",
+      "why": "Not Meta/Expo first-party AI kit. Practical RN/Expo performance and UI patterns (lists, Reanimated, navigation) when official docs alone are thin for agent coding.",
+      "installRecipe": {
+        "description": "Install Vercel React Native / Expo skill (Owner confirms)",
+        "command": "npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-native-skills"
+      }
+    },
+    {
+      "id": "laravel-specialist",
+      "appliesTo": [
+        "laravel"
+      ],
+      "kind": "skills",
+      "label": "Laravel Specialist (jeffallan)",
+      "url": "https://www.skills.sh/jeffallan/claude-skills/laravel-specialist",
+      "publisher": "jeffallan",
+      "why": "Community workflow skill (Eloquent, queues, Livewire, testing). Complements - does not replace - official Laravel Boost. Prefer Boost first; add this if you want extra agent workflow patterns.",
+      "installRecipe": {
+        "description": "Install community Laravel Specialist skill (Owner confirms)",
+        "command": "npx skills add https://github.com/jeffallan/claude-skills --skill laravel-specialist"
+      }
+    },
+    {
+      "id": "laravel-security",
+      "appliesTo": [
+        "laravel"
+      ],
+      "kind": "skills",
+      "label": "Laravel Security (everything-claude-code)",
+      "url": "https://www.skills.sh/affaan-m/everything-claude-code/laravel-security",
+      "publisher": "affaan-m",
+      "why": "Community security-focused skill (auth, policies, production hardening). Use when security review or production readiness matters; still prefer Boost as the primary agent enrichment.",
+      "installRecipe": {
+        "description": "Install community Laravel Security skill (Owner confirms)",
+        "command": "npx skills add https://github.com/affaan-m/everything-claude-code --skill laravel-security"
+      }
+    },
+    {
+      "id": "playwright-best-practices",
+      "appliesTo": [
+        "nextjs",
+        "react",
+        "angular",
+        "svelte",
+        "astro",
+        "tanstack",
+        "laravel"
+      ],
+      "recommendedWith": [
+        "playwright-cli",
+        "playwright-mcp"
+      ],
+      "kind": "skills",
+      "label": "Playwright Best Practices (Currents)",
+      "url": "https://www.skills.sh/currents-dev/playwright-best-practices-skill/playwright-best-practices",
+      "publisher": "currents-dev",
+      "why": "Community skill for writing/debugging stable Playwright tests (locators, waits, isolation). Complements official microsoft/playwright-cli skills — does not replace them. Recommend when Owner accepts Playwright verification so the agent follows strong test practices automatically once the skill is installed in the project.",
+      "installRecipe": {
+        "description": "Install Currents Playwright Best Practices skill into the project (Owner confirms)",
+        "command": "npx skills add https://github.com/currents-dev/playwright-best-practices-skill"
+      }
+    }
+  ],
+  "verification": [
+    {
+      "id": "playwright-cli",
+      "lane": "official",
+      "publisher": "microsoft",
+      "appliesTo": [
+        "nextjs",
+        "react",
+        "angular",
+        "svelte",
+        "astro",
+        "tanstack",
+        "laravel"
+      ],
+      "appliesWhen": "Product has a browser-rendered UI (web app / Inertia / SPA). Skip for CLI-only backends. Do **not** propose for Flutter or React Native (native mobile) — Playwright is browser automation only.",
+      "detectInstalled": {
+        "packageJsonDepsAny": [
+          "@playwright/cli",
+          "@playwright/test",
+          "playwright"
+        ]
+      },
+      "kind": "cli",
+      "label": "Playwright CLI + Skills",
+      "url": "https://playwright.dev/docs/getting-started-cli",
+      "why": "First-party Microsoft browser automation for coding agents. Token-efficient CLI (not pixel vision). Use during /verify-phase and UI audit phases to prove accepted Behavior deltas against a real browser. Prefer this over MCP for routine verify/audit evidence.",
+      "notes": "Out of scope: flutter, react-native (use device/Owner UAT). Laravel: offer when the product has a browser UI (Blade/Inertia/Livewire), not API-only.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Playwright coding agents (CLI) guide",
+          "url": "https://playwright.dev/docs/getting-started-cli",
+          "why": "Official install and usage for playwright-cli + skills."
+        },
+        {
+          "kind": "skills",
+          "label": "playwright-cli skills (skills.sh)",
+          "url": "https://www.skills.sh/microsoft/playwright-cli/playwright-cli",
+          "why": "Discoverable skill listing for agents that use the skills registry."
+        },
+        {
+          "kind": "docs",
+          "label": "Playwright skills reference",
+          "url": "https://playwright.dev/agent-cli/skills",
+          "why": "What playwright-cli install --skills adds for the agent."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "playwright-cli-local",
+          "description": "Install @playwright/cli as a project devDependency (preferred for repos)",
+          "command": "npm install -D @playwright/cli@latest",
+          "why": "Pins the CLI to the project so verify/audit evidence is reproducible for the team."
+        },
+        {
+          "id": "playwright-cli-browser",
+          "description": "Install default Chromium for playwright-cli (explicit; also auto-downloads on first use)",
+          "command": "npx playwright-cli install-browser",
+          "why": "Avoids first-verify failures when the CLI is installed but no browser binary is present yet."
+        },
+        {
+          "id": "playwright-cli-skills",
+          "description": "Install local agent skills for playwright-cli",
+          "command": "npx playwright-cli install --skills",
+          "why": "Gives Cursor/Claude/Copilot structured skill docs for CLI commands."
+        }
+      ]
+    },
+    {
+      "id": "playwright-mcp",
+      "lane": "official",
+      "publisher": "microsoft",
+      "appliesTo": [
+        "nextjs",
+        "react",
+        "angular",
+        "svelte",
+        "astro",
+        "tanstack",
+        "laravel"
+      ],
+      "appliesWhen": "Owner wants exploratory / persistent browser sessions (MCP). Prefer playwright-cli for routine verify; offer MCP as optional alternate. Do **not** propose for Flutter or React Native (native).",
+      "detectInstalled": {
+        "fileContainsAny": [
+          {
+            "file": ".cursor/mcp.json",
+            "pattern": "@playwright/mcp"
+          },
+          {
+            "file": ".cursor/mcp.json",
+            "pattern": "playwright"
+          },
+          {
+            "file": ".mcp.json",
+            "pattern": "@playwright/mcp"
+          },
+          {
+            "file": ".mcp.json",
+            "pattern": "playwright"
+          }
+        ]
+      },
+      "kind": "mcp",
+      "label": "Playwright MCP",
+      "url": "https://playwright.dev/docs/getting-started-mcp",
+      "why": "Official MCP server: agent drives the browser via accessibility snapshots (no vision model). Better for long exploratory loops with persistent state. Higher token cost than CLI — use when Owner wants MCP, not as the default verify path.",
+      "notes": "Detect project-scoped Cursor (`.cursor/mcp.json`) and Claude Code (`.mcp.json`). User-global `~/.claude.json` is outside the repo — if MCP works in Claude but detect misses, treat as installed when Owner confirms.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Playwright MCP getting started",
+          "url": "https://playwright.dev/docs/getting-started-mcp",
+          "why": "Official MCP setup for Cursor, Claude Code, VS Code, and other MCP clients."
+        },
+        {
+          "kind": "mcp",
+          "label": "microsoft/playwright-mcp",
+          "url": "https://github.com/microsoft/playwright-mcp",
+          "why": "Source and config reference for the MCP server package."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "cursor-mcp-playwright",
+          "description": "Register Playwright MCP in Cursor (.cursor/mcp.json)",
+          "target": ".cursor/mcp.json",
+          "snippet": {
+            "mcpServers": {
+              "playwright": {
+                "command": "npx",
+                "args": [
+                  "-y",
+                  "@playwright/mcp@latest"
+                ]
+              }
+            }
+          },
+          "why": "Wires Playwright MCP into Cursor so the agent can navigate/click/snapshot during exploratory verify."
+        },
+        {
+          "id": "claude-mcp-playwright",
+          "description": "Register Playwright MCP for Claude Code (project .mcp.json)",
+          "target": ".mcp.json",
+          "snippet": {
+            "mcpServers": {
+              "playwright": {
+                "command": "npx",
+                "args": [
+                  "-y",
+                  "@playwright/mcp@latest"
+                ]
+              }
+            }
+          },
+          "why": "Project-scoped Claude Code MCP (commit-friendly). Prefer this over user-global ~/.claude.json for team repos."
+        }
+      ]
+    },
+    {
+      "id": "flutter-analyzer-evidence",
+      "lane": "official",
+      "publisher": "flutter",
+      "appliesTo": ["flutter"],
+      "appliesWhen": "Flutter (or Flutter-primary) product — native/mobile UI. Do **not** use Playwright. Evidence = flutter analyze / flutter test + Owner device/simulator UAT.",
+      "detectInstalled": {
+        "fileContainsAny": [
+          {
+            "file": "pubspec.yaml",
+            "pattern": "flutter:"
+          }
+        ]
+      },
+      "kind": "cli",
+      "label": "Flutter analyze + test (native evidence)",
+      "url": "https://docs.flutter.dev/testing/overview",
+      "why": "First-party Flutter tooling for agent-runnable proof during /verify-phase and audits. Complements Owner device UAT; does not replace the Owner gate. Prefer these over inventing browser automation on native.",
+      "notes": "Out of scope: Playwright. Device/simulator UAT stays Owner-run.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Flutter testing overview",
+          "url": "https://docs.flutter.dev/testing/overview",
+          "why": "Official testing guidance for Flutter apps."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "flutter-analyze",
+          "description": "Run analyzer as verify/audit evidence (no extra install if Flutter SDK present)",
+          "command": "flutter analyze",
+          "why": "Fast static check the agent can run after build/refine."
+        },
+        {
+          "id": "flutter-test",
+          "description": "Run Flutter tests as evidence when the project has tests",
+          "command": "flutter test",
+          "why": "Automated proof for non-UI or widget tests; UI flows still need Owner device UAT."
+        }
+      ]
+    },
+    {
+      "id": "react-native-device-evidence",
+      "lane": "official",
+      "publisher": "phasestep",
+      "appliesTo": ["react-native"],
+      "appliesWhen": "React Native / Expo native UI. Do **not** propose Playwright for native. Evidence = project typecheck/lint/tests + buildCommand + Owner device UAT.",
+      "detectInstalled": {
+        "packageJsonDepsAny": ["react-native", "expo"]
+      },
+      "kind": "owner-device",
+      "label": "React Native tool + device UAT",
+      "url": "https://reactnative.dev/docs/testing-overview",
+      "why": "Native mobile proof without browser automation. Agent runs repo scripts / buildCommand; Owner validates on device/simulator. Do not invent Detox/Maestro installs unless the Owner asks.",
+      "notes": "Out of scope: Playwright for native. Optional E2E frameworks only with explicit Owner Accept.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "React Native testing overview",
+          "url": "https://reactnative.dev/docs/testing-overview",
+          "why": "Official testing entry point for RN projects."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "rn-buildcommand",
+          "description": "Use phasestep.json buildCommand as the primary agent check (Owner confirms command)",
+          "command": "npx phasestep check",
+          "why": "Reminds the team that buildCommand is the reproducible agent check; set it in Stage 9 to tsc/lint/test as appropriate."
+        }
+      ]
+    },
+    {
+      "id": "backend-tool-evidence",
+      "lane": "official",
+      "publisher": "phasestep",
+      "appliesTo": ["nodejs", "django", "fastapi", "php", "laravel"],
+      "appliesWhen": "API / CLI / backend with **no** browser-rendered UI (or Owner confirms backend-only). Prefer this over Playwright. If Laravel (or similar) ships a browser UI → use playwright-cli instead.",
+      "detectInstalled": {
+        "packageJsonDepsAny": ["express", "fastify", "koa", "@nestjs/core"]
+      },
+      "kind": "cli",
+      "label": "Backend tool evidence (build / test / lint)",
+      "url": "https://github.com/Fahmidur010/phasestep",
+      "why": "Owner UAT against API/CLI contracts from the Behavior delta, plus agent-runnable buildCommand / lint / tests. No browser automation required for backend-only products.",
+      "notes": "Optional HTTP smoke (curl/script) only if Owner asks. Do not invent Playwright for pure APIs.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Phasestep buildCommand (project config)",
+          "url": "https://github.com/Fahmidur010/phasestep",
+          "why": "buildCommand in phasestep.json is the standard post-build agent check."
+        }
+      ],
+      "installRecipes": [
+        {
+          "id": "backend-buildcommand",
+          "description": "Confirm buildCommand in phasestep.json (Stage 9) as verify/audit evidence",
+          "command": "npx phasestep check",
+          "why": "Ensures config exists; Owner still sets the real build/test command for the stack."
+        }
+      ]
+    }
+  ]
+}

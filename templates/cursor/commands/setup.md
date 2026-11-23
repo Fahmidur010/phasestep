@@ -9,7 +9,41 @@ Run **Phasestep setup** — progressively fill project stubs with Owner gates. *
 
 Resume with `$ARGUMENTS` if provided: `product` | `flow` | `stack` | `architecture` | `decisions` | `design` | `build-plan` | `build-command` (otherwise continue from the first incomplete stage).
 
-Before Stage 1, complete **Setup mode** then **Workflow mode** (below) unless `{{PROGRESS}}` already records both.
+**First:** complete **Ensure project install** (below). Then **Setup mode** → **Workflow mode** unless `{{PROGRESS}}` already records both.
+
+---
+
+## Ensure project install (plugin + CLI — same project)
+
+**Installed marker:** `phasestep.json` at the workspace root (legacy: `phasegate.json`).
+
+| State | Agent action |
+|-------|----------------|
+| **Present** | Project is **already installed** (CLI `init`/`upgrade` or a prior plugin scaffold). Say once: `Phasestep: installed`. Do **not** re-scaffold. Do **not** ask for `npx phasestep init`. Continue. |
+| **Missing** | Scaffold **into this repo now**. Do **not** require a separate terminal `npx phasestep init` — marketplace/plugin users must start working from `/setup` alone. |
+
+### When missing — write the default scaffold
+
+1. If this command came from a **Phasestep IDE plugin**, prefer copying files from that plugin’s `scaffold/` bundle (same layout as CLI init).
+2. Otherwise write the defaults below. **Skip any path that already exists** (never clobber Owner docs).
+3. Set `adapters` in `phasestep.json` for this IDE: Cursor → include `cursor`; Claude Code → include `claude`; when unsure use `["cursor","claude","codex"]`.
+4. After writes, say `Phasestep: installed (scaffolded)` and list the key paths, then continue.
+
+**Default layout** (must match package defaults):
+
+| Path | Role |
+|------|------|
+| `phasestep.json` | Config (paths, `buildCommand`, `adapters`) |
+| `{{CONSTITUTION}}` | Constitution |
+| `{{PRODUCT_SPEC}}`, `{{USER_FLOW}}`, `{{ARCHITECTURE}}`, `{{DECISIONS}}` | Owner stubs |
+| `{{BUILD_PLAN}}`, `{{AUDIT_PLAN}}`, `{{PROJECT_MAP}}`, `{{VERIFICATION_MAP}}`, `{{PROGRESS}}` | Plans / maps / progress |
+| `{{PHASE_PLANS_DIR}}/README.md`, `{{AUDIT_REPORTS_DIR}}/README.md` | Dir stubs |
+| `{{DESIGN_SYSTEM}}` | Design stub |
+| `{{STACK_CATALOG}}`, `{{DESIGN_CATALOG}}`, `.phasestep/README.md` | Catalogs |
+
+**Commands:** When the **plugin** supplies slash commands, project-local `.cursor/commands` / `.claude/commands` are **optional** (portable copy for repos without the plugin). Do not block setup on missing project-local command files if the plugin is active.
+
+**CLI users:** `npx phasestep init` / `upgrade` / `check` remain fully supported and produce the same project shape. Plugin and npm are two doors into one system.
 
 ## Greenfield vs existing (mid-project) project
 
@@ -52,7 +86,7 @@ Phasestep can **install safely** next to other agent files. For the **best outco
 
 Scan and list:
 
-1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`, plus adapter `README.md`)
+1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `status`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`, plus adapter `README.md`)
 2. **Name collisions** — Phasestep-owned filenames that exist but are **not** clearly Phasestep bodies (e.g. custom `setup.md` kept at init)
 3. **AGENTS.md outside markers** — content outside `<!-- phasestep:codex:start -->` … `<!-- phasestep:codex:end -->`
 4. **Owner-pointed extras** — ask once if other rule/command paths are part of their **old delivery loop** (do not auto-grab `.cursor/rules` or random tools)
@@ -90,7 +124,7 @@ Archive plan ready:
 3. Cancel — stay Alongside (Workflow mode option 2)
 ```
 
-4. On **1. Accept archive**: move (not delete) listed files; write the log; if Phasestep command files are now missing, run or tell Owner to run `npx phasestep upgrade` so Phasestep bodies are restored. Record in `{{PROGRESS}}`:
+4. On **1. Accept archive**: move (not delete) listed files; write the log; if project-local Phasestep command files are now missing and the Owner relies on them (no IDE plugin), restore via `npx phasestep upgrade` **or** re-copy from the plugin `scaffold/` / commands — do not leave delivery commands empty. Record in `{{PROGRESS}}`:
 
 ```text
 Workflow mode: sole
@@ -669,4 +703,4 @@ Setup complete → run /plan-phase <first-slug>
 ```
 
 Later (after verify/complete): `/pr-step update` (Simple→main · GitFlow→develop); GitFlow also `release` / `main`.
-Optional: `npx phasestep check` to confirm artifacts exist.
+Optional: `npx phasestep check` (CLI) to confirm artifacts — not required when the IDE plugin already scaffolds/detects install.

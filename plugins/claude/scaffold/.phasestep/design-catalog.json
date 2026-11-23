@@ -1,0 +1,359 @@
+{
+  "version": "1",
+  "updated": "2026-07-25",
+  "description": "Design enrichment for /setup Stage 7. componentLibraries = pick exactly one (or none). guidelines = cite any. Each entry lists agent resources (mcp/skills/llms/cli) with why. Pointers only - never vendor bodies.",
+  "rules": {
+    "componentLibraries": "pick-one",
+    "guidelines": "cite-any",
+    "neverMixLibraries": true
+  },
+  "componentLibraries": [
+    {
+      "id": "mui",
+      "name": "MUI (Material UI)",
+      "entryUrl": "https://mui.com/",
+      "appliesTo": ["react", "nextjs", "web"],
+      "license": "free",
+      "why": "Mature React component library implementing Material Design. Strong official agent support via MCP and llms.txt so the agent uses current MUI APIs instead of inventing props.",
+      "resources": [
+        {
+          "kind": "mcp",
+          "label": "MUI MCP server",
+          "url": "https://mui.com/material-ui/getting-started/mcp/",
+          "why": "Gives the agent live MUI docs and code-generation tools so answers cite real pages and match your package versions.",
+          "installRecipe": {
+            "target": ".cursor/mcp.json",
+            "description": "Register @mui/mcp in Cursor (Owner confirms)",
+            "snippet": {
+              "mcpServers": {
+                "mui-mcp": {
+                  "command": "npx",
+                  "args": ["-y", "@mui/mcp@latest"]
+                }
+              }
+            }
+          }
+        },
+        {
+          "kind": "llms",
+          "label": "Material UI llms.txt",
+          "url": "https://mui.com/material-ui/llms.txt",
+          "why": "Machine-readable docs index for agents that prefer llms.txt over MCP.",
+          "installRecipe": {
+            "target": "AGENTS.md",
+            "description": "Cite llms.txt URL in AGENTS.md / project rules so agents fetch official MUI docs"
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "MUI getting started",
+          "url": "https://mui.com/material-ui/getting-started/",
+          "why": "Human + agent install and usage entry for Material UI."
+        }
+      ]
+    },
+    {
+      "id": "shadcn",
+      "name": "shadcn/ui",
+      "entryUrl": "https://ui.shadcn.com/",
+      "appliesTo": ["react", "nextjs", "web", "tailwind"],
+      "license": "free",
+      "why": "Copy-in React + Tailwind components owned by the repo. Excellent agent tooling (skill + MCP) so the agent installs and composes registry items correctly.",
+      "resources": [
+        {
+          "kind": "skills",
+          "label": "shadcn/ui agent skill",
+          "url": "https://ui.shadcn.com/docs/skills",
+          "why": "Project-aware skill (reads components.json) so the agent uses your aliases, base library, and CLI correctly.",
+          "installRecipe": {
+            "command": "npx skills add shadcn/ui",
+            "description": "Install shadcn skill (Owner confirms)"
+          }
+        },
+        {
+          "kind": "mcp",
+          "label": "shadcn MCP server",
+          "url": "https://ui.shadcn.com/docs/mcp",
+          "why": "Lets the agent browse, search, and install components from registries via natural language.",
+          "installRecipe": {
+            "command": "npx shadcn@latest mcp init --client cursor",
+            "description": "Init shadcn MCP for Cursor (Owner confirms)"
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "shadcn/ui docs",
+          "url": "https://ui.shadcn.com/docs",
+          "why": "Canonical component and theming docs."
+        }
+      ]
+    },
+    {
+      "id": "heroui",
+      "name": "HeroUI",
+      "entryUrl": "https://heroui.com/",
+      "appliesTo": ["react", "nextjs", "web", "tailwind"],
+      "license": "free",
+      "why": "React (+ Native) component system with first-party agent skills, llms.txt packs, and MCP for accurate HeroUI v3 code.",
+      "resources": [
+        {
+          "kind": "skills",
+          "label": "HeroUI agent skills",
+          "url": "https://heroui.com/docs/react/getting-started/agent-skills",
+          "why": "Installs HeroUI React skills so the agent knows components, themes, and composition patterns.",
+          "installRecipe": {
+            "command": "npx skills add heroui-inc/heroui",
+            "description": "Install HeroUI skills (Owner confirms)"
+          }
+        },
+        {
+          "kind": "llms",
+          "label": "HeroUI llms.txt",
+          "url": "https://heroui.com/docs/react/getting-started/llms-txt",
+          "why": "llms.txt / llms-full / components / patterns indexes for Cursor @Docs and similar.",
+          "installRecipe": {
+            "target": "AGENTS.md",
+            "description": "Cite https://heroui.com/react/llms.txt (or llms-full) in agent docs"
+          }
+        },
+        {
+          "kind": "mcp",
+          "label": "HeroUI MCP server",
+          "url": "https://heroui.com/docs/react/getting-started/mcp-server",
+          "why": "Real-time component docs and source for agents beyond static skills."
+        },
+        {
+          "kind": "docs",
+          "label": "HeroUI React getting started",
+          "url": "https://heroui.com/docs/react/getting-started",
+          "why": "Primary human/agent entry for React setup."
+        }
+      ]
+    },
+    {
+      "id": "daisyui",
+      "name": "daisyUI",
+      "entryUrl": "https://daisyui.com/",
+      "appliesTo": ["web", "tailwind", "react", "nextjs", "svelte", "astro", "angular"],
+      "license": "free",
+      "why": "Tailwind CSS component class library - works across web frameworks. Free official skill; optional paid Blueprint MCP for heavier agent UI workflows.",
+      "resources": [
+        {
+          "kind": "skills",
+          "label": "daisyUI free agent skill",
+          "url": "https://daisyui.com/docs/skill/",
+          "why": "Free official skill so the agent uses correct daisyUI class names, colors, and themes.",
+          "installRecipe": {
+            "command": "npx skills add saadeghi/daisyui",
+            "description": "Install free daisyUI skill (Owner confirms) - default enrichment"
+          }
+        },
+        {
+          "kind": "mcp",
+          "label": "daisyUI Blueprint MCP (commercial)",
+          "url": "https://daisyui.com/blueprint/",
+          "why": "Paid official MCP with mandatory UI workflow (setup, rules, architecture, syntax, QA). Propose only if Owner wants commercial tooling - not required.",
+          "license": "commercial",
+          "installRecipe": {
+            "description": "Owner purchases license, then follow Blueprint install guide - do not invent license keys"
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "daisyUI docs",
+          "url": "https://daisyui.com/docs/",
+          "why": "Component and theme documentation."
+        }
+      ]
+    },
+    {
+      "id": "astryx",
+      "name": "Astryx (Meta)",
+      "entryUrl": "https://astryx.atmeta.com/",
+      "appliesTo": ["react", "nextjs", "web"],
+      "license": "free",
+      "why": "Meta open-source React design system built for humans and agents. CLI writes agent docs; structured component/docs access reduces hallucinated props. Single library - do not mix with MUI/shadcn/etc.",
+      "resources": [
+        {
+          "kind": "cli",
+          "label": "Astryx getting started / AI setup",
+          "url": "https://astryx.atmeta.com/docs/getting-started",
+          "why": "Install packages and run CLI init to scaffold AGENTS.md/CLAUDE.md and agent conventions for this project.",
+          "installRecipe": {
+            "description": "Install @astryxdesign/core + theme + CLI, then npx @astryxdesign/cli init (Owner confirms). Follow current getting-started docs - do not invent package names if docs differ.",
+            "command": "npx @astryxdesign/cli init"
+          }
+        },
+        {
+          "kind": "cli",
+          "label": "Astryx CLI reference",
+          "url": "https://astryx.atmeta.com/docs/getting-started",
+          "why": "Agent should use astryx component / docs / template commands as the source of truth for APIs.",
+          "installRecipe": {
+            "target": "package.json",
+            "description": "Add npm script astryx pointing at the CLI for reliable agent invocation (per docs)"
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "Astryx site / components",
+          "url": "https://astryx.atmeta.com/",
+          "why": "Canonical product and component overview."
+        }
+      ]
+    },
+    {
+      "id": "reshaped",
+      "name": "Reshaped",
+      "entryUrl": "https://www.reshaped.so/",
+      "appliesTo": ["react", "nextjs", "web"],
+      "license": "commercial",
+      "why": "Professional React + Figma design system. Agent path centers on Storybook MCP (per Reshaped v4 AI workflows). Flag commercial license before install.",
+      "resources": [
+        {
+          "kind": "mcp",
+          "label": "Storybook MCP (Reshaped AI workflows)",
+          "url": "https://www.reshaped.so/",
+          "why": "Reshaped advertises Storybook MCP for coding agents. Follow Reshaped + Storybook MCP docs after Owner confirms commercial access - do not invent install steps.",
+          "installRecipe": {
+            "description": "Owner confirms Reshaped license; wire Storybook MCP per current Reshaped/Storybook docs"
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "Reshaped docs overview",
+          "url": "https://www.reshaped.so/docs/getting-started/overview",
+          "why": "Core concepts, tokens, and React setup for the design system contract."
+        }
+      ]
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon Design System",
+      "entryUrl": "https://carbondesignsystem.com/",
+      "appliesTo": ["react", "angular", "vue", "web", "svelte"],
+      "license": "preview-access",
+      "why": "IBM design system with React/Angular/Vue/web components. Carbon MCP + carbon-builder skill give agents accurate Carbon UI - MCP is public preview and may require IBM/early-access signup.",
+      "resources": [
+        {
+          "kind": "mcp",
+          "label": "Carbon MCP (public preview)",
+          "url": "https://carbondesignsystem.com/developing/carbon-mcp/overview/",
+          "why": "Docs/code search and Carbon UI generation for agents. Note access requirements for non-IBMers.",
+          "installRecipe": {
+            "description": "Follow Carbon MCP onboarding (IBMid or early-access form) then connect client - Owner confirms access first"
+          }
+        },
+        {
+          "kind": "skills",
+          "label": "carbon-builder skill",
+          "url": "https://carbondesignsystem.com/developing/carbon-mcp/onboarding-and-setup/",
+          "why": "Pairs with Carbon MCP so the agent follows Carbon conventions when generating UI.",
+          "installRecipe": {
+            "description": "Install carbon-builder skill per Carbon onboarding docs after MCP access"
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "Carbon design system",
+          "url": "https://carbondesignsystem.com/",
+          "why": "Guidelines, components, and tokens for humans and agents."
+        }
+      ]
+    },
+    {
+      "id": "atlassian-design",
+      "name": "Atlassian Design System",
+      "entryUrl": "https://atlassian.design/get-started",
+      "appliesTo": ["react", "web"],
+      "license": "free",
+      "why": "Atlassian Design System (Atlaskit) with public llms.txt and ADS MCP. Use as the sole component library when building Atlassian-style React UI - do not mix with MUI/shadcn.",
+      "resources": [
+        {
+          "kind": "llms",
+          "label": "Atlassian Design llms.txt",
+          "url": "https://atlassian.design/llms.txt",
+          "why": "Structured index of tokens, primitives, components, a11y, and MCP pointers for agents.",
+          "installRecipe": {
+            "target": "AGENTS.md",
+            "description": "Cite atlassian.design/llms.txt (and subset files as needed) in agent docs"
+          }
+        },
+        {
+          "kind": "mcp",
+          "label": "ADS MCP server",
+          "url": "https://atlassian.design/llms.txt",
+          "why": "Official MCP for tokens, icons, components, primitives, and a11y analysis.",
+          "installRecipe": {
+            "target": ".cursor/mcp.json",
+            "description": "Register ADS MCP (Owner confirms)",
+            "snippet": {
+              "mcpServers": {
+                "ads-mcp": {
+                  "command": "npx",
+                  "args": ["-y", "@atlaskit/ads-mcp"]
+                }
+              }
+            }
+          }
+        },
+        {
+          "kind": "docs",
+          "label": "Atlassian Design get started",
+          "url": "https://atlassian.design/get-started",
+          "why": "Human entry for foundations and components."
+        }
+      ]
+    }
+  ],
+  "guidelines": [
+    {
+      "id": "material-3",
+      "name": "Material Design 3",
+      "entryUrl": "https://m3.material.io/",
+      "appliesTo": ["flutter", "android", "web", "react"],
+      "license": "free",
+      "why": "Official Material 3 design language. Primary guidelines anchor for Flutter (and useful if using MUI). Cite - does not replace picking a component library when one is needed.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Material Design 3",
+          "url": "https://m3.material.io/",
+          "why": "Foundations, components, and theming guidelines for Material products."
+        }
+      ]
+    },
+    {
+      "id": "apple-hig",
+      "name": "Apple Human Interface Guidelines",
+      "entryUrl": "https://developer.apple.com/design/human-interface-guidelines/",
+      "appliesTo": ["react-native", "flutter", "ios", "macos"],
+      "license": "free",
+      "why": "Official Apple HIG for iOS/macOS-feeling products. Strong guidelines when stack is React Native or Flutter iOS - not a React web component library.",
+      "resources": [
+        {
+          "kind": "docs",
+          "label": "Human Interface Guidelines",
+          "url": "https://developer.apple.com/design/human-interface-guidelines/",
+          "why": "Platform patterns, layout, and interaction guidance for Apple platforms."
+        }
+      ]
+    },
+    {
+      "id": "atlassian-guidelines",
+      "name": "Atlassian Design guidelines (cite-only)",
+      "entryUrl": "https://atlassian.design/get-started",
+      "appliesTo": ["web", "react"],
+      "license": "free",
+      "why": "Use when you want Atlassian foundations/content/a11y guidance without adopting Atlaskit as the component library. Prefer the atlassian-design library entry if building with Atlaskit components.",
+      "resources": [
+        {
+          "kind": "llms",
+          "label": "Atlassian Design llms.txt",
+          "url": "https://atlassian.design/llms.txt",
+          "why": "Cite for tokens, a11y, and content guidelines without installing Atlaskit."
+        }
+      ]
+    }
+  ]
+}

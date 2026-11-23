@@ -1,0 +1,11 @@
+---
+description: Phasestep project install detection — use when running Phasestep slash commands or delivery workflow
+alwaysApply: false
+---
+
+Phasestep install marker: `phasestep.json` (or legacy `phasegate.json`) at the workspace root.
+
+- **Present** → project is installed (CLI or prior scaffold). Do not re-init. Do not ask for `npx phasestep init`.
+- **Missing** → run `/setup` (or copy from this plugin's `scaffold/` per `scaffold/SCAFFOLD.md`). Marketplace users must not need a separate terminal init.
+
+Plugin and npm CLI produce the same project shape. Prefer plugin commands when this plugin is installed; CLI `upgrade`/`check` remain available for terminal/CI.

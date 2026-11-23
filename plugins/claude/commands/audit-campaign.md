@@ -1,0 +1,168 @@
+---
+name: audit-campaign
+description: Read-only campaign audit against AUDIT_PLAN (project audit track)
+argument-hint: [phase-id] [reaudit?]
+---
+
+> **Install check:** If the workspace has no `phasestep.json` (or legacy `phasegate.json`), run **`/setup` first** — it scaffolds the project in-repo (same shape as `npx phasestep init`). If the file exists, the project is **already installed**; continue. Never require a separate terminal init when the Phasestep plugin is active.
+
+Perform a **read-only campaign audit** for **Audit Phase $ARGUMENTS**. **Do not modify files.**
+
+**This command is campaign-only** (project audit track via `/audit-project`). For delivery build-phase acceptance use `/audit-phase <slug>` (not this command).
+
+**Precondition:** `docs/AUDIT_PLAN.md` accepted and defines Audit Phase $ARGUMENTS. Otherwise → run `/audit-project` first.
+
+`reaudit` argument → re-verify a previously reported campaign phase (see Re-audit).
+
+## Evidence by surface
+
+| Surface | Path |
+|---------|------|
+| **Web UI** | **Browser evidence** below |
+| **Flutter / React Native** | **Native evidence** below — never Playwright |
+| **Backend / CLI / API-only** | **Backend tool evidence** below — never Playwright |
+
+### Native evidence (Flutter / RN)
+
+1. Run catalog / `buildCommand` tools (`flutter analyze` / `flutter test`, or RN typecheck/tests).
+2. Attach outcomes under Evidence; Owner/device UAT remains the gate for UI judgment.
+3. Do **not** run mid-flight Playwright. Record “native — Owner/device UAT” if tools were not run.
+
+### Backend tool evidence
+
+1. Run `buildCommand` / lint / tests from the plan or catalog `backend-tool-evidence`.
+2. Attach outcomes under Evidence. Optional HTTP smoke only if Owner asked.
+3. If scope secretly includes a web UI → switch to Browser evidence / Playwright.
+
+### Browser evidence (web UI)
+
+When In scope includes browser UI:
+
+1. Check [`.phasestep/stack-catalog.json`](.phasestep/stack-catalog.json) `verification` + `detectInstalled` / `docs/PROGRESS.md` enrichment log.
+2. If Playwright CLI is available → exercise critical in-scope flows; attach CLI outcomes (prefer CLI over MCP).
+3. If only MCP is available → use it; note higher token cost.
+4. If neither is installed → **Mid-flight Playwright offer** before finishing the report.
+
+Check `docs/PROGRESS.md` for:
+
+```text
+Playwright mid-flight: declined — audit phase N
+```
+
+If present → record "Playwright not configured" under **Out of scope / not checked**; do not offer again. Continue Owner-only.
+
+Otherwise **STOP once**:
+
+```text
+Playwright is not configured, but this campaign audit includes web UI.
+1. Install now — playwright-cli (+ recommended companions) | optional MCP
+2. Continue this audit Owner-only — no browser evidence
+3. Don't ask again for audit phase N — record decline in PROGRESS
+```
+
+- **Install now** → same catalog recipes as `/setup` Stage 4 section C; Owner selects; log in PROGRESS; re-run browser evidence.
+- **Continue Owner-only** → proceed; note under Out of scope / not checked.
+- **Don't ask again** → append `Playwright mid-flight: declined — audit phase N` to `docs/PROGRESS.md`.
+
+Never install silently. Never block the audit if Owner chooses 2 or 3.
+
+5. Playwright evidence supports findings; it is **not** a fourth ground — cite Spec / Universal / Stack(+tool) as usual.
+
+## Scope
+
+Only this phase's **In scope** flows and areas from `docs/AUDIT_PLAN.md` (+ shared code they directly touch). Respect Out of scope.
+
+## Grounds — every finding must cite one
+
+1. **Spec** — `docs/product.md` / `docs/USER_FLOW.md` / `docs/architecture.md` / `docs/DESIGN_SYSTEM.md` (conformance to accepted truth)
+2. **Universal** — the plan's Audit dimensions checklist (security, correctness, architecture, performance)
+3. **Stack** — official stack rules/skills installed for this project, or **tool evidence** (linter / analyzer / tests / **Playwright CLI or MCP** for web UI). Findings without tool or rule backing must be labeled **heuristic**
+
+Cannot confirm something (no tool, no rule)? Report **"needs manual review"** — never inflate to C/M on a guess.
+
+## Coverage
+
+Evaluate **every dimension** in the plan's table. Mark N/A with a reason. Never skip silently.
+
+If In scope includes browser UI → **Browser evidence**. If native mobile → **Native evidence**. If API/CLI only → **Backend tool evidence**.
+
+## Write the report
+
+Write/update [`docs/audit-reports/audit-phase-$ARGUMENTS.md`](docs/audit-reports/) — preview-first shape:
+
+```markdown
+# Audit Phase N — [title]
+
+| Field | Value |
+|-------|-------|
+| Status | Reported — findings open |
+| Date | YYYY-MM-DD |
+| Plan | AUDIT_PLAN.md · Phase N |
+| Next | Owner decision below |
+
+## Snapshot
+
+| Severity | Open | Approved for fix | Fixed | Deferred |
+|----------|------|------------------|-------|----------|
+| Critical | n | 0 | 0 | 0 |
+| Major | n | 0 | 0 | 0 |
+| Minor | n | 0 | 0 | 0 |
+
+**Top risks:** one line per open Critical
+
+---
+
+## Critical
+
+### C-01 — [one-line issue]
+
+| | |
+|-|-|
+| **Where** | `path/file.ext:line` |
+| **Ground** | Spec / Universal (dimension) / Stack (rule or tool) |
+| **Evidence** | what proves it (tool output, spec line) |
+| **Suggested fix** | one line |
+| **Status** | Open |
+
+## Major
+…
+
+## Minor
+…
+
+---
+
+## Out of scope / not checked
+- …
+
+## Owner decision
+- [ ] Approved for refinement: (IDs)
+- [ ] Recorded; no fixes
+```
+
+Stable IDs (`C-01`, `M-02`, `Mi-03`) — refine and re-audit update the same entries, never renumber.
+
+If the phase has UI in scope and `docs/DESIGN_SYSTEM.md` exists, run `/audit-campaign-ds $ARGUMENTS` (or note as a separate step).
+
+## STOP — Owner gate
+
+Update `docs/PROGRESS.md` (phase audited), then:
+
+```text
+Audit Phase $ARGUMENTS report ready:
+1. Approve all findings for refinement → all findings marked Approved; then run /refine-audit $ARGUMENTS
+2. Select findings to fix → Owner picks IDs; selected marked Approved, rest stay Open/Deferred; then /refine-audit $ARGUMENTS
+3. Record findings; no fixes → findings stay Open; stop here
+4. Continue to Phase N+1 → same recording as 3, then run `/audit-campaign N+1`
+```
+
+Options 1–2 **never** fix code in this command — fixes happen only in `/refine-audit`. Option 4 records identically to 3, then proceeds via `/audit-campaign` (never `/audit-phase`).
+
+## Re-audit (`/audit-campaign N reaudit`)
+
+1. Read the existing report; focus on findings marked `Fixed` / `Partially fixed` by `/refine-audit`.
+2. Independently re-verify each (code + re-run Evidence commands).
+3. Update statuses: confirmed → `Fixed (verified)`; not actually fixed → back to `Open` with a note.
+4. Refresh snapshot counts; **STOP** with the same Owner options.
+
+All campaign phases reported → suggest `/complete-audit`.

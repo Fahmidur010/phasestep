@@ -6,19 +6,32 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.0.0**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.1.0**
+
+---
+
+## Two ways in — one system
+
+| Path | What you do | Project install |
+|------|-------------|-----------------|
+| **IDE plugin** (Cursor / Claude Code) | Install from the marketplace → open a repo → run **`/setup`** | If `phasestep.json` is missing, `/setup` scaffolds it in-repo. If it already exists (you used npm before), it shows **installed** and continues. **No** separate `npx phasestep init`. |
+| **npm CLI** | `npx phasestep init` | Same files and contracts. Use `upgrade` / `check` anytime (also fine with the plugin). |
+
+Plugin and npm are two doors into the same Phasestep loop. The workflow does not change.
+
+Plugin sources in this repo: [`plugins/cursor`](./plugins/cursor), [`plugins/claude`](./plugins/claude). Regenerate after template edits: `npm run generate:plugins`.
 
 ---
 
 ## Supported agents
 
-| Agent | Adapter id | What `init` installs | How you invoke |
-|-------|------------|----------------------|----------------|
-| **Cursor** | `cursor` | `.cursor/commands/*.md` | Slash commands (`/setup`, …) |
-| **Claude Code** | `claude` | `.claude/commands/*.md` | Slash commands (same names) |
-| **Codex** | `codex` | `AGENTS.md` managed block | Follow AGENTS / ask by command name |
+| Agent | Adapter id | What lands in the project | How you invoke |
+|-------|------------|---------------------------|----------------|
+| **Cursor** | `cursor` | Docs + config (+ optional `.cursor/commands` via CLI) | Slash commands (`/setup`, …) — from **plugin** and/or project |
+| **Claude Code** | `claude` | Docs + config (+ optional `.claude/commands` via CLI) | Slash commands (same names) |
+| **Codex** | `codex` | `AGENTS.md` managed block (CLI) | Follow AGENTS / ask by command name |
 
-Pick at `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three). Only selected adapters are required by `phasestep check`. Re-run `npx phasestep upgrade` if command files are missing after a partial install.
+CLI `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three). Only selected adapters are required by `phasestep check`. Re-run `npx phasestep upgrade` if project-local command files are missing after a partial CLI install.
 
 ---
 
@@ -49,17 +62,21 @@ Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the numbe
 
 ## Quick start
 
+### A. IDE plugin (no terminal init)
+
+1. Install **Phasestep** from the Cursor or Claude Code marketplace  
+2. Open your project → run **`/setup`** (scaffolds if needed, or reports **installed**)  
+3. Run **`/plan-phase <first-slug>`** when the build plan is ready  
+
+### B. npm CLI
+
 ```bash
 npx phasestep init
 ```
 
-Pick adapters when prompted (Cursor / Claude Code / Codex / all), then:
+Pick adapters when prompted (Cursor / Claude Code / Codex / all), then open the project and run **`/setup`**, then **`/plan-phase <first-slug>`**.
 
-1. Open the project in your agent  
-2. Run **`/setup`** (greenfield or mid-project — it asks)  
-3. Run **`/plan-phase <first-slug>`** (from your BUILD_PLAN; steps stay numeric)
-
-Later:
+Later (either path):
 
 ```bash
 npx phasestep upgrade   # refresh commands & catalogs; keeps your product docs
@@ -72,7 +89,8 @@ npx phasestep check     # validate docs + selected-adapter command files
 
 | Command | Role |
 |---------|------|
-| `/setup` | One-time (or resume) project wiring |
+| `/setup` | Ensure install + one-time (or resume) project wiring |
+| `/status` | Read-only: **installed** or not (`phasestep.json`) |
 | `/plan-phase <slug>` | Named phase; classic full plan or **progressive**; may add slug to BUILD_PLAN |
 | `/build-phase <slug> [S]` | Build step S (or next); progressive capture + step playback; Behavior delta |
 | `/verify-phase <slug> [S]` | Owner verification + evidence bar (inconclusive ≠ pass) |

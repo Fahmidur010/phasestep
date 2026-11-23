@@ -14,7 +14,8 @@
   "scripts": {
     "phasestep": "node ./bin/phasestep.js",
     "prepublishOnly": "node ./bin/phasestep.js version",
-    "smoke": "node ./scripts/smoke.js",
+    "generate:plugins": "node ./scripts/generate-plugins.js",
+    "smoke": "node ./scripts/generate-plugins.js && node ./scripts/smoke.js",
     "release:patch": "npm version patch -m \"release: %s\"",
     "release:minor": "npm version minor -m \"release: %s\"",
     "release:major": "npm version major -m \"release: %s\""

@@ -32,6 +32,7 @@ const DEFAULTS = {
 const COMMAND_FILES = [
   'README.md',
   'setup.md',
+  'status.md',
   'plan-phase.md',
   'build-phase.md',
   'verify-phase.md',

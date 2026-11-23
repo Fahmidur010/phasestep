@@ -1,0 +1,28 @@
+{
+  "productSpec": "docs/product.md",
+  "userFlow": "docs/USER_FLOW.md",
+  "architecture": "docs/architecture.md",
+  "decisions": "docs/decisions.md",
+  "buildPlan": "docs/BUILD_PLAN.md",
+  "auditPlan": "docs/AUDIT_PLAN.md",
+  "auditReportsDir": "docs/audit-reports",
+  "projectMap": "docs/PROJECT_MAP.md",
+  "verificationMap": "docs/VERIFICATION_MAP.md",
+  "progress": "docs/PROGRESS.md",
+  "phasePlansDir": "docs/phase-plans",
+  "designSystem": "docs/DESIGN_SYSTEM.md",
+  "uiPrimitivesDir": "components/ui",
+  "buildCommand": "npm run build",
+  "constitutionPath": "docs/PHASESTEP.md",
+  "stackCatalog": ".phasestep/stack-catalog.json",
+  "designCatalog": ".phasestep/design-catalog.json",
+  "adapters": [
+    "cursor",
+    "claude",
+    "codex"
+  ],
+  "github": {
+    "remote": "origin",
+    "repo": ""
+  }
+}

@@ -59,7 +59,9 @@ function main() {
 
   assert(fs.existsSync(path.join(TMP, 'phasestep.json')), 'phasestep.json written');
   assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', 'setup.md')), 'cursor /setup');
+  assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', 'status.md')), 'cursor /status');
   assert(fs.existsSync(path.join(TMP, '.claude', 'commands', 'setup.md')), 'claude /setup');
+  assert(fs.existsSync(path.join(TMP, '.claude', 'commands', 'status.md')), 'claude /status');
   assert(fs.existsSync(path.join(TMP, 'AGENTS.md')), 'codex AGENTS.md');
   assert(
     read('AGENTS.md').includes('Playwright'),
@@ -76,6 +78,8 @@ function main() {
 
   const setup = read(path.join('.cursor', 'commands', 'setup.md'));
   const requiredStages = [
+    '## Ensure project install (plugin + CLI — same project)',
+    'Phasestep: installed',
     '## Greenfield vs existing (mid-project) project',
     '## Workflow mode — sole Phasestep (recommended) vs alongside',
     '## Stage 1 — Product',
@@ -832,6 +836,62 @@ function main() {
   const checkAlong = run(['check', TMP4]);
   assert(checkAlong.includes('Foreign commands'), 'check notes foreign commands');
   assert(checkAlong.includes('All required Phasestep artifacts present'), 'alongside check passes');
+
+  // IDE plugins (generated; npm run smoke regenerates first)
+  const cursorPlugin = path.join(ROOT, 'plugins', 'cursor');
+  const claudePlugin = path.join(ROOT, 'plugins', 'claude');
+  assert(
+    fs.existsSync(path.join(cursorPlugin, '.cursor-plugin', 'plugin.json')),
+    'cursor plugin manifest'
+  );
+  assert(
+    fs.existsSync(path.join(claudePlugin, '.claude-plugin', 'plugin.json')),
+    'claude plugin manifest'
+  );
+  assert(
+    fs.existsSync(path.join(cursorPlugin, 'commands', 'setup.md')),
+    'cursor plugin /setup'
+  );
+  assert(
+    fs.existsSync(path.join(cursorPlugin, 'commands', 'status.md')),
+    'cursor plugin /status'
+  );
+  assert(
+    fs.existsSync(path.join(claudePlugin, 'commands', 'setup.md')),
+    'claude plugin /setup'
+  );
+  assert(
+    fs.existsSync(path.join(cursorPlugin, 'scaffold', 'phasestep.json')),
+    'cursor plugin scaffold config'
+  );
+  assert(
+    fs.existsSync(path.join(cursorPlugin, 'scaffold', 'SCAFFOLD.md')),
+    'cursor plugin SCAFFOLD.md'
+  );
+  assert(
+    fs.existsSync(path.join(claudePlugin, 'scaffold', 'phasestep.json')),
+    'claude plugin scaffold config'
+  );
+  const pluginSetup = fs.readFileSync(
+    path.join(cursorPlugin, 'commands', 'setup.md'),
+    'utf8'
+  );
+  assert(
+    pluginSetup.includes('Ensure project install'),
+    'plugin setup has ensure-install gate'
+  );
+  assert(
+    !pluginSetup.includes('](../../docs/'),
+    'plugin commands use workspace-root links (no ../../docs)'
+  );
+  assert(
+    fs.existsSync(path.join(ROOT, '.cursor-plugin', 'marketplace.json')),
+    'cursor marketplace manifest'
+  );
+  assert(
+    fs.existsSync(path.join(ROOT, '.claude-plugin', 'marketplace.json')),
+    'claude marketplace manifest'
+  );
 
   rmrf(TMP);
   rmrf(TMP2);

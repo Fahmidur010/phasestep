@@ -1,0 +1,21 @@
+{
+  "name": "phasestep",
+  "displayName": "Phasestep",
+  "version": "1.1.0",
+  "description": "Phase-step agentic delivery with Behavior delta intent gates. Install once, run /setup — no separate terminal init required.",
+  "author": {
+    "name": "Fahmidur010"
+  },
+  "homepage": "https://phasestep.vercel.app/",
+  "repository": "https://github.com/Fahmidur010/phasestep",
+  "license": "MIT",
+  "keywords": [
+    "phasestep",
+    "workflow",
+    "agentic",
+    "behavior-delta",
+    "intent-gate",
+    "delivery"
+  ],
+  "logo": "assets/logo.png"
+}

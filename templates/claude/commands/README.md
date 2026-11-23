@@ -3,7 +3,8 @@
 Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). Run them as `/setup`, `/plan-phase`, etc.
 
 ```text
-/setup                     → product → user flow ↔ product → stack enrichment → architecture → decisions → design → build plan
+/setup                     → ensure install → product → user flow ↔ product → stack → architecture → decisions → design → build plan
+/status                    → Phasestep: installed | not installed (read-only)
 /plan-phase <slug>         → classic or progressive plan; may add slug to BUILD_PLAN
 /build-phase <slug> [step] → build step; progressive capture + Step playback; delta + intent
 /verify-phase <slug> [step]→ Owner UAT + Evidence bar (inconclusive / wrong surface ≠ pass)
@@ -25,7 +26,7 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /complete-audit            → AUDIT_SUMMARY; optionally promote findings to build plan
 ```
 
-After `npx phasestep init` (or `upgrade`), run **`/setup`** before `/plan-phase <first-slug>` (or fill stubs manually). Phases are **named** (slug + title); **steps stay numeric**. Legacy numeric phase ids still resolve when present.
+**Start:** marketplace plugin → **`/setup`** (scaffolds if needed; **installed** if `phasestep.json` exists) — or after `npx phasestep init` / `upgrade`, run **`/setup`**. Then `/plan-phase <first-slug>` (or fill stubs manually). Phases are **named** (slug + title); **steps stay numeric**. Legacy numeric phase ids still resolve when present.
 
 Catalogs: `{{STACK_CATALOG}}`, `{{DESIGN_CATALOG}}`  
 Constitution: `{{CONSTITUTION}}`

@@ -1,0 +1,16 @@
+{
+  "name": "phasestep",
+  "owner": {
+    "name": "Fahmidur010"
+  },
+  "metadata": {
+    "description": "Phasestep — phase-step agentic delivery for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "phasestep",
+      "source": "./plugins/claude",
+      "description": "Phase-step agentic delivery with Behavior delta intent gates. /setup scaffolds the project — no separate terminal init."
+    }
+  ]
+}

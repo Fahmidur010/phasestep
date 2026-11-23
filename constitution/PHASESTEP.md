@@ -8,7 +8,7 @@
 
 Phasestep is a **framework-agnostic agentic development workflow**. It is not tied to a single product, stack, or IDE. Any team or solo developer can adopt it; project-specific docs and tooling are **instances** of these contracts.
 
-> Install / scaffold: `npx phasestep init` (or `npm i -g phasestep` then `phasestep init`). Adapters (Cursor, Claude Code, Codex) implement the command contracts below.
+> Install / scaffold: **IDE plugin** (Cursor / Claude Code marketplace → `/setup` scaffolds the project; existing `phasestep.json` = already installed) **or** CLI `npx phasestep init` (or `npm i -g phasestep` then `phasestep init`). Same project shape either way. Adapters implement the command contracts below.
 
 ---
 
@@ -278,7 +278,9 @@ npx phasestep check
 npx phasestep upgrade   # later: refresh commands/catalogs without wiping Owner docs
 ```
 
-Then run **`/setup`** (guided product → user flow → stack enrichment → architecture → decisions → design → build plan with **named phases**), or fill stubs manually, then `/plan-phase <first-slug>`.
+Then run **`/setup`** (ensure install → guided product → user flow → stack enrichment → architecture → decisions → design → build plan with **named phases**), or fill stubs manually, then `/plan-phase <first-slug>`. **`/status`** reports whether `phasestep.json` is present (installed).
+
+**IDE plugin:** marketplace install alone is enough to start — `/setup` scaffolds when needed. **CLI:** `init` / `upgrade` / `check` remain available and produce the same project shape.
 
 **Mid-project:** `/setup` detects existing code, documents current behavior, and plans **remaining** work — it does not reinvent the app.
 
@@ -287,6 +289,14 @@ Then run **`/setup`** (guided product → user flow → stack enrichment → arc
 ## 11. Evolution log
 
 Newest first. Product changelog only.
+
+### Unreleased — IDE plugins (plugin-first install)
+
+- **Cursor** + **Claude Code** plugins ship the same command contracts + a `scaffold/` bundle  
+- Marketplace install → `/setup` scaffolds the project when `phasestep.json` is missing — **no** required terminal `npx phasestep init`  
+- Existing CLI install (`phasestep.json` present) → `/setup` / `/status` report **installed**  
+- npm CLI (`init` / `upgrade` / `check`) unchanged — same project shape either way  
+- Regenerate plugins from templates: `npm run generate:plugins`  
 
 ### v1.1.0 — evidence bar · playback · failure brief · verification map · encode · Verified ship — *current*
 
