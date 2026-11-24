@@ -56,7 +56,7 @@ CLI `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three)
 
 **Quality armor:** verify uses an evidence bar (tool / Owner UAT / not run — wrong surface or inconclusive does not pass). After Reject or failed verify, refine starts with a short failure brief (root cause + blast radius) before coding. Repeated corrections get an **encode lessons** stop (rule / lint / test / doc / design system). A **verification map** stores durable prove-paths. `/pr-step` records a **Verified** line and won’t land application code over open verify fails unless you override.
 
-**Design wing (core):** `/setup` Stage 7 sets **Visual direction** + design system (non-UI marks N/A). `/design-direction`, `/critique-ui`, `/polish-ui`, and `/motion-ui` keep UI intentional — not a second workflow.
+**Design wing (core):** `/setup` Stage 7 sets **Visual direction** + design system (non-UI marks N/A). `/design-direction`, `/detect-ui`, `/critique-ui`, `/polish-ui`, and `/motion-ui` keep UI intentional — not a second workflow.
 
 Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the number.
 
@@ -98,6 +98,7 @@ npx phasestep check     # validate docs + selected-adapter command files
 | `/verify-phase <slug> [S]` | Owner verification + evidence bar (inconclusive ≠ pass) |
 | `/refine-phase <slug> [S]` | Fix after reject / fail; failure brief; encode lessons if repeating |
 | `/design-direction` | Set or refresh Visual direction (Owner Accept) |
+| `/detect-ui [target]` | Fixed AS-* anti-slop detect — findings only |
 | `/critique-ui [target]` | Ranked UX/visual review — findings only |
 | `/polish-ui [target]` | Ordered craft polish (keep accepted direction) |
 | `/motion-ui [target]` | Motion craft — prefer none; sync Motion in DESIGN_SYSTEM |

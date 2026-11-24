@@ -101,10 +101,11 @@ Do not invent a motion system under a “light” pass.
 
 ```text
 After motion:
-1. /critique-ui [target] — re-check
-2. /polish-ui [target] — if chrome/spacing drifted
-3. Continue to /verify-phase or /audit-ds
-4. Done for now
+1. /detect-ui [target] — re-scan AS-* if chrome/motion drifted
+2. /critique-ui [target] — re-check
+3. /polish-ui [target] — if chrome/spacing drifted
+4. Continue to /verify-phase or /audit-ds
+5. Done for now
 ```
 
 ## Do not

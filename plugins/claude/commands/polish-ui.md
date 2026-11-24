@@ -14,7 +14,7 @@ Run an ordered **craft polish** pass on a UI target. Keep the accepted **Visual 
 
 1. [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — Visual direction + tokens / components
 2. Constitution craft floor (§1 Design wing)
-3. Recent `/critique-ui` findings for this target if present in chat
+3. Recent `/detect-ui` / `/critique-ui` findings for this target if present in chat
 4. Phase plan when scoped to a build phase — stay inside Files checklist unless Owner expands scope
 
 If Visual direction is missing/stub on a UI product → **STOP**:
@@ -68,10 +68,11 @@ Motion is **out of scope** here — note candidates and soft-offer `/motion-ui` 
 
 ```text
 After polish:
-1. /motion-ui [target] — if motion candidates noted
-2. /critique-ui [target] — re-check
-3. Continue to /verify-phase or /audit-ds
-4. Done for now
+1. /detect-ui [target] — re-scan AS-* after edits
+2. /motion-ui [target] — if motion candidates noted
+3. /critique-ui [target] — broader re-check
+4. Continue to /verify-phase or /audit-ds
+5. Done for now
 ```
 
 ## Do not

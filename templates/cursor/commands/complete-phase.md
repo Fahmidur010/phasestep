@@ -21,10 +21,11 @@ If the phase had UI and critique/polish were never offered this phase, soft-remi
 
 ```text
 UI craft before complete (optional):
-1. /critique-ui PHASE — quick review
-2. /polish-ui PHASE — craft pass
-3. /motion-ui PHASE — only if interactions should move
-4. Continue to complete confirm
+1. /detect-ui PHASE — AS-* anti-slop
+2. /critique-ui PHASE — quick review
+3. /polish-ui PHASE — craft pass
+4. /motion-ui PHASE — only if interactions should move
+5. Continue to complete confirm
 ```
 
 If not explicitly confirmed, **STOP** once:

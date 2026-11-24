@@ -10,12 +10,24 @@ Perform a **read-only** UX / visual critique for a UI target. **Do not modify ap
 
 `$ARGUMENTS` = target (route, screen name, component path, or phase slug). If empty → ask once what to critique, or use the current phase’s UI Files checklist.
 
+## Soft-offer before critique
+
+If `/detect-ui` has not just run this chat for the same target, **STOP** once (optional):
+
+```text
+Before /critique-ui:
+1. /detect-ui first — fixed AS-* anti-slop, then return to /critique-ui
+2. Proceed with /critique-ui now
+3. Skip soft-offer
+```
+
 ## Required reading
 
 1. [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — **Visual direction** + tokens / components / do-don’t
 2. Constitution craft floor (§1 Design wing)
-3. [`docs/product.md`](docs/product.md) / [`docs/USER_FLOW.md`](docs/USER_FLOW.md) for job-of-the-screen
-4. Phase plan when target is a build phase: [`docs/phase-plans/`](docs/phase-plans/)
+3. Recent `/detect-ui` findings for this target if present in chat
+4. [`docs/product.md`](docs/product.md) / [`docs/USER_FLOW.md`](docs/USER_FLOW.md) for job-of-the-screen
+5. Phase plan when target is a build phase: [`docs/phase-plans/`](docs/phase-plans/)
 
 If Visual direction is missing/stub on a UI product → **STOP**:
 
@@ -35,7 +47,7 @@ Cover at least:
 | Area | Ask |
 |------|-----|
 | **Direction fit** | Matches Character / World / Moments / Signature? Or generic AI default? |
-| **Craft floor** | Kickers, nested cards, emoji-icons, purple-glow / AI beige, empty “premium” chrome? |
+| **Craft floor / detect** | Carry forward open `AS-*` hits; kickers, nested cards, emoji-icons, purple-glow / AI beige, empty “premium” chrome? |
 | **Hierarchy** | Can a new user find the primary action in 3 seconds? |
 | **Spacing / type** | Uneven gaps, cramped measure, random font sizes? |
 | **States** | Empty / loading / error / disabled considered? |
@@ -56,6 +68,7 @@ Cover at least:
 
 **Counts:** P0= · P1= · P2=
 **Next:**
+- Anti-slop only → `/detect-ui [target]` then `/polish-ui`
 - Fixes → `/polish-ui [target]` and/or `/refine-phase <slug>`
 - DS drift → `/audit-ds <slug>` after polish
 ```
@@ -65,3 +78,4 @@ Cover at least:
 - Rewrite UI in this command (no “while I’m here” edits)
 - Invent a new Visual direction silently — use `/design-direction`
 - Soften P0s into nits to avoid Owner friction
+- Recommend external design tools or live/preview modes

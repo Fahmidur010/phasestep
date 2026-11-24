@@ -81,7 +81,7 @@ Never install silently. Never block the audit if Owner chooses 2 or 3.
 3. Check: steps reflected in code; layering/forbidden imports; auth/role guards; migrations present when claimed; every audit checkpoint evaluated; short SOLID pass on changed surfaces.
 4. **Behavior delta traceability:** for each verified step in the phase plan, read its Behavior delta scenarios — confirm implemented behavior matches each **THEN** (and REMOVED scenarios if present), including refinements absorbed mid-phase. Flag mismatches as findings.
 5. If this phase has a **web UI** surface → follow **Browser evidence** above. If **native** or **backend-only** → follow Native / Backend tool evidence above.
-6. If UI in scope and `docs/DESIGN_SYSTEM.md` exists (not `n/a`) → soft-offer `/critique-ui` then run `/audit-ds PHASE` (or note as a separate step).
+6. If UI in scope and `docs/DESIGN_SYSTEM.md` exists (not `n/a`) → soft-offer `/detect-ui` / `/critique-ui` then run `/audit-ds PHASE` (or note as a separate step).
 7. **Verification map:** read [`docs/VERIFICATION_MAP.md`](docs/VERIFICATION_MAP.md) when present for prove-path hints (context only). If this audit established a **new** durable prove command/path for a feature/surface, **append** a row (Source `audit`) after the report — still **read-only** for application code; map append is allowed docs-only. Do not override Trace / Owner gates.
 8. Report **Critical (C) / Major (M) / Minor (Mi)** — file, line, issue, suggested fix. End with counts and:
    - Issues → `/refine-phase PHASE` then re-run `/audit-phase PHASE`

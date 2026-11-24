@@ -38,6 +38,7 @@ const COMMAND_FILES = [
   'verify-phase.md',
   'refine-phase.md',
   'design-direction.md',
+  'detect-ui.md',
   'critique-ui.md',
   'polish-ui.md',
   'motion-ui.md',

@@ -235,6 +235,7 @@ function main() {
   assert(constitution.includes('v1.1.0'), 'constitution evolution log 1.1.0');
   assert(constitution.includes('v1.2.0'), 'constitution evolution log 1.2.0');
   assert(constitution.includes('v1.3.0'), 'constitution evolution log 1.3.0');
+  assert(constitution.includes('v1.4.0'), 'constitution evolution log 1.4.0');
   assert(
     constitution.includes('Design wing') || constitution.includes('design wing'),
     'constitution design wing'
@@ -244,6 +245,7 @@ function main() {
     'constitution design-wing commands'
   );
   assert(constitution.includes('motion-ui'), 'constitution motion-ui command');
+  assert(constitution.includes('detect-ui'), 'constitution detect-ui command');
   assert(
     constitution.includes('Verification map') || constitution.includes('VERIFICATION_MAP'),
     'constitution verification map artifact'
@@ -273,14 +275,25 @@ function main() {
   assert(designDirectionCmd.includes('1. Accept'), 'design-direction numbered Accept');
   assert(designDirectionCmd.includes('Character'), 'design-direction Character line');
 
+  const detectUiCmd = read(path.join('.cursor', 'commands', 'detect-ui.md'));
+  assert(detectUiCmd.includes('Do not modify'), 'detect-ui is read-only');
+  assert(detectUiCmd.includes('AS-01'), 'detect-ui rule AS-01');
+  assert(detectUiCmd.includes('AS-08'), 'detect-ui rule AS-08');
+  assert(
+    detectUiCmd.includes('external') || detectUiCmd.includes('live/preview'),
+    'detect-ui bans external/live paths'
+  );
+
   const critiqueUiCmd = read(path.join('.cursor', 'commands', 'critique-ui.md'));
   assert(critiqueUiCmd.includes('Do not modify'), 'critique-ui is read-only');
   assert(critiqueUiCmd.includes('P0'), 'critique-ui priority P0');
+  assert(critiqueUiCmd.includes('/detect-ui'), 'critique-ui soft-offers detect-ui');
 
   const polishUiCmd = read(path.join('.cursor', 'commands', 'polish-ui.md'));
   assert(polishUiCmd.includes('Ordered passes') || polishUiCmd.includes('Spacing'), 'polish-ui ordered passes');
   assert(polishUiCmd.includes('Visual direction'), 'polish-ui keeps Visual direction');
   assert(polishUiCmd.includes('/motion-ui'), 'polish-ui soft-offers motion-ui');
+  assert(polishUiCmd.includes('/detect-ui'), 'polish-ui soft-offers detect-ui');
 
   const motionUiCmd = read(path.join('.cursor', 'commands', 'motion-ui.md'));
   assert(motionUiCmd.includes('Should it move') || motionUiCmd.includes('animate?'), 'motion-ui decision gate');
@@ -289,7 +302,22 @@ function main() {
 
   assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/polish-ui'), 'build-phase soft-offers polish-ui');
   assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/motion-ui'), 'build-phase soft-offers motion-ui');
+  assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/detect-ui'), 'build-phase soft-offers detect-ui');
+  assert(
+    read(path.join('.cursor', 'commands', 'build-phase.md')).includes('5. Continue to /verify-phase'),
+    'build-phase UI soft-offer Continue is option 5'
+  );
+  assert(read(path.join('.cursor', 'commands', 'complete-phase.md')).includes('/detect-ui'), 'complete-phase soft-offers detect-ui');
+  assert(
+    read(path.join('.cursor', 'commands', 'complete-phase.md')).includes('5. Continue to complete confirm'),
+    'complete-phase UI soft-offer Continue is option 5'
+  );
+  assert(
+    read(path.join('.cursor', 'commands', 'motion-ui.md')).includes('5. Done for now'),
+    'motion-ui after soft-offer Done is option 5'
+  );
   assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/critique-ui'), 'audit-ds soft-offers critique-ui');
+  assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/detect-ui'), 'audit-ds soft-offers detect-ui');
   assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('Motion'), 'audit-ds checks Motion');
   assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/motion-ui'), 'audit-ds can route to motion-ui');
   assert(
@@ -299,6 +327,10 @@ function main() {
   assert(
     read('AGENTS.md').includes('/motion-ui') || read('AGENTS.md').includes('motion-ui'),
     'codex AGENTS lists motion-ui'
+  );
+  assert(
+    read('AGENTS.md').includes('/detect-ui') || read('AGENTS.md').includes('detect-ui'),
+    'codex AGENTS lists detect-ui'
   );
 
   const progressStub = read(cfg.progress);
@@ -326,6 +358,7 @@ function main() {
     'github-connect.md',
     'pr-step.md',
     'design-direction.md',
+    'detect-ui.md',
     'critique-ui.md',
     'polish-ui.md',
     'motion-ui.md',

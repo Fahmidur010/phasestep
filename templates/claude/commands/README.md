@@ -10,6 +10,7 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /verify-phase <slug> [step]→ Owner UAT + Evidence bar (inconclusive / wrong surface ≠ pass)
 /refine-phase <slug> [step]→ Failure brief; Encode lessons if repeating; mid-phase absorb / Cross-cutting
 /design-direction [refresh]→ set/refresh Visual direction in DESIGN_SYSTEM (Owner Accept)
+/detect-ui [target]        → fixed AS-* anti-slop detect — findings only
 /critique-ui [target]      → ranked UX/visual review — findings only
 /polish-ui [target]        → ordered craft pass (keep accepted direction)
 /motion-ui [target]        → motion decision tree + implement (prefer none; sync Motion)

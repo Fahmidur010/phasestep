@@ -44,14 +44,14 @@ These tighten the loop without replacing Owner gates or product docs:
 
 ### Design wing (core — not optional)
 
-Every Phasestep install includes a **design wing**: visual direction, critique, polish, and motion. It is part of the package for greenfield and mid-project alike — Owners gate *decisions* (accept a direction, accept a polish/motion pass); they do not opt out of the wing existing.
+Every Phasestep install includes a **design wing**: visual direction, detect, critique, polish, and motion. It is part of the package for greenfield and mid-project alike — Owners gate *decisions* (accept a direction, accept a polish/motion pass); they do not opt out of the wing existing.
 
 **Craft floor** — shared bar before UI edits (accepted Visual direction in `DESIGN_SYSTEM.md` overrides defaults except explicit bans):
 
 1. **Quiet chrome, loud moments** — keep frames/toolbars restrained; put richness in one or two memorable content moments.
-2. **Never ship (anti-slop)** — decorative kickers/eyebrows; nested card-in-card chrome; emoji-as-icons; default AI beige / purple-glow look when a direction is accepted; gradient text as decoration; hero-metric template stacked without product reason.
+2. **Never ship (anti-slop)** — decorative kickers/eyebrows; nested card-in-card chrome; emoji-as-icons; default AI beige / purple-glow look when a direction is accepted; gradient text as decoration; hero-metric template stacked without product reason. Scan with `/detect-ui` (stable `AS-*` IDs).
 3. **Direction before inventing look** — if Visual direction is missing on a UI surface, run `/design-direction` (or complete Stage 7) before large UI invention.
-4. **Critique does not silently rewrite** — `/critique-ui` reports ranked findings; edits go through Owner-gated polish/refine/build.
+4. **Detect / critique do not silently rewrite** — `/detect-ui` and `/critique-ui` report findings only; edits go through Owner-gated polish/refine/build.
 5. **Motion earns its place** — prefer none; name one purpose; cheapest tool; transform/opacity; honor reduced-motion; sync durable rules into `DESIGN_SYSTEM.md` **Motion**.
 6. **Non-UI projects** — Owner records Visual direction / DS as **N/A** at Stage 7; wing commands remain available if UI appears later.
 
@@ -159,11 +159,12 @@ Paths are overridable in `phasestep.json`.
 | **verify-phase** | `<slug>` `[S]` | Owner (+ Agent checklist) | Checklist from **current** Trace / delta (incl. absorbed mid-phase); **UNCHANGED spot-check**; update **Phase health**. No code changes. |
 | **refine-phase** | `<slug>` `[S]` | Agent | Minimal fixes; **mid-phase side-work** absorb into plan/delta (size STOP if too big); **Cross-cutting STOP** if principle/multi-feature; encode lessons may update Visual direction / DS; update **Phase health**. |
 | **design-direction** | `[refresh?]` | Agent + Owner | Set or refresh **Visual direction** in `DESIGN_SYSTEM.md` (character, world, moments, signature + page mode). Owner Accept before it sticks. |
+| **detect-ui** | `[target]` | Agent | Fixed anti-slop rule table (`AS-*`); **findings only** — no silent rewrite. Prefer before critique for slop hits. |
 | **critique-ui** | `[target]` | Agent | Ranked UX/visual review vs direction + craft floor; **findings only** — no silent rewrite. |
 | **polish-ui** | `[target]` | Agent | Ordered craft pass (spacing → color/chrome → type → layout → details); keep accepted direction; Owner gate before large edits; soft-offer `/motion-ui` after. |
 | **motion-ui** | `[target]` | Agent | Motion decision tree (should it move → purpose → cheapest tool → props/feel → reduced-motion); implement; sync **Motion** in `DESIGN_SYSTEM.md`. Prefer none. |
-| **audit-phase** | `<slug>` | Agent | Read-only **build** acceptance audit after steps verified (incl. absorbed mid-phase deltas / Files). Not for campaign. Soft-offer `/critique-ui` before DS audit when UI in scope. |
-| **audit-ds** | `<slug>` \| `all` | Agent | Design-system audit for delivery (incl. absorbed UI paths + Visual direction + Motion conformance). Soft-offer `/critique-ui` first when useful. |
+| **audit-phase** | `<slug>` | Agent | Read-only **build** acceptance audit after steps verified (incl. absorbed mid-phase deltas / Files). Not for campaign. Soft-offer `/detect-ui` / `/critique-ui` before DS audit when UI in scope. |
+| **audit-ds** | `<slug>` \| `all` | Agent | Design-system audit for delivery (incl. absorbed UI paths + Visual direction + Motion conformance). Soft-offer `/detect-ui` / `/critique-ui` first when useful. |
 | **complete-phase** | `<slug>` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (incl. parked side-work seeds → deferred / carry into next). Soft-offer critique/polish on UI if skipped. |
 | **session-log** | `label` `<slug>` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
@@ -245,13 +246,13 @@ Rules:
 17. **Step playback:** progressive (or vague classic done-when) → Goal · Done-when · Out of scope · Files likely STOP before code  
 18. **Encode lessons:** repeated Owner correction class → STOP once (rule / lint-test / doc-only / Visual direction·DS / skip); prefer structure over more chat  
 19. **Verified on ship:** `/pr-step` records a Verified line; open Phase health fails block **code** landings unless Owner override; docs-only uses `n/a docs-only`  
-20. **Design wing:** UI projects accept Visual direction before inventing look; `/critique-ui` does not silently rewrite; `/polish-ui` keeps accepted direction; `/motion-ui` prefers none and syncs Motion rules; non-UI marks DS **N/A** at Stage 7 — wing commands stay installed  
+20. **Design wing:** UI projects accept Visual direction before inventing look; `/detect-ui` / `/critique-ui` do not silently rewrite; `/polish-ui` keeps accepted direction; `/motion-ui` prefers none and syncs Motion rules; non-UI marks DS **N/A** at Stage 7 — wing commands stay installed  
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
 
 **Mid-phase side-work:** Chat refinements during build/refine fold into the current named phase step artifacts. Oversized asks use the Side-work size STOP — never silent mega-scope, never chat-only changes that skip delta/plan.
 
-**Progressive phases:** New or organic features use `/plan-phase <slug>` (add to BUILD_PLAN if needed) → `/build-phase <slug> N` with Owner describing each step → verify → … → soft-offer `/critique-ui` / `/polish-ui` / `/motion-ui` → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows with the work.
+**Progressive phases:** New or organic features use `/plan-phase <slug>` (add to BUILD_PLAN if needed) → `/build-phase <slug> N` with Owner describing each step → verify → … → soft-offer `/detect-ui` / `/critique-ui` / `/polish-ui` / `/motion-ui` → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows with the work.
 
 **GitHub handoff:** `/github-connect` → Simple or GitFlow. Day-to-day: `/pr-step update`. GitFlow: **`release` is the live/deploy line**; **`main` is the stable baseline** (remind `/pr-step main` after release when stable). Live bugs: `/pr-step hotfix <issue>` (from `release` → land `release`+`develop`). Non-live: `/pr-step bugfix`. **Invoke authorizes** git writes (no Gate A/B/C). **Verified** line required on ship; open fails block code unless override. Never force-push. Deploy stays project-local.
 
@@ -316,7 +317,16 @@ Newest first. Product changelog only.
 - npm CLI (`init` / `upgrade` / `check`) unchanged — same project shape either way  
 - Regenerate plugins from templates: `npm run generate:plugins`  
 
-### v1.3.0 — design wing motion (`/motion-ui` · DS Motion sync) — *current*
+### v1.4.0 — design wing detect (`/detect-ui`) — *current*
+
+**Date:** 2026-11-24  
+
+- **`/detect-ui`** — fixed anti-slop rule table (`AS-01`…`AS-08` + `AS-BAN`); findings only  
+- Soft-offers from build / critique / polish / audit-ds / complete / motion  
+- No live/preview mode; no external design tools  
+- Craft floor: detect/critique do not silently rewrite; adapters + smoke  
+
+### v1.3.0 — design wing motion (`/motion-ui` · DS Motion sync)
 
 **Date:** 2026-11-24  
 
@@ -583,9 +593,10 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **User flow** | Interaction map (entry → paths → exits); setup overview surface |
 | **Stack catalog** | Curated official agentic resource pointers per framework |
 | **Design catalog** | Component libraries (pick one) + guidelines; agent MCP/skills/llms |
-| **Design wing** | Core visual toolkit: direction, critique, polish, motion — not an opt-in add-on |
+| **Design wing** | Core visual toolkit: direction, detect, critique, polish, motion — not an opt-in add-on |
 | **Visual direction** | Character / world / moments / signature + page mode in `DESIGN_SYSTEM.md`; Owner-gated |
 | **Craft floor** | Shared anti-slop / quality bar before UI edits; direction overrides defaults except bans |
+| **detect-ui** | Fixed anti-slop rule table (`AS-*`); findings only — no silent rewrite |
 | **critique-ui** | Ranked UX/visual review; findings only — no silent rewrite |
 | **polish-ui** | Ordered craft pass keeping accepted direction |
 | **motion-ui** | Motion decision tree + implement; sync Motion section; prefer none |
@@ -610,4 +621,4 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 ---
 
-*End of constitution — Phasestep v1.3.0*
+*End of constitution — Phasestep v1.4.0*
