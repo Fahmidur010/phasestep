@@ -34,7 +34,7 @@ Before /audit-ds:
 
 ## Required reading
 
-- [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — including **Visual direction**
+- [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — including **Visual direction** + **Motion**
 - Constitution craft floor (§1 Design wing)
 - Inventory: [`components/ui/`](components/ui/) if it exists
 - Phase plan when auditing **PHASE**: [`docs/phase-plans/phase-PHASE.md`](docs/phase-plans/)
@@ -45,6 +45,7 @@ Follow **docs/DESIGN_SYSTEM.md** as source of truth. Include UI touched by mid-p
 
 - **Visual direction** — Character / World / Moments / Signature respected (not generic AI default)
 - Craft floor bans — kickers, nested cards, emoji-icons, purple-glow / AI beige when direction forbids
+- **Motion** — if Motion is accepted: purpose-fit only; no decorative chrome loops; reduced-motion honored; no ease-in / layout-thrash / scale(0)-only show-hide when DS forbids
 - Interactive controls use approved primitives — not one-off duplicates
 - Tokens / semantic colors — avoid arbitrary hard-coded colors where DS forbids them
 - Typography / spacing / radius per DS
@@ -62,5 +63,5 @@ severity — `file:line` — issue — suggested fix (name DS rule or primitive)
 
 End with counts.
 
-- C/M → `/refine-phase PHASE` and/or `/polish-ui` then re-run `/audit-ds PHASE`
+- C/M → `/refine-phase PHASE` and/or `/polish-ui` / `/motion-ui` then re-run `/audit-ds PHASE`
 - Clean → still need `/audit-phase PHASE` + Owner verify history before `/complete-phase`

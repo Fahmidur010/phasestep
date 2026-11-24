@@ -6,7 +6,7 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.2.0**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.3.0**
 
 ---
 
@@ -56,7 +56,7 @@ CLI `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three)
 
 **Quality armor:** verify uses an evidence bar (tool / Owner UAT / not run — wrong surface or inconclusive does not pass). After Reject or failed verify, refine starts with a short failure brief (root cause + blast radius) before coding. Repeated corrections get an **encode lessons** stop (rule / lint / test / doc / design system). A **verification map** stores durable prove-paths. `/pr-step` records a **Verified** line and won’t land application code over open verify fails unless you override.
 
-**Design wing (core):** `/setup` Stage 7 sets **Visual direction** + design system (non-UI marks N/A). `/design-direction`, `/critique-ui`, and `/polish-ui` keep UI intentional — not a second workflow.
+**Design wing (core):** `/setup` Stage 7 sets **Visual direction** + design system (non-UI marks N/A). `/design-direction`, `/critique-ui`, `/polish-ui`, and `/motion-ui` keep UI intentional — not a second workflow.
 
 Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the number.
 
@@ -100,6 +100,7 @@ npx phasestep check     # validate docs + selected-adapter command files
 | `/design-direction` | Set or refresh Visual direction (Owner Accept) |
 | `/critique-ui [target]` | Ranked UX/visual review — findings only |
 | `/polish-ui [target]` | Ordered craft polish (keep accepted direction) |
+| `/motion-ui [target]` | Motion craft — prefer none; sync Motion in DESIGN_SYSTEM |
 | `/audit-phase <slug>` | Delivery audit after the phase |
 | `/audit-ds <slug\|all>` | Design-system / direction audit (delivery) |
 | `/complete-phase <slug>` | Mark phase done + phase remainder / next seeds |

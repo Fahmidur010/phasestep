@@ -2,7 +2,7 @@
 
 Slash commands for Cursor. The same command bodies are also installed for Claude Code (`.claude/commands/`) when that adapter is enabled. Codex gets a managed block in `AGENTS.md`.
 
-**Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `status`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `design-direction`, `critique-ui`, `polish-ui`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
+**Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `status`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `design-direction`, `critique-ui`, `polish-ui`, `motion-ui`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
 
 ```text
 /setup                     → ensure install → product → user flow ↔ product → stack → architecture → design wing → build plan
@@ -14,6 +14,7 @@ Slash commands for Cursor. The same command bodies are also installed for Claude
 /design-direction [refresh]→ set/refresh Visual direction in DESIGN_SYSTEM (Owner Accept)
 /critique-ui [target]      → ranked UX/visual review — findings only
 /polish-ui [target]        → ordered craft pass (keep accepted direction)
+/motion-ui [target]        → motion decision tree + implement (prefer none; sync Motion)
 /audit-phase <slug>        → build-phase acceptance audit (delivery)
 /audit-ds <slug|all>       → design-system audit (delivery)
 /complete-phase <slug>     → mark done + progress + phase remainder

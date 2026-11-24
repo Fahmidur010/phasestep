@@ -69,7 +69,7 @@ On refresh Accept: replace the Visual direction section; note date in [`{{PROGRE
 
 - If Stage 7 incomplete → continue `/setup` (library + full DS accept)
 - If building UI → remind agent to follow accepted direction + craft floor
-- Optional: `/polish-ui` / `/critique-ui` after screens exist
+- Optional: `/polish-ui` / `/critique-ui` / `/motion-ui` after screens exist
 
 ## Do not
 

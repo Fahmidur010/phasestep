@@ -40,6 +40,7 @@ const COMMAND_FILES = [
   'design-direction.md',
   'critique-ui.md',
   'polish-ui.md',
+  'motion-ui.md',
   'audit-phase.md',
   'audit-campaign.md',
   'complete-phase.md',

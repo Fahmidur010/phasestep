@@ -51,7 +51,7 @@ Only touch what the intensity allows. Prefer the **chosen component library**; n
 4. **Layout** — alignment, density; one clear primary action  
 5. **Details** — states, icons (no emoji-as-icons), focus, empty/error  
 
-Motion is **out of scope** for Wave-1 polish — note candidates for later `/motion-ui`; do not invent heavy animation here.
+Motion is **out of scope** here — note candidates and soft-offer `/motion-ui` after; do not invent heavy animation in polish.
 
 ## Mid-pass rules
 
@@ -68,9 +68,10 @@ Motion is **out of scope** for Wave-1 polish — note candidates for later `/mot
 
 ```text
 After polish:
-1. /critique-ui [target] — re-check
-2. Continue to /verify-phase or /audit-ds
-3. Done for now
+1. /motion-ui [target] — if motion candidates noted
+2. /critique-ui [target] — re-check
+3. Continue to /verify-phase or /audit-ds
+4. Done for now
 ```
 
 ## Do not

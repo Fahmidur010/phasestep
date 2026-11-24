@@ -215,7 +215,8 @@ Behavior delta ready:
 UI craft (optional before or after verify):
 1. /polish-ui [this surface] — craft pass
 2. /critique-ui [this surface] — findings only
-3. Continue to /verify-phase PHASE STEP
+3. /motion-ui [this surface] — only if interaction should move
+4. Continue to /verify-phase PHASE STEP
 ```
 
 Do not start the next step until Owner confirms verification passed (or explicitly continues).

@@ -1,6 +1,6 @@
 # Design system
 
-UI rules for this project. Used by `/design-direction`, `/critique-ui`, `/polish-ui`, `/audit-ds`, `/audit-campaign-ds`, and UI build steps.
+UI rules for this project. Used by `/design-direction`, `/critique-ui`, `/polish-ui`, `/motion-ui`, `/audit-ds`, `/audit-campaign-ds`, and UI build steps.
 
 Filled during `/setup` Stage 7 (design wing): **Visual direction** + product + user flow + architecture + **one** chosen component library (or Owner custom) + optional guidelines.
 
@@ -45,6 +45,20 @@ Colors, typography, spacing, radius…
 Approved primitives / patterns from the chosen system. When to use what.
 
 …
+
+## Motion
+
+**Status:** stub | drafting | accepted | n/a  
+
+Filled/refined by `/motion-ui` (and Stage 7 draft). Prefer **no motion** unless purpose is clear. Sync here when Owner accepts durable motion rules.
+
+- **Default:** none — earn every animation  
+- **Allowed purposes:** feedback | spatial | state | prevent-jar | explanation | delight  
+- **Tool preference:** CSS transition → starting-style / view transition → keyframes → WAAPI → library (Owner-gated)  
+- **Properties:** transform / opacity preferred; no layout thrash for motion; never scale(0)-only show/hide  
+- **Feel:** UI usually &lt;300ms; no ease-in on enter/feedback; interruptible when re-triggered often  
+- **A11y:** honor `prefers-reduced-motion`; hover must not be the only signal  
+- **Never:** decorative loops on chrome; motion on 100+/day keyboard paths; ignore reduced-motion  
 
 ## Accessibility
 

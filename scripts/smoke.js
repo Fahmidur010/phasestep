@@ -234,6 +234,7 @@ function main() {
   );
   assert(constitution.includes('v1.1.0'), 'constitution evolution log 1.1.0');
   assert(constitution.includes('v1.2.0'), 'constitution evolution log 1.2.0');
+  assert(constitution.includes('v1.3.0'), 'constitution evolution log 1.3.0');
   assert(
     constitution.includes('Design wing') || constitution.includes('design wing'),
     'constitution design wing'
@@ -242,6 +243,7 @@ function main() {
     constitution.includes('critique-ui') && constitution.includes('polish-ui'),
     'constitution design-wing commands'
   );
+  assert(constitution.includes('motion-ui'), 'constitution motion-ui command');
   assert(
     constitution.includes('Verification map') || constitution.includes('VERIFICATION_MAP'),
     'constitution verification map artifact'
@@ -264,6 +266,7 @@ function main() {
 
   const designStub = read(cfg.designSystem || 'docs/DESIGN_SYSTEM.md');
   assert(designStub.includes('## Visual direction'), 'DESIGN_SYSTEM stub has Visual direction');
+  assert(designStub.includes('## Motion'), 'DESIGN_SYSTEM stub has Motion');
 
   const designDirectionCmd = read(path.join('.cursor', 'commands', 'design-direction.md'));
   assert(designDirectionCmd.includes('Visual direction'), 'design-direction mentions Visual direction');
@@ -277,12 +280,25 @@ function main() {
   const polishUiCmd = read(path.join('.cursor', 'commands', 'polish-ui.md'));
   assert(polishUiCmd.includes('Ordered passes') || polishUiCmd.includes('Spacing'), 'polish-ui ordered passes');
   assert(polishUiCmd.includes('Visual direction'), 'polish-ui keeps Visual direction');
+  assert(polishUiCmd.includes('/motion-ui'), 'polish-ui soft-offers motion-ui');
+
+  const motionUiCmd = read(path.join('.cursor', 'commands', 'motion-ui.md'));
+  assert(motionUiCmd.includes('Should it move') || motionUiCmd.includes('animate?'), 'motion-ui decision gate');
+  assert(motionUiCmd.includes('reduced-motion') || motionUiCmd.includes('prefers-reduced-motion'), 'motion-ui reduced-motion');
+  assert(motionUiCmd.includes('## Motion') || motionUiCmd.includes('Motion'), 'motion-ui syncs Motion');
 
   assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/polish-ui'), 'build-phase soft-offers polish-ui');
+  assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/motion-ui'), 'build-phase soft-offers motion-ui');
   assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/critique-ui'), 'audit-ds soft-offers critique-ui');
+  assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('Motion'), 'audit-ds checks Motion');
+  assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/motion-ui'), 'audit-ds can route to motion-ui');
   assert(
     read('AGENTS.md').includes('/design-direction') || read('AGENTS.md').includes('design-direction'),
     'codex AGENTS lists design-direction'
+  );
+  assert(
+    read('AGENTS.md').includes('/motion-ui') || read('AGENTS.md').includes('motion-ui'),
+    'codex AGENTS lists motion-ui'
   );
 
   const progressStub = read(cfg.progress);
@@ -312,6 +328,7 @@ function main() {
     'design-direction.md',
     'critique-ui.md',
     'polish-ui.md',
+    'motion-ui.md',
   ]) {
     assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', cmd)), `cursor ${cmd}`);
     assert(fs.existsSync(path.join(TMP, '.claude', 'commands', cmd)), `claude ${cmd}`);

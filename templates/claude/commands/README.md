@@ -12,6 +12,7 @@ Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). 
 /design-direction [refresh]→ set/refresh Visual direction in DESIGN_SYSTEM (Owner Accept)
 /critique-ui [target]      → ranked UX/visual review — findings only
 /polish-ui [target]        → ordered craft pass (keep accepted direction)
+/motion-ui [target]        → motion decision tree + implement (prefer none; sync Motion)
 /audit-phase <slug>        → build-phase acceptance audit (delivery)
 /audit-ds <slug|all>       → design-system audit (delivery)
 /complete-phase <slug>     → mark done + progress + phase remainder
