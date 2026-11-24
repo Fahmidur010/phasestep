@@ -17,6 +17,15 @@ If Mode was `progressive`, set **Status:** `complete` and you may set **Mode:** 
 
 ## Confirm with Owner
 
+If the phase had UI and critique/polish were never offered this phase, soft-remind once before confirm (non-blocking):
+
+```text
+UI craft before complete (optional):
+1. /critique-ui PHASE — quick review
+2. /polish-ui PHASE — craft pass
+3. Continue to complete confirm
+```
+
 If not explicitly confirmed, **STOP** once:
 
 ```text

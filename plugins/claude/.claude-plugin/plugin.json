@@ -1,6 +1,6 @@
 {
   "name": "phasestep",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Phase-step agentic delivery with Behavior delta intent gates. Install once, run /setup — no separate terminal init required.",
   "author": {
     "name": "Fahmidur010"

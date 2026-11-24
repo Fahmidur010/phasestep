@@ -1,8 +1,8 @@
 # Phasestep — Constitution
 
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Status:** Living constitution (portable framework)  
-**Last updated:** 2026-11-22  
+**Last updated:** 2026-11-24  
 **Product:** Phasestep  
 **Author:** Fahmidur010  
 
@@ -42,6 +42,18 @@ These tighten the loop without replacing Owner gates or product docs:
 3. **Refine fixes root cause** — after Reject / verify fail, name first failure + blast radius before patching; prefer fix at source over new guards unless the guarded state is legitimate.
 4. **Progressive playback** — when the Owner described the step in chat, restate Goal · Done-when · Out of scope before coding (Owner Proceed / Edit).
 
+### Design wing (core — not optional)
+
+Every Phasestep install includes a **design wing**: visual direction, critique, and polish. It is part of the package for greenfield and mid-project alike — Owners gate *decisions* (accept a direction, accept a polish pass); they do not opt out of the wing existing.
+
+**Craft floor** — shared bar before UI edits (accepted Visual direction in `DESIGN_SYSTEM.md` overrides defaults except explicit bans):
+
+1. **Quiet chrome, loud moments** — keep frames/toolbars restrained; put richness in one or two memorable content moments.
+2. **Never ship (anti-slop)** — decorative kickers/eyebrows; nested card-in-card chrome; emoji-as-icons; default AI beige / purple-glow look when a direction is accepted; gradient text as decoration; hero-metric template stacked without product reason.
+3. **Direction before inventing look** — if Visual direction is missing on a UI surface, run `/design-direction` (or complete Stage 7) before large UI invention.
+4. **Critique does not silently rewrite** — `/critique-ui` reports ranked findings; edits go through Owner-gated polish/refine/build.
+5. **Non-UI projects** — Owner records Visual direction / DS as **N/A** at Stage 7; wing commands remain available if UI appears later.
+
 ---
 
 ## 2. Roles
@@ -75,7 +87,7 @@ Every adopting project MUST provide (names may vary; **contracts** must hold). D
 | **Phase execution plan** | `docs/phase-plans/phase-<slug>.md` | Named phase plan; **numeric** steps, done-when, verify checklist, Behavior delta. Legacy `phase-N.md` soft-compat. |
 | **Progress + session log** | `docs/PROGRESS.md` | Status + history (Setup checklist + rolling **Phase health** resume block). |
 | **Tooling adapters** | `.cursor/commands/`, `.claude/commands/`, `AGENTS.md` | Commands / guidance implementing §5 (Cursor, Claude Code, Codex). |
-| **Design / UI system** | `docs/DESIGN_SYSTEM.md` | UI rules used by `audit-ds` / `audit-campaign-ds`. Leave unused for non-UI projects. |
+| **Design / UI system** | `docs/DESIGN_SYSTEM.md` | **Visual direction** + UI rules (tokens, components, craft). Used by design-wing commands and `audit-ds` / `audit-campaign-ds`. Non-UI: Owner marks **N/A** at setup — stub stays. |
 | **Config** | `phasestep.json` | Paths + `buildCommand` + `adapters` for this project. |
 
 Paths are overridable in `phasestep.json`.
@@ -140,14 +152,17 @@ Paths are overridable in `phasestep.json`.
 
 | Command | Args | Actor | Must |
 |---------|------|-------|------|
-| **setup** | optional stage | Agent + Owner | Progressive stub fill. Product (**Spec quality checklist** before accept) → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design (pick-one library)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
+| **setup** | optional stage | Agent + Owner | Progressive stub fill. Product (**Spec quality checklist** before accept) → user flow ↔ sync → dual lock → stack enrichment → architecture (impact gate) → decisions → **design wing (direction + pick-one library + DS)** → build plan → `buildCommand`. Docs only (plus Owner-approved agent config). |
 | **plan-phase** | `<slug>` | Agent | Named phase; may **add** slug to BUILD_PLAN (Owner gate); **Planning mode** classic \| **progressive**; Clarify + quality for classic; thin plan for progressive. Docs only. |
-| **build-phase** | `<slug>` `[S]` | Agent | One **numeric** step; **progressive step capture** wires Owner-described steps into the plan; mid-phase side-work; Behavior delta + **Trace**; intent gate. |
+| **build-phase** | `<slug>` `[S]` | Agent | One **numeric** step; **progressive step capture** wires Owner-described steps into the plan; mid-phase side-work; Behavior delta + **Trace**; intent gate; after UI Accept soft-offer polish/critique. |
 | **verify-phase** | `<slug>` `[S]` | Owner (+ Agent checklist) | Checklist from **current** Trace / delta (incl. absorbed mid-phase); **UNCHANGED spot-check**; update **Phase health**. No code changes. |
-| **refine-phase** | `<slug>` `[S]` | Agent | Minimal fixes; **mid-phase side-work** absorb into plan/delta (size STOP if too big); **Cross-cutting STOP** if principle/multi-feature; update **Phase health**. |
-| **audit-phase** | `<slug>` | Agent | Read-only **build** acceptance audit after steps verified (incl. absorbed mid-phase deltas / Files). Not for campaign. |
-| **audit-ds** | `<slug>` \| `all` | Agent | Design-system audit for delivery (incl. absorbed UI paths on Files checklist). |
-| **complete-phase** | `<slug>` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (incl. parked side-work seeds → deferred / carry into next). |
+| **refine-phase** | `<slug>` `[S]` | Agent | Minimal fixes; **mid-phase side-work** absorb into plan/delta (size STOP if too big); **Cross-cutting STOP** if principle/multi-feature; encode lessons may update Visual direction / DS; update **Phase health**. |
+| **design-direction** | `[refresh?]` | Agent + Owner | Set or refresh **Visual direction** in `DESIGN_SYSTEM.md` (character, world, moments, signature + page mode). Owner Accept before it sticks. |
+| **critique-ui** | `[target]` | Agent | Ranked UX/visual review vs direction + craft floor; **findings only** — no silent rewrite. |
+| **polish-ui** | `[target]` | Agent | Ordered craft pass (spacing → color/chrome → type → layout → details); keep accepted direction; Owner gate before large edits. |
+| **audit-phase** | `<slug>` | Agent | Read-only **build** acceptance audit after steps verified (incl. absorbed mid-phase deltas / Files). Not for campaign. Soft-offer `/critique-ui` before DS audit when UI in scope. |
+| **audit-ds** | `<slug>` \| `all` | Agent | Design-system audit for delivery (incl. absorbed UI paths + Visual direction conformance). Soft-offer `/critique-ui` first when useful. |
+| **complete-phase** | `<slug>` | Agent | Owner confirmation; mark complete; session log; **Phase health** → complete; **Phase remainder** (incl. parked side-work seeds → deferred / carry into next). Soft-offer critique/polish on UI if skipped. |
 | **session-log** | `label` `<slug>` | Agent | Optional mid-phase or post-complete notes; refresh **Phase health** when useful. |
 | **map-project** | `[refresh]` | Agent | Draft/refresh `PROJECT_MAP.md` for navigation. No Owner gate. Context only. |
 | **github-connect** | `[repo-url?]` | Agent + Owner | Link `gh` auth + git remote; Owner picks **Simple PR** or **GitFlow** (`github.workflow`); optional GitFlow branch bootstrap. No app commit. |
@@ -166,7 +181,7 @@ Paths are overridable in `phasestep.json`.
 
 **Audit campaign gates:** `/audit-project` requires accepted product + user flow + architecture (+ design system if UI) — otherwise back to `/setup`. Reports are **read-only**; after each report the Owner picks numbered options: approve all for refinement / select findings / record only / continue to next phase. Fixes happen exclusively in `/refine-audit` on approved findings, then `/audit-campaign N reaudit` verifies. Findings never silently become build work — promotion into `BUILD_PLAN` is an explicit Owner choice at `/complete-audit`.
 
-**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official**, **community**, and (for web UI) **verification** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (1 Accept sync / 2 Reject / 3 Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. Design: UI check → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md`. Then build plan → `buildCommand`.
+**Setup gates:** After product accept, agent drafts the user flow (interaction map). Owner tweaks to the flow must update `product.md` in the same turn (**Product sync delta**). After dual lock, agent detects stack(s) and **stops for Owner stack confirmation**, then proposes **official**, **community**, and (for web UI) **verification** catalog items (each with `why`); installs only what Owner accepts. Architecture must not silently rewrite product/flow — use the **Architecture → product/flow impact** gate (1 Accept sync / 2 Reject / 3 Defer to decisions). Decisions: resolve → sync affected docs; unconfirmed stay Open as `tbd`/`deferred`. **Design wing (Stage 7, required):** UI check → non-UI records **N/A** (Owner gate; wing still installed) → UI: **Visual direction** Accept → confirm surface → **pick one** component library (never mix) + optional guidelines → install agent resources → accept `DESIGN_SYSTEM.md` (direction + system). Then build plan → `buildCommand`.
 
 ---
 
@@ -226,14 +241,15 @@ Rules:
 15. **Evidence bar:** `/verify-phase` must not PASS a step when ADDED/CHANGED Trace rows lack Owner Pass or matching-surface evidence; wrong-surface or inconclusive tool results are not pass  
 16. **Failure brief:** `/refine-phase` after Reject / verify fail records symptom → root cause → blast radius → fix shape before application code (after side-work / Cross-cutting STOPs if any)  
 17. **Step playback:** progressive (or vague classic done-when) → Goal · Done-when · Out of scope · Files likely STOP before code  
-18. **Encode lessons:** repeated Owner correction class → STOP once (rule / lint-test / doc-only / skip); prefer structure over more chat  
+18. **Encode lessons:** repeated Owner correction class → STOP once (rule / lint-test / doc-only / Visual direction·DS / skip); prefer structure over more chat  
 19. **Verified on ship:** `/pr-step` records a Verified line; open Phase health fails block **code** landings unless Owner override; docs-only uses `n/a docs-only`  
+20. **Design wing:** UI projects accept Visual direction before inventing look; `/critique-ui` does not silently rewrite; `/polish-ui` keeps accepted direction; non-UI marks DS **N/A** at Stage 7 — wing commands stay installed  
 
 **Cross-cutting gate:** When an Owner ask changes a core feature principle or affects multiple features/phases, `/refine-phase` (and `/build-phase` / `/refine-audit` when the same signal appears) must present the numbered Cross-cutting STOP before application code. Local bugfixes skip this gate.
 
 **Mid-phase side-work:** Chat refinements during build/refine fold into the current named phase step artifacts. Oversized asks use the Side-work size STOP — never silent mega-scope, never chat-only changes that skip delta/plan.
 
-**Progressive phases:** New or organic features use `/plan-phase <slug>` (add to BUILD_PLAN if needed) → `/build-phase <slug> N` with Owner describing each step → verify → … → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows with the work.
+**Progressive phases:** New or organic features use `/plan-phase <slug>` (add to BUILD_PLAN if needed) → `/build-phase <slug> N` with Owner describing each step → verify → … → soft-offer `/critique-ui` / `/polish-ui` → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows with the work.
 
 **GitHub handoff:** `/github-connect` → Simple or GitFlow. Day-to-day: `/pr-step update`. GitFlow: **`release` is the live/deploy line**; **`main` is the stable baseline** (remind `/pr-step main` after release when stable). Live bugs: `/pr-step hotfix <issue>` (from `release` → land `release`+`develop`). Non-live: `/pr-step bugfix`. **Invoke authorizes** git writes (no Gate A/B/C). **Verified** line required on ship; open fails block code unless override. Never force-push. Deploy stays project-local.
 
@@ -298,7 +314,18 @@ Newest first. Product changelog only.
 - npm CLI (`init` / `upgrade` / `check`) unchanged — same project shape either way  
 - Regenerate plugins from templates: `npm run generate:plugins`  
 
-### v1.1.0 — evidence bar · playback · failure brief · verification map · encode · Verified ship — *current*
+### v1.2.0 — design wing (direction · critique · polish) — *current*
+
+**Date:** 2026-11-24  
+
+- **Design wing core** — not optional enrichment; every install gets visual direction + critique + polish  
+- **`/design-direction`**, **`/critique-ui`**, **`/polish-ui`** — command contracts; Visual direction lives in `DESIGN_SYSTEM.md`  
+- **Craft floor / anti-slop** — §1 shared bar before UI edits  
+- **`/setup` Stage 7** — required design wing (non-UI → Owner **N/A**); direction before/with DS accept  
+- **Loop hooks** — soft-offer polish/critique after UI `/build-phase` Accept; soft-offer critique before `/audit-ds` / UI complete  
+- Encode lessons may update Visual direction / DS; adapters + smoke  
+
+### v1.1.0 — evidence bar · playback · failure brief · verification map · encode · Verified ship
 
 **Date:** 2026-11-22  
 
@@ -545,6 +572,12 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 | **User flow** | Interaction map (entry → paths → exits); setup overview surface |
 | **Stack catalog** | Curated official agentic resource pointers per framework |
 | **Design catalog** | Component libraries (pick one) + guidelines; agent MCP/skills/llms |
+| **Design wing** | Core visual toolkit: direction, critique, polish (and later motion) — not an opt-in add-on |
+| **Visual direction** | Character / world / moments / signature + page mode in `DESIGN_SYSTEM.md`; Owner-gated |
+| **Craft floor** | Shared anti-slop / quality bar before UI edits; direction overrides defaults except bans |
+| **critique-ui** | Ranked UX/visual review; findings only — no silent rewrite |
+| **polish-ui** | Ordered craft pass keeping accepted direction |
+| **design-direction** | Set or refresh Visual direction (Owner Accept) |
 | **Behavior delta** | ADDED/CHANGED/REMOVED SHALL statements, each with ≥1 WHEN/THEN scenario |
 | **Intent gate** | Owner accept/reject of the Behavior delta |
 | **Project map** | Agent navigation digest (modules / hubs / seams); context only |
@@ -565,4 +598,4 @@ Pre–Behavior delta. Plan → build → verify → refine → audit → complet
 
 ---
 
-*End of constitution — Phasestep v1.0.0*
+*End of constitution — Phasestep v1.2.0*

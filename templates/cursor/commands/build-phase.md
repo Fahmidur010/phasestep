@@ -209,5 +209,13 @@ Behavior delta ready:
 ```
 
 6. Do not suggest `/audit-phase` or `/complete-phase` until all steps verified
+7. **UI soft-offer (after intent 1. Accept only):** if this step touched visible UI and `{{DESIGN_SYSTEM}}` is not `n/a`, offer once (does **not** block `/verify-phase`):
+
+```text
+UI craft (optional before or after verify):
+1. /polish-ui [this surface] — craft pass
+2. /critique-ui [this surface] — findings only
+3. Continue to /verify-phase PHASE STEP
+```
 
 Do not start the next step until Owner confirms verification passed (or explicitly continues).

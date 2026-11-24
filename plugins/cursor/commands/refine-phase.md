@@ -58,15 +58,17 @@ Repeated correction — encode the lesson:
 1. Promote to project rule — add/update constitution or architecture convention (docs)
 2. Encode in structure — add/adjust lint, type, or test that fails if this recurs
 3. Doc-only note — short note in decisions / VERIFICATION_MAP / phase plan Risks; no new lint/test
-4. Skip encode — fix this instance only
+4. Update Visual direction / DESIGN_SYSTEM — bans, Moments, Signature, or do/don’t (UI craft lessons)
+5. Skip encode — fix this instance only
 ```
 
 - **1** → update the chosen doc, then continue the fix under **Rules**.  
 - **2** → add the smallest structural check with the fix (or immediately after); do not invent heavy frameworks.  
 - **3** → write the note, then fix.  
-- **4** → proceed under **Rules** without promotion.
+- **4** → update [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) (or run `/design-direction refresh` if the whole direction shifted); then fix.  
+- **5** → proceed under **Rules** without promotion.
 
-Prefer **2** when a cheap local assertion exists; prefer **1** for product/principle mistakes; never silently expand scope beyond the lesson.
+Prefer **2** when a cheap local assertion exists; prefer **1** for product/principle mistakes; prefer **4** for repeating visual/craft misses; never silently expand scope beyond the lesson.
 
 ## Mid-phase side-work (absorb into current workflow)
 

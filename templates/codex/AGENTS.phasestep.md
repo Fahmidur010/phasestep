@@ -13,6 +13,9 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/build-phase <slug> [step]` | Build one step; progressive capture + **Step playback** (Goal / Done-when / Out of scope); Behavior delta; intent gate |
 | `/verify-phase <slug> [step]` | Owner UAT from Trace; **Evidence bar** (agent_tool \| owner_uat \| not_run; inconclusive ≠ pass); optional Playwright / native / backend evidence |
 | `/refine-phase <slug> [step]` | Fix after verify; **Failure brief**; **Encode lessons** if correction repeats; mid-phase absorb / Cross-cutting |
+| `/design-direction [refresh]` | Set/refresh **Visual direction** in DESIGN_SYSTEM (Owner Accept) |
+| `/critique-ui [target]` | Ranked UX/visual review — findings only; no silent rewrite |
+| `/polish-ui [target]` | Ordered craft polish; keep accepted direction |
 | `/audit-phase <slug>` | Build-phase acceptance audit (delivery) |
 | `/audit-ds <slug>\|all` | Design-system audit (delivery) |
 | `/complete-phase <slug>` | Mark done + progress + phase remainder / next seeds |
@@ -52,7 +55,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 1. Owner owns product decisions; agent drafts and stops at gates.
 2. Docs/config only during `/setup` (no app code unless Owner-approved tooling install).
 3. After build: Behavior delta (each SHALL with WHEN/THEN scenarios) → Owner intent gate → then verify.
-4. Design component libraries are pick-one; never mix kits.
+4. Design wing is core: Visual direction + craft floor; component libraries are pick-one (never mix kits). Use `/design-direction`, `/critique-ui`, `/polish-ui` for UI craft.
 5. Mid-project setup: document what exists, plan remaining — do not reinvent the app. Prefer `{{PROJECT_MAP}}` when present; refresh via `/map-project` without Owner gate.
 6. Principle / multi-feature changes: follow Cross-cutting STOP in `/refine-phase` before coding (decision + product sync, or scoped/defer).
 7. Mid-phase side-work: absorb local Owner refinements into the current step’s plan + Behavior delta / Trace (no new command); if too large → Side-work size STOP; verify/audit use updated artifacts.

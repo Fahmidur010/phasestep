@@ -3,12 +3,15 @@
 Slash commands live in `.claude/commands/` (same bodies as the Cursor adapter). Run them as `/setup`, `/plan-phase`, etc.
 
 ```text
-/setup                     → ensure install → product → user flow ↔ product → stack → architecture → decisions → design → build plan
+/setup                     → ensure install → product → user flow ↔ product → stack → architecture → design wing → build plan
 /status                    → Phasestep: installed | not installed (read-only)
 /plan-phase <slug>         → classic or progressive plan; may add slug to BUILD_PLAN
 /build-phase <slug> [step] → build step; progressive capture + Step playback; delta + intent
 /verify-phase <slug> [step]→ Owner UAT + Evidence bar (inconclusive / wrong surface ≠ pass)
 /refine-phase <slug> [step]→ Failure brief; Encode lessons if repeating; mid-phase absorb / Cross-cutting
+/design-direction [refresh]→ set/refresh Visual direction in DESIGN_SYSTEM (Owner Accept)
+/critique-ui [target]      → ranked UX/visual review — findings only
+/polish-ui [target]        → ordered craft pass (keep accepted direction)
 /audit-phase <slug>        → build-phase acceptance audit (delivery)
 /audit-ds <slug|all>       → design-system audit (delivery)
 /complete-phase <slug>     → mark done + progress + phase remainder

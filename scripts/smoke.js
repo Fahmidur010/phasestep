@@ -100,6 +100,18 @@ function main() {
   for (const needle of requiredStages) {
     assert(setup.includes(needle), `setup.md contains: ${needle}`);
   }
+  assert(setup.includes('Design wing'), 'setup.md Design wing stage');
+  assert(setup.includes('Visual direction'), 'setup.md Visual direction');
+  assert(setup.includes('/design-direction'), 'setup.md links design-direction');
+  assert(!setup.includes('## Stage 7 — Design system (optional)'), 'setup Stage 7 no longer optional heading');
+  assert(
+    !read(path.join('docs', 'PROGRESS.md')).includes('Design system (optional)'),
+    'PROGRESS stub no longer marks design optional'
+  );
+  assert(
+    read(path.join('docs', 'PROGRESS.md')).includes('Design wing'),
+    'PROGRESS stub lists Design wing'
+  );
   assert(setup.includes('optional GitHub handoff'), 'setup Finish GitHub connect STOP');
   assert(setup.includes('1. Connect now'), 'setup Finish Connect now option');
   assert(setup.includes('2. Skip'), 'setup Finish Skip GitHub option');
@@ -221,6 +233,15 @@ function main() {
     'constitution Verified on ship hard rule'
   );
   assert(constitution.includes('v1.1.0'), 'constitution evolution log 1.1.0');
+  assert(constitution.includes('v1.2.0'), 'constitution evolution log 1.2.0');
+  assert(
+    constitution.includes('Design wing') || constitution.includes('design wing'),
+    'constitution design wing'
+  );
+  assert(
+    constitution.includes('critique-ui') && constitution.includes('polish-ui'),
+    'constitution design-wing commands'
+  );
   assert(
     constitution.includes('Verification map') || constitution.includes('VERIFICATION_MAP'),
     'constitution verification map artifact'
@@ -240,6 +261,29 @@ function main() {
   assert(cfg.projectMap, 'config projectMap key');
   assert(cfg.verificationMap, 'config verificationMap key');
   assert(cfg.github && cfg.github.remote === 'origin', 'config github.remote default');
+
+  const designStub = read(cfg.designSystem || 'docs/DESIGN_SYSTEM.md');
+  assert(designStub.includes('## Visual direction'), 'DESIGN_SYSTEM stub has Visual direction');
+
+  const designDirectionCmd = read(path.join('.cursor', 'commands', 'design-direction.md'));
+  assert(designDirectionCmd.includes('Visual direction'), 'design-direction mentions Visual direction');
+  assert(designDirectionCmd.includes('1. Accept'), 'design-direction numbered Accept');
+  assert(designDirectionCmd.includes('Character'), 'design-direction Character line');
+
+  const critiqueUiCmd = read(path.join('.cursor', 'commands', 'critique-ui.md'));
+  assert(critiqueUiCmd.includes('Do not modify'), 'critique-ui is read-only');
+  assert(critiqueUiCmd.includes('P0'), 'critique-ui priority P0');
+
+  const polishUiCmd = read(path.join('.cursor', 'commands', 'polish-ui.md'));
+  assert(polishUiCmd.includes('Ordered passes') || polishUiCmd.includes('Spacing'), 'polish-ui ordered passes');
+  assert(polishUiCmd.includes('Visual direction'), 'polish-ui keeps Visual direction');
+
+  assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/polish-ui'), 'build-phase soft-offers polish-ui');
+  assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/critique-ui'), 'audit-ds soft-offers critique-ui');
+  assert(
+    read('AGENTS.md').includes('/design-direction') || read('AGENTS.md').includes('design-direction'),
+    'codex AGENTS lists design-direction'
+  );
 
   const progressStub = read(cfg.progress);
   assert(progressStub.includes('Workflow mode'), 'PROGRESS workflow mode checklist');
@@ -265,6 +309,9 @@ function main() {
     'map-project.md',
     'github-connect.md',
     'pr-step.md',
+    'design-direction.md',
+    'critique-ui.md',
+    'polish-ui.md',
   ]) {
     assert(fs.existsSync(path.join(TMP, '.cursor', 'commands', cmd)), `cursor ${cmd}`);
     assert(fs.existsSync(path.join(TMP, '.claude', 'commands', cmd)), `claude ${cmd}`);

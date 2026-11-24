@@ -38,7 +38,7 @@ Status: `[ ]` not started · `[~]` in progress · `[x]` done · `[-]` skipped
 - [ ] Stack enrichment (catalog) accepted / skipped
 - [ ] Architecture accepted
 - [ ] Decisions reviewed
-- [ ] Design system (optional) — library pick-one + guidelines
+- [ ] Design wing — Visual direction + library pick-one + guidelines (or N/A if non-UI)
 - [ ] Build plan accepted
 - [ ] `buildCommand` confirmed
 

@@ -6,7 +6,7 @@ Phasestep is a workflow for AI-assisted development. You (the **Owner**) keep pr
 
 Works with **Cursor**, **Claude Code**, and **Codex**. Stack-agnostic (web, mobile, backend).
 
-**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.1.0**
+**Site:** [phasestep.vercel.app](https://phasestep.vercel.app/) · **Author:** [Fahmidur010](https://github.com/Fahmidur010) · **npm:** [`phasestep`](https://www.npmjs.com/package/phasestep) · **v1.2.0**
 
 ---
 
@@ -38,13 +38,13 @@ CLI `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three)
 ## How it works
 
 ```text
-1. /setup               → product, flow, stack, architecture, design, build plan (named phases)
+1. /setup               → product, flow, stack, architecture, design wing, build plan (named phases)
 2. /plan-phase <slug>   → break that phase into numbered steps
 3. /build-phase <slug> S → (progressive: playback) implement + Behavior delta (SHALL + WHEN/THEN)
-4. You Accept           → intent gate (or reject → /refine-phase)
+4. You Accept           → intent gate (or reject → /refine-phase); UI soft-offer polish/critique
 5. /verify-phase <slug> → evidence bar + Owner UAT (inconclusive ≠ pass)
 6. Repeat 3–5           → until the phase is done
-7. /audit-phase <slug>  → phase quality check → /complete-phase <slug>
+7. /audit-ds + /audit-phase → design + code quality → /complete-phase <slug>
 8. Optional             → /pr-step update (git handoff; Simple or GitFlow)
 ```
 
@@ -54,7 +54,9 @@ CLI `init`: interactive menu, `--adapters=cursor,claude`, or `--yes` (all three)
 
 **New features mid-project:** `/plan-phase <slug>` (adds to the build plan if needed) → choose **progressive** → `/build-phase <slug> 1` (describe the step; agent restates Goal / Done-when for Proceed/Edit) → verify → step 2… → `/audit-ds` → `/audit-phase` → `/complete-phase`. The phase plan grows as you build.
 
-**Quality armor:** verify uses an evidence bar (tool / Owner UAT / not run — wrong surface or inconclusive does not pass). After Reject or failed verify, refine starts with a short failure brief (root cause + blast radius) before coding. Repeated corrections get an **encode lessons** stop (rule / lint / test / doc). A **verification map** stores durable prove-paths. `/pr-step` records a **Verified** line and won’t land application code over open verify fails unless you override.
+**Quality armor:** verify uses an evidence bar (tool / Owner UAT / not run — wrong surface or inconclusive does not pass). After Reject or failed verify, refine starts with a short failure brief (root cause + blast radius) before coding. Repeated corrections get an **encode lessons** stop (rule / lint / test / doc / design system). A **verification map** stores durable prove-paths. `/pr-step` records a **Verified** line and won’t land application code over open verify fails unless you override.
+
+**Design wing (core):** `/setup` Stage 7 sets **Visual direction** + design system (non-UI marks N/A). `/design-direction`, `/critique-ui`, and `/polish-ui` keep UI intentional — not a second workflow.
 
 Owner choices are always **numbered** (`1.` `2.` `3.` …). Reply with the number.
 
@@ -95,12 +97,16 @@ npx phasestep check     # validate docs + selected-adapter command files
 | `/build-phase <slug> [S]` | Build step S (or next); progressive capture + step playback; Behavior delta |
 | `/verify-phase <slug> [S]` | Owner verification + evidence bar (inconclusive ≠ pass) |
 | `/refine-phase <slug> [S]` | Fix after reject / fail; failure brief; encode lessons if repeating |
+| `/design-direction` | Set or refresh Visual direction (Owner Accept) |
+| `/critique-ui [target]` | Ranked UX/visual review — findings only |
+| `/polish-ui [target]` | Ordered craft polish (keep accepted direction) |
 | `/audit-phase <slug>` | Delivery audit after the phase |
+| `/audit-ds <slug\|all>` | Design-system / direction audit (delivery) |
 | `/complete-phase <slug>` | Mark phase done + phase remainder / next seeds |
 | `/map-project` | Optional repo map for the agent |
 | `/github-connect` | Optional: link `gh` + remote; choose Simple or GitFlow |
 | `/pr-step update` | Land current work; Verified line; open fails block code unless override |
-Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/audit-ds` / `/refine-audit` / `/complete-audit` as needed. Details live in the installed command files and [constitution](./constitution/PHASESTEP.md).
+Also: `/audit-project` + `/audit-campaign` for a full-project health audit, `/refine-audit` / `/complete-audit` as needed. Details live in the installed command files and [constitution](./constitution/PHASESTEP.md).
 
 ---
 

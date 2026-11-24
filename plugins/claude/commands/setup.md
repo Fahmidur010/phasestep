@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Guided progressive fill of Phasestep stubs (product → user flow → stack → architecture → decisions → design → plan)
+description: Guided progressive fill of Phasestep stubs (product → user flow → stack → architecture → decisions → design wing → plan)
 argument-hint: [stage?]
 ---
 
@@ -87,7 +87,7 @@ Phasestep can **install safely** next to other agent files. For the **best outco
 
 Scan and list:
 
-1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `status`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`, plus adapter `README.md`)
+1. **Foreign slash commands** — `.cursor/commands/*.md` and `.claude/commands/*.md` whose names are **not** Phasestep-owned (`setup`, `status`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `design-direction`, `critique-ui`, `polish-ui`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`, plus adapter `README.md`)
 2. **Name collisions** — Phasestep-owned filenames that exist but are **not** clearly Phasestep bodies (e.g. custom `setup.md` kept at init)
 3. **AGENTS.md outside markers** — content outside `<!-- phasestep:codex:start -->` … `<!-- phasestep:codex:end -->`
 4. **Owner-pointed extras** — ask once if other rule/command paths are part of their **old delivery loop** (do not auto-grab `.cursor/rules` or random tools)
@@ -156,7 +156,7 @@ Never delete archived files. Never archive without Accept.
 | 4 Stack enrichment | [`.phasestep/stack-catalog.json`](.phasestep/stack-catalog.json) | Owner accept / skip proposed resources |
 | 5 Architecture | [`docs/architecture.md`](docs/architecture.md) | Owner accept; impact gate if product/flow would change |
 | 6 Decisions | [`docs/decisions.md`](docs/decisions.md) | Resolve → sync docs; TBD stays Open |
-| 7 Design (optional) | [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) + [`.phasestep/design-catalog.json`](.phasestep/design-catalog.json) | UI check → pick-one library → guidelines → install → accept doc |
+| 7 Design wing (required) | [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) + [`.phasestep/design-catalog.json`](.phasestep/design-catalog.json) | UI check → Visual direction → pick-one library → guidelines → install → accept doc (non-UI: Owner **N/A**) |
 | 8 Build plan | [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md) | Agent draft from product/flow/arch/decisions/design → Owner accept |
 | 9 Config | [`phasestep.json`](phasestep.json) | Propose `buildCommand` from stack catalog → Owner confirm → Finish |
 
@@ -466,10 +466,12 @@ When Owner is done with this review pass → Stage 7 — Design system.
 
 ---
 
-## Stage 7 — Design system (optional)
+## Stage 7 — Design wing (required)
 
 **Prerequisite:** decisions reviewed.  
 **Catalog:** [`.phasestep/design-catalog.json`](.phasestep/design-catalog.json)
+
+The design wing is **core Phasestep** (Visual direction + DS + later critique/polish commands). Owners gate decisions; they do not opt the wing out of the package.
 
 - **`componentLibraries`** → **pick exactly one** (or none). Never mix libraries.
 - **`guidelines`** → cite any (additive).
@@ -478,13 +480,34 @@ When Owner is done with this review pass → Stage 7 — Design system.
 ### 7a — UI check
 
 1. From product + user flow, decide if this is a **UI product**.
-2. If non-UI → **STOP** for skip confirm. On skip: leave `docs/DESIGN_SYSTEM.md` stub; note skip in `docs/PROGRESS.md`; go to Stage 8.
+2. If **non-UI** → **STOP** (record N/A — do not pretend the wing was never installed):
+
+```text
+Design wing — surface:
+1. Non-UI — mark DESIGN_SYSTEM Visual direction + Status as N/A; continue to Stage 8
+2. Actually UI — continue design wing
+```
+
+On **1**: set `docs/DESIGN_SYSTEM.md` Status and Visual direction Status to `n/a`; note in `docs/PROGRESS.md` (`Design wing: n/a`); go to Stage 8. Commands `/design-direction`, `/critique-ui`, `/polish-ui` remain available if UI appears later.
+
 3. If UI → continue.
 
 ```text
-Design:
-1. UI product
-2. Skip (non-UI / later)
+Design wing — surface:
+1. UI product — continue
+2. Non-UI — mark N/A (same as option 1 above)
+```
+
+### 7a2 — Visual direction (required for UI)
+
+If Visual direction is missing / stub → run the **`/design-direction`** flow inline (or tell Owner to run `/design-direction`), then continue. Owner **Accept** required before library pick.
+
+If already **accepted** → confirm once; offer refresh:
+
+```text
+Visual direction on file:
+1. Keep — continue to library / DS
+2. Refresh — /design-direction refresh
 ```
 
 ### 7b — Detect and confirm design context (required gate)
@@ -561,23 +584,24 @@ Agent resources for [library]:
 
 ### 7f — Draft `docs/DESIGN_SYSTEM.md`
 
-Grounded in product + user flow + architecture + **chosen library** + accepted guidelines + Owner files.
+Grounded in product + user flow + architecture + **accepted Visual direction** + **chosen library** + accepted guidelines + Owner files.
 
 Include:
+- **Visual direction** (already Accepted in 7a2 — keep in sync; do not blank it)
 - **Chosen system** (library id or “Owner custom” / “guidelines only”)
-- Principles
-- Tokens (color, type, spacing, radius) — high level
+- Principles (align with Character / World)
+- Tokens (color, type, spacing, radius) — high level; favor Signature
 - Component usage rules (use chosen library; forbidden alternate kits)
 - Accessibility baseline
-- Do / don’t
+- Do / don’t (include craft floor bans + project Bans)
 - Provenance (accepted catalog URLs / Owner paths)
 
-Not mockups or full visual redesign.
+Not mockups or full visual redesign. Critique/polish happen later via `/critique-ui` / `/polish-ui`.
 
 ### 7g — Accept gate
 
 ```text
-DESIGN_SYSTEM.md ready:
+DESIGN_SYSTEM.md ready (direction + system):
 1. Accept
 2. Reject
 3. Edit
@@ -589,7 +613,7 @@ On accept → Stage 8 — Build plan.
 
 ## Stage 8 — Build plan
 
-**Prerequisite:** decisions reviewed; design accepted or skipped.
+**Prerequisite:** decisions reviewed; design wing accepted or marked N/A.
 
 ### 8a — Gather inputs
 
