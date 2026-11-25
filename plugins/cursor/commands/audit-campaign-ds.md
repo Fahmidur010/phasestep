@@ -42,5 +42,15 @@ Follow **docs/DESIGN_SYSTEM.md** as source of truth. Typical checks:
 
 Add/update findings in the campaign phase report (stable IDs). End with counts in that report's snapshot.
 
-- Fixes only after Owner approval via `/refine-audit N`
-- Then `/audit-campaign N reaudit` (and re-run `/audit-campaign-ds N` if DS items were in scope)
+Then **STOP — Next actions** (numbered; run on pick). Omit inapplicable options and renumber:
+
+```text
+Campaign DS checks recorded.
+1. Continue campaign gate — return to /audit-campaign N Owner options (if that STOP is still open)
+2. Refine approved — /refine-audit N (only after Owner approved findings)
+3. Re-audit — /audit-campaign N reaudit
+4. Re-check DS — /audit-campaign-ds N (after DS fixes)
+5. Done for now
+```
+
+Never leave bare “Then `/refine-audit` / `/audit-campaign … reaudit`” for the Owner to type.

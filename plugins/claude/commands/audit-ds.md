@@ -65,5 +65,27 @@ severity — `file:line` — issue — suggested fix (name DS rule or primitive)
 
 End with counts.
 
-- C/M → `/refine-phase PHASE` and/or `/detect-ui` / `/polish-ui` / `/motion-ui` then re-run `/audit-ds PHASE`
-- Clean → still need `/audit-phase PHASE` + Owner verify history before `/complete-phase`
+Then **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session**). Omit inapplicable options and renumber.
+
+**Findings (C/M open):**
+
+```text
+Audit-ds ready.
+1. Refine — /refine-phase PHASE
+2. Detect — /detect-ui [surface]
+3. Polish — /polish-ui [surface]
+4. Motion — /motion-ui [surface]
+5. Re-run audit-ds — /audit-ds PHASE (after fixes)
+6. Done for now
+```
+
+**Clean (no C/M):**
+
+```text
+Audit-ds clean.
+1. Audit phase — /audit-phase PHASE
+2. Land work — /pr-step update
+3. Done for now
+```
+
+Do **not** offer `/complete-phase` until `/audit-phase` is clean and Owner verify history is green. Never leave bare “Next: `/…`” for the Owner to type.

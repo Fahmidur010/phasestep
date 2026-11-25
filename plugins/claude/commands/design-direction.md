@@ -68,11 +68,21 @@ On **Accept**: write **Visual direction** into `docs/DESIGN_SYSTEM.md` (Status `
 
 On refresh Accept: replace the Visual direction section; note date in [`docs/PROGRESS.md`](docs/PROGRESS.md) design log.
 
-### 4 — Soft next
+### 4 — Next actions STOP
 
-- If Stage 7 incomplete → continue `/setup` (library + full DS accept)
-- If building UI → remind agent to follow accepted direction + craft floor
-- Optional: `/detect-ui` / `/polish-ui` / `/critique-ui` / `/motion-ui` after screens exist
+After Accept, **STOP** (numbered; Owner replies with a number; **run the chosen workflow in this session**). Omit inapplicable options and renumber:
+
+```text
+Visual direction accepted.
+1. Continue setup — /setup (library + full DS accept; when Stage 7 incomplete)
+2. Detect — /detect-ui [surface] (when screens already exist)
+3. Polish — /polish-ui [surface]
+4. Critique — /critique-ui [surface]
+5. Motion — /motion-ui [surface]
+6. Done for now
+```
+
+Remind in prose (not a choice row): follow accepted direction + craft floor on later UI builds.
 
 ## Do not
 
@@ -80,3 +90,4 @@ On refresh Accept: replace the Visual direction section; note date in [`docs/PRO
 - Write application UI in this command
 - Mix a second component library while setting direction
 - Treat library pick as a substitute for Visual direction
+- Leave bare “Optional: `/…`” for the Owner to type

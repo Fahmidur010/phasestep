@@ -45,6 +45,13 @@ Treat the map as **stale** when major modules/hubs/entrypoints changed since **L
 
 ## After
 
-- Mid-project setup → continue `/setup` using this map for product/architecture orientation.
-- Audit planning → run or resume `/audit-project` and prefer **Seams** for phase slicing.
-- Delivery → optional; refresh later when the codebase grows.
+If this command was invoked **from** `/setup` or `/audit-project`, continue that parent flow in-session (no extra Owner STOP).
+
+If the Owner invoked `/map-project` **alone**, **STOP — Next actions** (numbered; run on pick):
+
+```text
+Project map updated.
+1. Continue setup — /setup
+2. Start audit plan — /audit-project
+3. Done for now
+```

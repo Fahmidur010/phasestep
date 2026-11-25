@@ -45,3 +45,16 @@ Or:
 ## Labels
 
 Prefer short labels: `auth-foundation`, `refine-checkout`, `mid-auth`, etc. Match the project’s convention (slugs over bare numbers for new work).
+
+## After writing
+
+**STOP — Next actions** (numbered; run on pick). Derive options from Phase health; omit inapplicable and renumber:
+
+```text
+Session logged.
+1. Continue — /build-phase PHASE STEP (or /verify-phase / /refine-phase as Phase health says)
+2. Land work — /pr-step update
+3. Done for now
+```
+
+The `**Next:**` line inside the log entry is a resume hint for humans/agents — still present a numbered STOP in chat; do not leave bare slash commands for the Owner to type.

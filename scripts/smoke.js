@@ -181,6 +181,13 @@ function main() {
     verifyCmd.includes('Verification map') || verifyCmd.includes('VERIFICATION_MAP'),
     'verify-phase uses verification map'
   );
+  assert(verifyCmd.includes('After Pass — Next actions STOP'), 'verify-phase After Pass next-actions STOP');
+  assert(verifyCmd.includes('1. Continue — /build-phase'), 'verify-phase next Continue is numbered');
+  assert(verifyCmd.includes('2. Land work — /pr-step update'), 'verify-phase next Land work is numbered');
+  assert(
+    verifyCmd.includes('run the chosen command') || verifyCmd.includes('run that workflow'),
+    'verify-phase next actions run in session'
+  );
 
   const auditPhaseCmdEarly = read(path.join('.cursor', 'commands', 'audit-phase.md'));
   assert(auditPhaseCmdEarly.includes('Behavior delta traceability'), 'audit-phase checks delta scenarios');
@@ -236,6 +243,8 @@ function main() {
   assert(constitution.includes('v1.2.0'), 'constitution evolution log 1.2.0');
   assert(constitution.includes('v1.3.0'), 'constitution evolution log 1.3.0');
   assert(constitution.includes('v1.4.0'), 'constitution evolution log 1.4.0');
+  assert(constitution.includes('v1.5.0'), 'constitution evolution log 1.5.0');
+  assert(constitution.includes('numbered next actions'), 'constitution numbered next actions');
   assert(
     constitution.includes('Design wing') || constitution.includes('design wing'),
     'constitution design wing'
@@ -304,7 +313,7 @@ function main() {
   assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/motion-ui'), 'build-phase soft-offers motion-ui');
   assert(read(path.join('.cursor', 'commands', 'build-phase.md')).includes('/detect-ui'), 'build-phase soft-offers detect-ui');
   assert(
-    read(path.join('.cursor', 'commands', 'build-phase.md')).includes('5. Continue to /verify-phase'),
+    read(path.join('.cursor', 'commands', 'build-phase.md')).includes('5. Continue — /verify-phase'),
     'build-phase UI soft-offer Continue is option 5'
   );
   assert(read(path.join('.cursor', 'commands', 'complete-phase.md')).includes('/detect-ui'), 'complete-phase soft-offers detect-ui');
@@ -313,8 +322,28 @@ function main() {
     'complete-phase UI soft-offer Continue is option 5'
   );
   assert(
-    read(path.join('.cursor', 'commands', 'motion-ui.md')).includes('5. Done for now'),
-    'motion-ui after soft-offer Done is option 5'
+    read(path.join('.cursor', 'commands', 'motion-ui.md')).includes('Done for now'),
+    'motion-ui after soft-offer includes Done for now'
+  );
+  assert(
+    read(path.join('.cursor', 'commands', 'detect-ui.md')).includes('After detect:'),
+    'detect-ui numbered after-detect STOP'
+  );
+  assert(
+    read(path.join('.cursor', 'commands', 'plan-phase.md')).includes('1. Build step 1 — /build-phase'),
+    'plan-phase numbered next build'
+  );
+  assert(
+    read(path.join('.cursor', 'commands', 'status.md')).includes('1. Setup now — /setup'),
+    'status not-installed numbered setup'
+  );
+  assert(
+    read(path.join('.cursor', 'commands', 'audit-phase.md')).includes('1. Complete phase — /complete-phase'),
+    'audit-phase clean next is numbered complete'
+  );
+  assert(
+    read(path.join('.cursor', 'commands', 'README.md')).includes('Owner next actions:'),
+    'adapter README documents numbered next actions'
   );
   assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/critique-ui'), 'audit-ds soft-offers critique-ui');
   assert(read(path.join('.cursor', 'commands', 'audit-ds.md')).includes('/detect-ui'), 'audit-ds soft-offers detect-ui');
@@ -563,7 +592,9 @@ function main() {
   assert(refinePhaseCmd.includes('Park for a new'), 'refine-phase size STOP park option');
   assert(refinePhaseCmd.includes('Absorb anyway'), 'refine-phase size STOP absorb option');
   assert(
-    refinePhaseCmd.includes('Stop and re-plan') || refinePhaseCmd.includes('re-plan now'),
+    refinePhaseCmd.includes('Stop and re-plan') ||
+      refinePhaseCmd.includes('re-plan now') ||
+      refinePhaseCmd.includes('Re-plan now — /plan-phase'),
     'refine-phase size STOP re-plan option'
   );
   assert(
@@ -655,14 +686,13 @@ function main() {
   assert(prStepCmd.includes('release` and `develop`') || prStepCmd.includes('release` **and** `develop`') || prStepCmd.includes('release + develop'), 'pr-step hotfix lands release and develop');
   assert(prStepCmd.includes('fully stable'), 'pr-step release reminds pr-step main when stable');
   assert(
-    prStepCmd.includes('Soft-remind: when ready for live, `/pr-step release`') ||
-      prStepCmd.includes('Soft-remind: when ready for live'),
-    'pr-step bugfix soft-reminds release'
+    prStepCmd.includes('Bugfix landed on develop') && prStepCmd.includes('Promote live — /pr-step release'),
+    'pr-step bugfix next offers release'
   );
   assert(
-    prStepCmd.includes('Soft-remind: when live is stable again, `/pr-step main`') ||
-      prStepCmd.includes('when live is stable again'),
-    'pr-step hotfix soft-reminds main'
+    prStepCmd.includes('Hotfix landed on release + develop') &&
+      (prStepCmd.includes('when live is stable again') || prStepCmd.includes('Sync baseline — /pr-step main')),
+    'pr-step hotfix next offers main'
   );
   assert(
     prStepCmd.includes('Do not** force-push') ||
@@ -746,8 +776,15 @@ function main() {
 
   const auditCampaignCmd = read(path.join('.cursor', 'commands', 'audit-campaign.md'));
   assert(auditCampaignCmd.includes('campaign-only') || auditCampaignCmd.includes('Campaign Audit'), 'audit-campaign campaign only');
-  assert(auditCampaignCmd.includes('Approve all findings for refinement'), 'audit-campaign Owner gate');
-  assert(auditCampaignCmd.includes('Record findings; no fixes'), 'audit-campaign record option');
+  assert(
+    auditCampaignCmd.includes('Approve all for refine') ||
+      auditCampaignCmd.includes('Approve all findings for refinement'),
+    'audit-campaign Owner gate'
+  );
+  assert(
+    auditCampaignCmd.includes('Record only') || auditCampaignCmd.includes('Record findings; no fixes'),
+    'audit-campaign record option'
+  );
   assert(auditCampaignCmd.includes('reaudit'), 'audit-campaign reaudit');
   assert(auditCampaignCmd.includes('/audit-phase'), 'audit-campaign points to audit-phase for delivery');
   assert(

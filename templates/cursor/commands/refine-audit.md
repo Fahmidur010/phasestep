@@ -42,10 +42,13 @@ Behavior delta (after refine-audit):
 1. Accept
 2. Reject (revise fixes / delta)
 ```
-4. Direct the Owner to verify independently:
+4. **STOP — Next actions** (numbered; run on pick):
 
 ```text
-/audit-campaign $ARGUMENTS reaudit
+Refine-audit fixes recorded.
+1. Re-audit — /audit-campaign $ARGUMENTS reaudit
+2. Land work — /pr-step update
+3. Done for now
 ```
 
-Re-audit confirms findings closed (or reopens them). Fixes are not "done" until re-audit passes and the Owner acknowledges.
+Re-audit confirms findings closed (or reopens them). Fixes are not "done" until re-audit passes and the Owner acknowledges. Never leave bare `/audit-campaign … reaudit` for them to type.

@@ -103,7 +103,14 @@ When Owner passes free text after a verb (e.g. `hotfix login timeout on live`):
 # Mode: Simple PR (`github.workflow` = `simple`)
 
 Trunk-style: land current work onto the **default branch** (`main`/`master`).  
-`/pr-step release`, `/pr-step main`, `/pr-step bugfix`, and `/pr-step hotfix` are **GitFlow-only** — if invoked here, remind Owner and offer `/github-connect` to switch workflow.
+`/pr-step release`, `/pr-step main`, `/pr-step bugfix`, and `/pr-step hotfix` are **GitFlow-only** — if invoked under Simple, **STOP** (numbered; run on pick):
+
+```text
+That verb is GitFlow-only (this project is Simple PR).
+1. Switch workflow — /github-connect (Change git workflow only)
+2. Land with Simple instead — /pr-step update
+3. Abort
+```
 
 ## Parse (Simple)
 
@@ -127,7 +134,17 @@ GitHub PR: update [phase N step S] → main — branch … — status merged —
 
 (Use “merged” even when merge was local `--no-ff` + push; note method in the report.)
 
-7. Suggest next Phasestep command as appropriate.
+7. **STOP — Next actions** (numbered; run on pick). Omit inapplicable options and renumber. Example after a normal land:
+
+```text
+Landed.
+1. Continue build — /build-phase PHASE <next> (when more steps remain)
+2. Verify — /verify-phase PHASE STEP (when still awaiting verify)
+3. Complete phase — /complete-phase PHASE (when audits clean)
+4. Done for now
+```
+
+Never leave bare “Next: `/…`” for the Owner to type.
 
 ---
 
@@ -180,19 +197,32 @@ If `develop` / `release` missing → create from default **with Owner confirmati
 5. Delete `OLD_BRANCH` local + remote; checkout/create next feature branch; `git push -u`.
 6. On merge conflict → stop with conflict paths; do not force.
 7. PROGRESS: `GitHub PR: update <OLD_BRANCH> → develop — status merged — date`
-8. Soft-remind: `/pr-step release` when promoting to the live/`release` line.
+8. **STOP — Next actions** after a successful update (numbered; run on pick):
+
+```text
+Landed on develop.
+1. Promote live — /pr-step release
+2. Continue delivery — /build-phase or /verify-phase as Phase health says
+3. Done for now
+```
 
 ---
 
 ## Verb: `release`
 
 1. Invoking `/pr-step release` **is** consent to commit/push if needed and update `release` (the **live / deploy** line).
-2. If dirty or ahead → **Shared: ensure committed + pushed** on current branch; if still on `feature/*`, land via update steps onto `develop` first (or stop and tell Owner to `/pr-step update`).
+2. If dirty or ahead → **Shared: ensure committed + pushed** on current branch; if still on `feature/*`, land via update steps onto `develop` first (or **STOP** numbered: `1. Land on develop — /pr-step update` / `2. Abort`).
 3. Checkout `develop`; pull; checkout `release`; pull; `git merge --no-ff develop`; push `release`.
 4. PROGRESS: `GitHub: release promoted — develop → release — date`
-5. **Soft-remind (required in the end report):**  
-   `release` is now the live line. When this cut is **fully stable**, run `/pr-step main` so `main` stays the production-ready baseline. Do not skip that forever.  
-   Do **not** run project deploy scripts unless Owner asks outside this contract (pushes may trigger their Actions).
+5. **STOP — Next actions** (numbered; run on pick):
+
+```text
+release is now live.
+1. Sync baseline — /pr-step main (when this cut is fully stable)
+2. Done for now
+```
+
+   Soft-note: do not skip **1** forever. Do **not** run project deploy scripts unless Owner asks outside this contract (pushes may trigger their Actions).
 
 ---
 
@@ -228,9 +258,17 @@ Invoking `/pr-step bugfix …` **authorizes the full path**: create branch from 
 GitHub: bugfix <slug> → develop — status merged — date
 ```
 
-8. Soft-remind: when ready for live, `/pr-step release` (then `/pr-step main` when that cut is fully stable).
+8. **STOP — Next actions** (numbered; run on pick):
+
+```text
+Bugfix landed on develop.
+1. Promote live — /pr-step release
+2. Sync baseline — /pr-step main (after a stable release cut)
+3. Done for now
+```
+
 9. **Resume:** if already on `bugfix/*` with a completed fix from a prior turn, re-running `/pr-step bugfix` (with or without args) finishes steps 5–8 only — do not reinvent the issue.
-10. **Mis-route:** if Owner describes a **live** production break → stop once and switch to `/pr-step hotfix …` (do not land only on `develop`).
+10. **Mis-route:** if Owner describes a **live** production break → **STOP** numbered: `1. Hotfix instead — /pr-step hotfix …` / `2. Stay on bugfix` (do not land only on `develop` if they pick 1).
 
 ---
 
@@ -256,7 +294,14 @@ Invoking `/pr-step hotfix …` **authorizes the full path**: create branch from 
 GitHub: hotfix <slug> → release + develop — status merged — date
 ```
 
-8. Soft-remind: when live is stable again, `/pr-step main` to sync the baseline.
+8. **STOP — Next actions** (numbered; run on pick):
+
+```text
+Hotfix landed on release + develop.
+1. Sync baseline — /pr-step main (when live is stable again)
+2. Done for now
+```
+
 9. **Resume:** if already on `hotfix/*` with a completed fix from a prior turn, re-running `/pr-step hotfix` (with or without args) finishes steps 5–8 only — do not reinvent the issue.
 
 ---

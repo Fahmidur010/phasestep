@@ -17,7 +17,13 @@ Prepare the **manual verification checklist** for one **step**. **Do not write o
 
 Read [`{{PHASE_PLANS_DIR}}/phase-PHASE.md`](../../{{PHASE_PLANS_DIR}}/)
 
-If missing → Owner should run `/plan-phase PHASE` first.
+If missing → **STOP** (numbered; run on pick):
+
+```text
+Phase plan missing:
+1. Plan now — /plan-phase PHASE
+2. Abort verify
+```
 
 **Primary checklist:** that step’s **Step verification** block.
 
@@ -25,9 +31,32 @@ If missing → Owner should run `/plan-phase PHASE` first.
 
 Read the step’s **Behavior delta**.
 
-- **Missing** → **STOP**: tell Owner to run `/build-phase PHASE STEP` to produce the delta (with scenarios).
-- **Present but any ADDED/CHANGED `SHALL` lacks a WHEN/THEN scenario** → **STOP**: complete the delta via `/build-phase` or `/refine-phase` before verify.
-- `pending_owner_review` → remind to accept or reject (reject → `/refine-phase`) before treating UAT as final
+- **Missing** → **STOP** (numbered; run on pick):
+
+```text
+Behavior delta missing:
+1. Build step — /build-phase PHASE STEP (produce delta + scenarios)
+2. Abort verify
+```
+
+- **Present but any ADDED/CHANGED `SHALL` lacks a WHEN/THEN scenario** → **STOP** (numbered; run on pick):
+
+```text
+Delta incomplete (missing WHEN/THEN):
+1. Complete via build — /build-phase PHASE STEP
+2. Complete via refine — /refine-phase PHASE STEP
+3. Abort verify
+```
+
+- `pending_owner_review` → **STOP** (numbered; run on pick):
+
+```text
+Intent still pending:
+1. Accept intent — continue verify (set Intent status: accepted)
+2. Reject — /refine-phase PHASE STEP
+3. Abort verify
+```
+
 - If Owner already accepted in chat, proceed; on verify pass set **Intent status: accepted**
 
 Include a short **Intent reminder** (3–6 bullets) from ADDED/CHANGED/REMOVED **and** list each **Scenario** title with its **THEN** outcome.
@@ -199,8 +228,8 @@ Include Trace **Verify #** rows and the **UNCHANGED spot-check** when applicable
 
 ```text
 Step verification result:
-1. Pass — only if Evidence bar met (all ADDED/CHANGED Verify # Owner Pass; no required not_run) → mark verified + delta accepted → /build-phase PHASE <next> (or /pr-step update)
-2. Fail — /refine-phase PHASE STEP then re-verify (include Failure brief)
+1. Pass — only if Evidence bar met (all ADDED/CHANGED Verify # Owner Pass; no required not_run) → mark verified + delta accepted, then Next actions STOP
+2. Fail — run /refine-phase PHASE STEP (include Failure brief), then re-verify
 3. Incomplete evidence — finish Owner UAT / re-run matching-surface tools; do not mark verified yet
 ```
 
@@ -217,6 +246,27 @@ Next: /build-phase PHASE <next> | /pr-step … | /refine-phase PHASE STEP | /aud
 Updated: YYYY-MM-DD
 ```
 
-- When **all** steps verified: optional `/audit-ds` (if present) then `/audit-phase` (set Status `auditing` if starting audit)
-- Do not suggest `/complete-phase` until audits are clean
-- Optional GitHub after a verified step: `/pr-step update` (Simple→main · GitFlow→develop)
+### After Pass — Next actions STOP (required)
+
+Do **not** leave the Owner with bare “Next: `/…`” / “Optional: `/…`” lines to type. Present a numbered STOP and **run the chosen command’s workflow in this session** when they reply with a number (slash labels are what you execute — Owner does not re-type them).
+
+**More steps remain** in this phase:
+
+```text
+Step STEP verified.
+1. Continue — /build-phase PHASE <next>
+2. Land work — /pr-step update (Simple→main · GitFlow→develop)
+3. Stop here
+```
+
+**All steps verified** this phase (do **not** offer `/complete-phase` until audits are clean):
+
+```text
+Step STEP verified — all steps done.
+1. Audit design — /audit-ds PHASE (skip if DESIGN_SYSTEM is n/a or command absent)
+2. Audit phase — /audit-phase PHASE
+3. Land work — /pr-step update (Simple→main · GitFlow→develop)
+4. Stop here
+```
+
+Omit option 1 when design audit does not apply; renumber. If GitHub is not connected, keep **Land work** but soft-note that `/pr-step` will fail soft until `/github-connect` — do not replace the numbered list with manual command prose.

@@ -139,7 +139,7 @@ Archived workflow: .phasestep/archived-workflow/YYYY-MM-DD/
 
 1. Record in `docs/PROGRESS.md`: `Workflow mode: alongside` (date + one-line reason if given).
 2. Continue setup. Foreign commands and AGENTS outside content stay.
-3. Remind once: for full Phasestep results later, re-run `/setup` and choose Sole (or edit PROGRESS and archive).
+3. Soft-note once (not a blocking STOP mid-stage): for full Phasestep results later, re-run `/setup` and choose Sole — if the Owner asks to switch now, present a numbered choice and run `/setup` workflow-mode again in-session.
 
 Never delete archived files. Never archive without Accept.
 
@@ -500,7 +500,7 @@ Design wing — surface:
 
 ### 7a2 — Visual direction (required for UI)
 
-If Visual direction is missing / stub → run the **`/design-direction`** flow inline (or tell Owner to run `/design-direction`), then continue. Owner **Accept** required before library pick.
+If Visual direction is missing / stub → run the **`/design-direction`** flow **inline in this session** (do not ask the Owner to type `/design-direction`), then continue. Owner **Accept** required before library pick.
 
 If already **accepted** → confirm once; offer refresh:
 
@@ -720,13 +720,14 @@ Setup complete — optional GitHub handoff:
 2. Skip — continue without GitHub automation (manual git/PR OK; /pr-step will fail soft until connected)
 ```
 
-   - On **1. Connect now**: run `/github-connect` (same session or tell Owner to invoke it). Connect will ask **Simple PR** vs **GitFlow** (or later). Then resume Finish step 4.
+   - On **1. Connect now**: run `/github-connect` **in this session**. Connect will ask **Simple PR** vs **GitFlow** (or later). Then resume Finish step 4.
    - On **2. Skip**: record `GitHub: skipped at setup — YYYY-MM-DD` in `docs/PROGRESS.md` (optional note); do not block delivery.
-4. Tell Owner next step — do **not** run it unless asked:
+4. **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session** — do not ask them to type the slash command):
 
 ```text
-Setup complete → run /plan-phase <first-slug>
+Setup complete.
+1. Plan first phase — /plan-phase <first-slug>
+2. Stop here
 ```
 
-Later (after verify/complete): `/pr-step update` (Simple→main · GitFlow→develop); GitFlow also `release` / `main`.
-Optional: `npx phasestep check` (CLI) to confirm artifacts — not required when the IDE plugin already scaffolds/detects install.
+   On **1**, run `/plan-phase <first-slug>` in this session. Soft-note for later (not a choice row): after verify/complete, `/pr-step update` lands work (Simple→main · GitFlow→develop; GitFlow also `release` / `main`). Optional CLI: `npx phasestep check` — not required when the IDE plugin already scaffolds/detects install.

@@ -51,21 +51,21 @@ Do **not** invent extra rule IDs in this pass. Broader UX issues → `/critique-
 
 **Counts:** hits= · P0= · P1= · P2=
 **Clean rules:** AS-… (list IDs with no hit)
-**Next:**
-- Hits → `/polish-ui [target]` and/or `/refine-phase <slug>`
-- Broader UX → `/critique-ui [target]`
-- DS drift after fixes → `/audit-ds <slug>`
 ```
 
 If zero hits → say **Clean** and still list **Clean rules** so the Owner sees the table was applied.
 
-## Soft-offer after report
+## Soft-offer after report (required STOP)
+
+Numbered; Owner replies with a number; **run the chosen workflow in this session** (do not ask them to type the slash command). Omit inapplicable options and renumber.
 
 ```text
 After detect:
-1. /polish-ui [target] — fix AS-* hits
-2. /critique-ui [target] — broader UX/visual review
-3. Done for now
+1. Polish — /polish-ui [target] (fix AS-* hits)
+2. Critique — /critique-ui [target] (broader UX/visual)
+3. Refine step — /refine-phase <slug> (when hits belong to a delivery step)
+4. Audit design — /audit-ds <slug> (DS drift after fixes)
+5. Done for now
 ```
 
 ## Do not

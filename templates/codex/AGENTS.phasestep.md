@@ -25,10 +25,10 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 | `/map-project [refresh]` | Agent project map (navigation aid; no Owner gate) |
 | `/github-connect [repo]` | Link GitHub + choose Simple PR or GitFlow (no app commit) |
 | `/pr-step` / `update` | Land current work; **Verified** line; open fails block code unless override. Simple→main · GitFlow→develop |
-| `/pr-step release` | GitFlow: develop → **release** (live / deploy line); soft-remind `/pr-step main` when fully stable |
+| `/pr-step release` | GitFlow: develop → **release** (live / deploy line); numbered next offers `/pr-step main` when fully stable |
 | `/pr-step main` | GitFlow: release → **main** (stable baseline) |
-| `/pr-step bugfix …` | GitFlow non-live: from develop → fix → develop; soft-remind release; live bugs → hotfix |
-| `/pr-step hotfix …` | GitFlow live: from release → fix → release + develop; soft-remind main |
+| `/pr-step bugfix …` | GitFlow non-live: from develop → fix → develop; numbered next offers release; live bugs → hotfix |
+| `/pr-step hotfix …` | GitFlow live: from release → fix → release + develop; numbered next offers main |
 | `/audit-project` | Draft `{{AUDIT_PLAN}}` (Owner-gated audit phases) |
 | `/audit-campaign N [reaudit]` | Campaign audit against audit plan |
 | `/audit-campaign-ds N` | Design-system checks for a campaign phase |
@@ -54,7 +54,7 @@ When the Owner asks to run a Phasestep stage, follow the matching command file u
 
 ### Hard rules
 
-1. Owner owns product decisions; agent drafts and stops at gates.
+1. Owner owns product decisions; agent drafts and stops at gates. Every next-command choice is a **numbered STOP** (`1.` `2.` …); picking a number runs that workflow in-session — never bare “Next: `/…`” for the Owner to type.
 2. Docs/config only during `/setup` (no app code unless Owner-approved tooling install).
 3. After build: Behavior delta (each SHALL with WHEN/THEN scenarios) → Owner intent gate → then verify.
 4. Design wing is core: Visual direction + craft floor + Motion; component libraries are pick-one (never mix kits). Use `/design-direction`, `/detect-ui`, `/critique-ui`, `/polish-ui`, `/motion-ui` for UI craft.

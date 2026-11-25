@@ -97,15 +97,17 @@ Do not invent a motion system under a “light” pass.
 
 1. Run `{{BUILD_COMMAND}}` — fix until pass  
 2. Report: purpose · tool · what moved · what was refused · DS Motion sync  
-3. Soft-offer:
+3. **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session**). Omit inapplicable options and renumber:
 
 ```text
 After motion:
-1. /detect-ui [target] — re-scan AS-* if chrome/motion drifted
-2. /critique-ui [target] — re-check
-3. /polish-ui [target] — if chrome/spacing drifted
-4. Continue to /verify-phase or /audit-ds
-5. Done for now
+1. Detect — /detect-ui [target] (re-scan AS-* if chrome/motion drifted)
+2. Critique — /critique-ui [target]
+3. Polish — /polish-ui [target] (if chrome/spacing drifted)
+4. Verify — /verify-phase PHASE STEP
+5. Audit design — /audit-ds PHASE
+6. Land work — /pr-step update
+7. Done for now
 ```
 
 ## Do not
@@ -113,4 +115,4 @@ After motion:
 - Animate everything “for polish”  
 - Ignore reduced-motion  
 - Replace Visual direction or add a second component kit  
-- Commit — use `/pr-step` when Owner wants git handoff  
+- Ask the Owner to type `/pr-step` — offer it as a numbered choice above  

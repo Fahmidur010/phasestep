@@ -236,8 +236,18 @@ Items for `/audit-phase PHASE` after all steps verified.
 
 1. Ensure `{{PHASE_PLANS_DIR}}/` exists
 2. Write `phase-PHASE.md`
-3. Tell Owner: path, **PHASE — Title**, mode (classic | progressive), next = **`/build-phase PHASE 1`**
-4. Progressive reminder: describe each step in chat when building; plan grows; when done → `/audit-ds PHASE` → `/audit-phase PHASE` → `/complete-phase PHASE`
-5. Classic reminder: intent + verify per step; audits only after all steps pass
+3. Report: path, **PHASE — Title**, mode (classic | progressive)
+4. Progressive reminder (prose): describe each step in chat when building; plan grows; audits only after all steps pass
+5. Classic reminder (prose): intent + verify per step; audits only after all steps pass
+6. **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session**):
+
+```text
+Phase PHASE planned.
+1. Build step 1 — /build-phase PHASE 1
+2. Land work — /pr-step update (docs-only if nothing to ship yet — usually skip)
+3. Done for now
+```
+
+Omit **2** unless the Owner already asked to land docs. Never leave bare “next = `/build-phase …`” for them to type.
 
 Do **not** implement code in this command.

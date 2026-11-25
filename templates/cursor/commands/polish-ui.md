@@ -61,15 +61,17 @@ Motion is **out of scope** here — note candidates and soft-offer `/motion-ui` 
 
 1. Run `{{BUILD_COMMAND}}` — fix until pass  
 2. Short report: what changed per pass; what was skipped  
-3. Soft-offer:
+3. **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session**). Omit inapplicable options and renumber:
 
 ```text
 After polish:
-1. /detect-ui [target] — re-scan AS-* after edits
-2. /motion-ui [target] — if motion candidates noted
-3. /critique-ui [target] — broader re-check
-4. Continue to /verify-phase or /audit-ds
-5. Done for now
+1. Detect — /detect-ui [target] (re-scan AS-* after edits)
+2. Motion — /motion-ui [target] (if motion candidates noted)
+3. Critique — /critique-ui [target]
+4. Verify — /verify-phase PHASE STEP (when returning to delivery verify)
+5. Audit design — /audit-ds PHASE (when in a DS audit loop)
+6. Land work — /pr-step update
+7. Done for now
 ```
 
 ## Do not
@@ -77,4 +79,4 @@ After polish:
 - Replace Visual direction silently
 - Mix component libraries
 - Ship nested card chrome / kickers / emoji-icons “for polish”
-- Commit — use `/pr-step` when Owner wants git handoff
+- Ask the Owner to type `/pr-step` — offer it as a numbered choice above

@@ -12,11 +12,11 @@ Perform a **read-only** UX / visual critique for a UI target. **Do not modify ap
 
 ## Soft-offer before critique
 
-If `/detect-ui` has not just run this chat for the same target, **STOP** once (optional):
+If `/detect-ui` has not just run this chat for the same target, **STOP** once (optional; numbered; **run on pick**):
 
 ```text
 Before /critique-ui:
-1. /detect-ui first — fixed AS-* anti-slop, then return to /critique-ui
+1. Detect first — /detect-ui [target], then return to /critique-ui
 2. Proceed with /critique-ui now
 3. Skip soft-offer
 ```
@@ -33,7 +33,7 @@ If Visual direction is missing/stub on a UI product → **STOP**:
 
 ```text
 No accepted Visual direction:
-1. Run /design-direction first
+1. Direction first — /design-direction (run in this session), then return here
 2. Critique against craft floor only (weaker)
 3. Cancel
 ```
@@ -67,15 +67,26 @@ Cover at least:
 | P1 | … | … | … |
 
 **Counts:** P0= · P1= · P2=
-**Next:**
-- Anti-slop only → `/detect-ui [target]` then `/polish-ui`
-- Fixes → `/polish-ui [target]` and/or `/refine-phase <slug>`
-- DS drift → `/audit-ds <slug>` after polish
+```
+
+## Soft-offer after report (required STOP)
+
+Numbered; Owner replies with a number; **run the chosen workflow in this session**. Omit inapplicable options and renumber.
+
+```text
+After critique:
+1. Detect — /detect-ui [target] (AS-* anti-slop first)
+2. Polish — /polish-ui [target]
+3. Refine step — /refine-phase <slug>
+4. Audit design — /audit-ds <slug>
+5. Direction — /design-direction refresh (only if direction itself is wrong)
+6. Done for now
 ```
 
 ## Do not
 
 - Rewrite UI in this command (no “while I’m here” edits)
-- Invent a new Visual direction silently — use `/design-direction`
+- Invent a new Visual direction silently — offer numbered `/design-direction` above
 - Soften P0s into nits to avoid Owner friction
 - Recommend external design tools or live/preview modes
+- Leave bare “Next: `/…`” for the Owner to type

@@ -111,7 +111,13 @@ Git workflow:
 
 1. Set `phasestep.json` → `github.workflow`: `"simple"`.
 2. Append `GitHub workflow: simple — YYYY-MM-DD` to `docs/PROGRESS.md`.
-3. Remind: `/pr-step update` after verify / complete.
+3. **STOP — Next actions** (numbered; run on pick):
+
+```text
+GitHub connected (Simple PR).
+1. Land work — /pr-step update
+2. Done for now
+```
 
 ### On 2. GitFlow
 
@@ -130,12 +136,21 @@ GitFlow branches:
    - On **2**: record only; do not invent missing branches.
    - On **3**: remove `github.workflow` (or leave unset); note in PROGRESS that GitFlow was cancelled.
 
-4. Remind verbs: `/pr-step update`, `/pr-step release` (live line), `/pr-step main` (baseline when stable), `/pr-step hotfix <issue>` (live), `/pr-step bugfix <issue>` (non-live).  
-   Deploy/hosting Actions stay project-local — Phasestep does not install deploy workflows.
+4. **STOP — Next actions** (numbered; run on pick). Omit inapplicable options and renumber:
+
+```text
+GitHub connected (GitFlow).
+1. Land on develop — /pr-step update
+2. Promote live — /pr-step release
+3. Sync baseline — /pr-step main (when a cut is fully stable)
+4. Done for now
+```
+
+   Soft-note (not a choice row): live bugs → `/pr-step hotfix`; non-live → `/pr-step bugfix`. Deploy/hosting Actions stay project-local.
 
 ### On 3. Decide later
 
-Do **not** set `github.workflow`. Remind: first `/pr-step` will re-show this Git workflow STOP.
+Do **not** set `github.workflow`. Soft-note: first `/pr-step` will re-show this Git workflow STOP.
 
 ## Hard rules
 

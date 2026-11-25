@@ -7,7 +7,13 @@ Perform a **read-only campaign audit** for **Audit Phase $ARGUMENTS**. **Do not 
 
 **This command is campaign-only** (project audit track via `/audit-project`). For delivery build-phase acceptance use `/audit-phase <slug>` (not this command).
 
-**Precondition:** `{{AUDIT_PLAN}}` accepted and defines Audit Phase $ARGUMENTS. Otherwise → run `/audit-project` first.
+**Precondition:** `{{AUDIT_PLAN}}` accepted and defines Audit Phase $ARGUMENTS. Otherwise **STOP** (numbered; run on pick):
+
+```text
+Audit plan missing or not accepted:
+1. Draft / accept plan — /audit-project
+2. Abort campaign
+```
 
 `reaudit` argument → re-verify a previously reported campaign phase (see Re-audit).
 
@@ -147,19 +153,18 @@ Update `{{PROGRESS}}` (phase audited), then:
 
 ```text
 Audit Phase $ARGUMENTS report ready:
-1. Approve all findings for refinement → all findings marked Approved; then run /refine-audit $ARGUMENTS
-2. Select findings to fix → Owner picks IDs; selected marked Approved, rest stay Open/Deferred; then /refine-audit $ARGUMENTS
-3. Record findings; no fixes → findings stay Open; stop here
-4. Continue to Phase N+1 → same recording as 3, then run `/audit-campaign N+1`
+1. Approve all for refine — mark all Approved; then /refine-audit $ARGUMENTS
+2. Select findings to fix — Owner picks IDs; then /refine-audit $ARGUMENTS
+3. Record only — findings stay Open; stop here
+4. Next campaign phase — record like 3, then /audit-campaign N+1
+5. Complete campaign — /complete-audit (when all phases reported)
 ```
 
-Options 1–2 **never** fix code in this command — fixes happen only in `/refine-audit`. Option 4 records identically to 3, then proceeds via `/audit-campaign` (never `/audit-phase`).
+On **1 / 2 / 4 / 5**, mark statuses as needed, then **run the named command in this session**. Options 1–2 **never** fix code here — fixes only in `/refine-audit`. Option 4 uses `/audit-campaign` (never `/audit-phase`). Omit **5** until all campaign phases are reported; renumber.
 
 ## Re-audit (`/audit-campaign N reaudit`)
 
 1. Read the existing report; focus on findings marked `Fixed` / `Partially fixed` by `/refine-audit`.
 2. Independently re-verify each (code + re-run Evidence commands).
 3. Update statuses: confirmed → `Fixed (verified)`; not actually fixed → back to `Open` with a note.
-4. Refresh snapshot counts; **STOP** with the same Owner options.
-
-All campaign phases reported → suggest `/complete-audit`.
+4. Refresh snapshot counts; **STOP** with the same Owner options (run on pick).

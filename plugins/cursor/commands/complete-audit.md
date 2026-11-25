@@ -34,17 +34,19 @@ Preview-friendly, summary first:
 ## After
 
 1. Update `docs/PROGRESS.md` — audit campaign complete + headline counts.
-2. **STOP.** Options:
+2. **STOP — Next actions** (numbered; **run on pick**):
 
 ```text
 Audit complete:
 1. Promote selected findings to build plan
 2. Leave as report
-3. Re-open a phase
+3. Re-audit a phase — /audit-campaign N reaudit
+4. Refine a phase — /refine-audit N
+5. Plan delivery — /plan-phase <slug> (after promote, or for next build work)
 ```
 
-- **1. Promote** → with Owner's selected IDs, add matching items to `docs/BUILD_PLAN.md` (scoped, referencing finding IDs) — delivery then flows through normal `/plan-phase` → `/build-phase`
+- **1. Promote** → with Owner's selected IDs, add matching items to `docs/BUILD_PLAN.md` (scoped, referencing finding IDs); then offer numbered `/plan-phase` / `/build-phase` as needed
 - **2. Leave as report** → done; reports remain the record
-- **3. Re-open** → direct to `/audit-campaign N reaudit` or `/refine-audit N`
+- **3 / 4 / 5** → **run the chosen workflow in this session** on pick (ask once for `N` / slug if missing)
 
-Never modify application code from this command.
+Never modify application code from this command. Never leave bare “run `/…`” without numbers.

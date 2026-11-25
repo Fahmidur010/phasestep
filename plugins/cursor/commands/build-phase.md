@@ -24,7 +24,13 @@ Below, **PHASE** = resolved id. Show **PHASE — Title** in chat / Phase health.
 
 **Primary checklist:** [`docs/phase-plans/phase-PHASE.md`](docs/phase-plans/)
 
-If missing, **stop** — tell Owner to run **`/plan-phase PHASE`** first (progressive or classic).
+If missing, **STOP** (numbered; run on pick):
+
+```text
+Phase plan missing:
+1. Plan now — /plan-phase PHASE
+2. Abort this build
+```
 
 ## Progressive step capture (wire step into the plan)
 
@@ -74,7 +80,14 @@ Step playback:
 ## Before coding
 
 1. Read **`phase-PHASE.md`** — target step (after Progressive step capture if it ran; after Step playback if it ran)
-2. Confirm prior steps are **verified** (or Owner allows skip). If previous is `built`/unverified, **stop** and tell Owner to **`/verify-phase PHASE <prev>`**. Progressive: Step 1 has no prior.
+2. Confirm prior steps are **verified** (or Owner allows skip). If previous is `built`/unverified, **STOP** (numbered; run on pick). Progressive: Step 1 has no prior.
+
+```text
+Prior step not verified:
+1. Verify prior — /verify-phase PHASE <prev>
+2. Owner override — continue this build anyway (record skip in Phase health)
+3. Abort this build
+```
 3. Read [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md) — **Phase: PHASE** (reference)
 4. Read [`docs/product.md`](docs/product.md)
 5. Read [`docs/USER_FLOW.md`](docs/USER_FLOW.md) if present
@@ -203,7 +216,7 @@ Updated: YYYY-MM-DD
    On intent **1. Accept** (same session): set `Status: awaiting-verify` and `Next: /verify-phase PHASE STEP`. On **2. Reject**: set `Status: refining`, note the reject, `Next: /refine-phase PHASE STEP`.
 3. Short summary: what built, how to try, what’s out of scope
 4. **Lead with Behavior delta** + **Trace** table
-5. **STOP** — Intent gate (Owner replies with a number):
+5. **STOP** — Intent gate (Owner replies with a number; **on pick, run that workflow in this session** — do not ask them to type the slash command):
 
 ```text
 Behavior delta ready:
@@ -212,7 +225,7 @@ Behavior delta ready:
 ```
 
 6. Do not suggest `/audit-phase` or `/complete-phase` until all steps verified
-7. **UI soft-offer (after intent 1. Accept only):** if this step touched visible UI and `docs/DESIGN_SYSTEM.md` is not `n/a`, offer once (does **not** block `/verify-phase`):
+7. **UI soft-offer (after intent 1. Accept only):** if this step touched visible UI and `docs/DESIGN_SYSTEM.md` is not `n/a`, offer once (does **not** block `/verify-phase`). Numbered; on pick, run that command in this session:
 
 ```text
 UI craft (optional before or after verify):
@@ -220,7 +233,7 @@ UI craft (optional before or after verify):
 2. /polish-ui [this surface] — craft pass
 3. /critique-ui [this surface] — findings only
 4. /motion-ui [this surface] — only if interaction should move
-5. Continue to /verify-phase PHASE STEP
+5. Continue — /verify-phase PHASE STEP
 ```
 
-Do not start the next step until Owner confirms verification passed (or explicitly continues).
+Do not start the next step until Owner confirms verification passed (or explicitly continues). After a later verify **Pass**, `/verify-phase` owns the numbered Next actions STOP (continue build / land) — never dump bare “Next: `/…`” for the Owner to type.

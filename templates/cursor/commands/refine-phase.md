@@ -100,12 +100,12 @@ Show a one-line why, then **STOP**:
 Mid-phase side-work — too large for this step/phase:
 1. Absorb anyway into current step — update plan + delta; then continue
 2. Park for a new / other phase — note seed (remainder / decisions / BUILD_PLAN); do not implement now; continue current step work
-3. Stop and re-plan now — Owner will edit BUILD_PLAN / run /plan-phase; pause this step until guided
+3. Re-plan now — /plan-phase PHASE (pause this step; run on pick)
 ```
 
 - **1** → absorb path above (Owner accepts the blast radius).  
 - **2** → record a short seed (Phase remainder row, Open decision, or BUILD_PLAN out-of-scope note); **resume** the current step without coding the parked ask.  
-- **3** → stop coding this ask; wait for Owner’s plan guidance.
+- **3** → run `/plan-phase PHASE` in this session (or BUILD_PLAN edit with Owner); pause this step until guided.
 
 If unsure size → prefer this STOP once over silent mega-scope.
 
@@ -174,12 +174,19 @@ Behavior delta ready:
 2. Reject → continue refine, then re-review delta
 ```
 
-3. Next:
-   - After intent **1. Accept** → `/verify-phase PHASE STEP`
-   - Verify failures → re `/verify-phase PHASE STEP`
-   - audit-ds → re `/audit-ds PHASE`
-   - audit → re `/audit-phase PHASE`
-4. Step re-verify pass → `/build-phase PHASE <next>` if more steps
-5. All steps verified + audits clean → `/complete-phase PHASE`
+3. After intent **1. Accept** (or when refine finished and ready to prove again), **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session**):
+
+```text
+Refine ready.
+1. Re-verify — /verify-phase PHASE STEP
+2. Re-audit design — /audit-ds PHASE (only if refine was audit-ds scoped; else omit)
+3. Re-audit phase — /audit-phase PHASE (only if refine was audit scoped; else omit)
+4. Land work — /pr-step update (Simple→main · GitFlow→develop)
+5. Stop here
+```
+
+   Omit inapplicable options and renumber. Prefer **1. Re-verify** as the default path after a build-scoped refine.
+4. After a later verify **Pass**, follow `/verify-phase` **After Pass — Next actions STOP** (continue build / land / audits) — do not dump bare “Next: `/…`” lines.
+5. All steps verified + audits clean → offer `/complete-phase PHASE` as a numbered next action (same session on Owner pick).
 
 Do **not** add a separate session log for routine refine — `/complete-phase` handles the phase-complete entry (Owner may `/session-log` for mid-phase notes).

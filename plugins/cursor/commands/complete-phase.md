@@ -20,14 +20,14 @@ If Mode was `progressive`, set **Status:** `complete` and you may set **Mode:** 
 
 ## Confirm with Owner
 
-If the phase had UI and critique/polish were never offered this phase, soft-remind once before confirm (non-blocking):
+If the phase had UI and critique/polish were never offered this phase, soft-remind once before confirm (non-blocking; numbered; **run on pick**):
 
 ```text
 UI craft before complete (optional):
-1. /detect-ui PHASE — AS-* anti-slop
-2. /critique-ui PHASE — quick review
-3. /polish-ui PHASE — craft pass
-4. /motion-ui PHASE — only if interactions should move
+1. Detect — /detect-ui PHASE
+2. Critique — /critique-ui PHASE
+3. Polish — /polish-ui PHASE
+4. Motion — /motion-ui PHASE (only if interactions should move)
 5. Continue to complete confirm
 ```
 
@@ -104,5 +104,14 @@ If everything for this phase closed cleanly and nothing carries forward, say so 
 
 - **PHASE — Title:** **complete**
 - Show the **Phase remainder** table (and next-phase seeds if any)
-- Suggest next: optional `/pr-step update` (and GitFlow `/pr-step release` when promoting) and/or `/plan-phase <next-slug>` in `docs/BUILD_PLAN.md` (mention seeds if present)
-- If `docs/PROGRESS.md` has no `GitHub: connected` line and Owner wants PRs → soft remind `/github-connect` first (do not block complete). Connect also chooses Simple vs GitFlow.
+- **STOP — Next actions** (numbered; Owner replies with a number; **run the chosen workflow in this session** — do not ask them to type the slash command):
+
+```text
+Phase PHASE complete.
+1. Plan next — /plan-phase <next-slug> (mention seeds if present)
+2. Land work — /pr-step update (Simple→main · GitFlow→develop)
+3. Promote live — /pr-step release (GitFlow only; omit if Simple)
+4. Stop here
+```
+
+  Omit unavailable options and renumber. If GitHub is not connected, keep **Land work** / **Promote live** but soft-note `/github-connect` first — still use numbers, not bare “run `/…`” prose.

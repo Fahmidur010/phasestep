@@ -2,6 +2,8 @@
 
 Slash commands for Cursor. The same command bodies are also installed for Claude Code (`.claude/commands/`) when that adapter is enabled. Codex gets a managed block in `AGENTS.md`.
 
+**Owner next actions:** Every time the Owner must choose what happens next (including “run `/…` next”), present a **numbered STOP** (`1.` `2.` `3.` …). The number alone is enough. When a choice names a Phasestep command, **run that workflow in this session** on pick — never leave bare “Next: `/…`” / “Optional: `/…`” / “tell Owner to run `/…`” for them to type. Soft-offers use the same rule. Omit inapplicable options and renumber.
+
 **Your other slash commands stay on install.** Files that are not Phasestep-owned names are never deleted by `init`. On **`/setup`**, choose **Sole Phasestep (recommended)** to Owner-gate archive competing delivery-workflow files into `.phasestep/archived-workflow/`, or **Alongside** to keep using both (opt-in). Phasestep-owned names: `setup`, `status`, `plan-phase`, `build-phase`, `verify-phase`, `refine-phase`, `design-direction`, `detect-ui`, `critique-ui`, `polish-ui`, `motion-ui`, `audit-phase`, `audit-campaign`, `complete-phase`, `session-log`, `audit-ds`, `audit-campaign-ds`, `audit-project`, `refine-audit`, `complete-audit`, `map-project`, `github-connect`, `pr-step`. If you already had one of those names, `init` without `--force` keeps yours — Sole archive + `upgrade` restores Phasestep bodies.
 
 ```text

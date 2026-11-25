@@ -178,7 +178,7 @@ Paths are overridable in `phasestep.json`.
 
 **Shorthand:** `build-phase <slug>` with no step = next unfinished step only. **Phases are named (slug + title); steps stay numeric.** Soft compat: integer phase args still resolve when `phase-N.md` or BUILD_PLAN order maps them.
 
-**Owner gate format:** Every Owner STOP that presents choices must use a **numbered list** (`1.` `2.` `3.` …). Words are labels; the Owner may reply with the number alone. Never present word-only choice rows such as `Accept | Reject | Edit` without numbers.
+**Owner gate format:** Every Owner STOP that presents choices must use a **numbered list** (`1.` `2.` `3.` …). Words are labels; the Owner may reply with the number alone. Never present word-only choice rows such as `Accept | Reject | Edit` without numbers. When a choice’s next action is a Phasestep command (`/verify-phase`, `/build-phase`, `/pr-step`, …), the number **is** consent for the agent to **run that workflow in the same session** — do not leave bare “Next: `/…`” / “Optional: `/…`” lines for the Owner to type.
 
 **Project map:** Optional agent aid (`/map-project`). Prefer when present for mid-project `/setup` and `/audit-project` slicing. Claims labeled **extracted** vs **heuristic**. Never overrides accepted product, user flow, or architecture. No Owner gate to create or use.
 
@@ -317,7 +317,15 @@ Newest first. Product changelog only.
 - npm CLI (`init` / `upgrade` / `check`) unchanged — same project shape either way  
 - Regenerate plugins from templates: `npm run generate:plugins`  
 
-### v1.4.0 — design wing detect (`/detect-ui`) — *current*
+### v1.5.0 — numbered next actions — *current*
+
+**Date:** 2026-11-25  
+
+- **Numbered next actions** — every command that offers a next Phasestep step (verify Pass, complete, refine, setup Finish, plan, status, design wing, audits, pr-step, github-connect, …) uses `1.` `2.` …  
+- Picking a number runs that workflow **in-session** — no bare “Next: `/…`” / “Optional: `/…`” for the Owner to type  
+- Owner gate format + adapter README + Codex AGENTS hardened; smoke coverage  
+
+### v1.4.0 — design wing detect (`/detect-ui`)
 
 **Date:** 2026-11-24  
 

@@ -43,7 +43,15 @@ Audit plan draft ready:
 3. Edit (notes)
 ```
 
-- **1. Accept** → set plan Status: accepted; update `{{PROGRESS}}` (Audit section); tell Owner to run `/audit-campaign 1`
+- **1. Accept** → set plan Status: accepted; update `{{PROGRESS}}` (Audit section); then **STOP — Next actions**:
+
+```text
+Audit plan accepted.
+1. Start campaign — /audit-campaign 1
+2. Done for now
+```
+
+  On **1**, run `/audit-campaign 1` in this session.
 - **2. Reject / 3. Edit** → apply notes, re-show, stop again
 
 ## Hard rules
